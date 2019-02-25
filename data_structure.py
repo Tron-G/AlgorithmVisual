@@ -297,5 +297,7 @@ class BinaryTree(DataStructure):
 # bt = BinaryTree([1,2,3,-1,4,5])
 # bt = BinaryTree([1, 2, 3, 4, 5, -1, -1, -1, 6])
 bt = BinaryTree()
-re = bt.postorder()
+# re = bt.postorder()
+re = bt.inorder()
 print(re)
+
