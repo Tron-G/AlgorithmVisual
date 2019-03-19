@@ -1,0 +1,126 @@
+i {
+    color: #FFFFFF;
+    font-size: 12px;
+}
+
+a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    list-style: none;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+/*清除浮动*/
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+    /*IE/7/6*/
+}
+
+/*定位居中*/
+.middle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.s-side {
+    min-width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14%;
+    bottom: 0;
+    background-color: #031E38;
+    box-shadow: 0 0 10px white;
+    padding: 10px;
+}
+
+.s-side .s-firstItem i {
+    font-size: 20px;
+}
+
+.s-side .s-firstItem span {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 20px;
+    text-shadow: 0 0 5px #EEEEEE;
+    font-style: italic;
+    color: darkorange;
+    /*white-space: 10px;*/
+}
+
+.s-side .first {
+    padding: 7% 0;
+    border-bottom: 1px solid #032240;
+}
+
+.d-secondNav, .s-secondItem{
+    padding: 5% 0;
+}
+.s-thirdItem{
+    padding: 3% 0;
+}
+.s-side .d-firstNav span {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.s-side .d-firstNav i.fr {
+    font-size: 25px;
+}
+
+.s-side .s-secondNav,
+.s-side .s-secondItem {
+    margin-left: 50px;
+    margin-top: 10px;
+}
+
+.s-secondNav:hover, .d-firstNav:hover, .s-secondItem:hover{
+    background-color: #1890FF;
+    cursor: pointer
+}
+
+.s-side .d-secondDrop {
+    margin-left: 100px;
+    margin-top: 10px;
+}
+
+.iconRotate {
+    transform: rotate(90deg);
+    transition: transform 0.5s;
+}
+
+.s-firstDrop,
+.s-secondDrop {
+    display: none;
+}

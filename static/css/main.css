@@ -1,0 +1,59 @@
+html body {
+    margin: 0;
+    font-size: 16px;
+    font-family: "微软雅黑";
+    color: #FFFFFF;
+    background-color: dodgerblue;
+}
+
+#main {
+    background-color: pink;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#bottom_toolbar {
+    position: absolute;
+    background: dimgray;
+    bottom: 0;
+    left: 15%;
+    width: 85%;
+    height: 10%;
+}
+
+#top_toolbar {
+    position: absolute;
+    background: whitesmoke;
+    top: 0;
+    left: 15%;
+    width: 85%;
+    height: 10%;
+}
+
+#screen {
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    width: 85%;
+    height: 90%;
+}
+
+#introduce {
+    position: absolute;
+    background: #efe7be;
+    left: 0;
+    width: 60%;
+    height: 100%;
+}
+
+#imgs {
+    position: absolute;
+    /*background: #c7c0ef;*/
+    right: 0;
+    top:25%;
+    width: 40%;
+    height: 50%;
+}
