@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import random
 
 
@@ -31,8 +32,9 @@ class Search(Algorithm):
         print(self.__data)
 
     # 折半查找
+    # 数据格式： [{下标:数字},{下标:数字}...{1:1}或{0:0}是否成功的标志位]
     def binsearch(self, num):
-        self.__data.sort()
+        self.__data.sort()  # 排序处理
         print(self.__data)
         result = []
         length = len(self.__data)
@@ -49,7 +51,7 @@ class Search(Algorithm):
                 high = mid - 1
             else:
                 low = mid + 1
-                result.append({mid: self.__data[mid]})
+            result.append({mid: self.__data[mid]})
         if find:  # 最后一位为查找是否成功的标志位
             result.append({1: 1})
         else:
@@ -57,10 +59,11 @@ class Search(Algorithm):
         return result
 
     # 哈希表,开放地址法
+    # result: 创建序列，[[数字，寻找过程],[数字，寻找过程]....[哈希表]]
     def hash_table(self):
         length = len(self.__data)
         hash = [-1] * length
-        result = []  # 创建序列，[[数字，寻找过程],[数字，寻找过程]....[哈希表]]
+        result = []
         if length % 2 == 0:
             p = length - 1
         else:
@@ -110,7 +113,8 @@ class Search(Algorithm):
         return result
 
 
-bi = Search()
+# bi = Search()
 # print(bi.hash_table())
-print(bi.binary_sort_tree())
+# print(bi.binary_sort_tree())
+# print(bi.binsearch(57))
 

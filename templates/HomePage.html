@@ -3,8 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <title>HomePage</title>
+    <script type="text/javascript" src="../static/lib/d3/d3.js"></script>
+    <script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
 </head>
-<body>
 
-</body>
+{#导航栏，底部进度条，顶部功能条，主视图#}
+<div id="main">
+    <div id="navigation">
+        <!--这部分是导航栏信息。-->
+        <div class="s-side">
+            <ul>
+                <li class="s-firstItem first">
+                    <a href="/">
+                        <i class="fa fa-home"></i>
+                        <span>AlgorithmVisual</span>
+                    </a>
+                </li>
+
+                <li class="first">
+                    <div class="d-firstNav s-firstNav clearfix">
+                        <i class="fa fa-bars"></i>
+                        <span>线性结构</span>
+                        <i class="fa fa-caret-right fr "></i>
+                    </div>
+                    <ul class="d-firstDrop s-firstDrop">
+                        <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>数组</span>
+                                <i class="fa fa-caret-right fr"></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>链表</span>
+                                <i class="fa fa-caret-right fr "></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>栈</span>
+                                <i class="fa fa-caret-right fr "></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>队列</span>
+                                <i class="fa fa-caret-right fr "></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="s-secondItem">
+                            <a href="/test">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>第二页</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="first">
+                    <div class="d-firstNav s-firstNav">
+                        <i class="fa fa-bars"></i>
+                        <span>非线性结构</span>
+                        <i class="fa fa-caret-right fr"></i>
+                    </div>
+                    <ul class="d-firstDrop s-firstDrop">
+                        <li class="s-secondItem">
+                            <i class="fa fa-minus-square-o"></i>
+                            <a href="#">二叉树</a>
+                        </li>
+                        <li class="s-secondItem">
+                            <i class="fa fa-minus-square-o"></i>
+                            <a href="#">图</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="first">
+                    <div class="d-firstNav s-firstNav">
+                        <i class="fa fa-bars"></i>
+                        <span>查找</span>
+                        <i class="fa fa-caret-right fr"></i>
+                    </div>
+                    <ul class="d-firstDrop s-firstDrop">
+                        <li class="s-secondItem">
+                            <i class="fa fa-minus-square-o"></i>
+                            <a href="#">折半查找</a>
+                        </li>
+                        <li class="s-secondItem">
+                            <i class="fa fa-minus-square-o"></i>
+                            <a href="#">哈希表</a>
+                        </li>
+                        <li class="s-secondItem">
+                            <i class="fa fa-minus-square-o"></i>
+                            <a href="#">二叉排序树</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="first">
+                    <div class="d-firstNav s-firstNav">
+                        <i class="fa fa-bars"></i>
+                        <span>排序</span>
+                        <i class="fa fa-caret-right fr"></i>
+                    </div>
+                    <ul class="d-firstDrop s-firstDrop">
+                        <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>插入排序</span>
+                                <i class="fa fa-caret-right fr "></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>交换排序</span>
+                                <i class="fa fa-caret-right fr "></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                       <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>选择排序</span>
+                                <i class="fa fa-caret-right fr "></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="d-secondNav s-secondNav">
+                                <i class="fa fa-minus-square-o"></i>
+                                <span>归并排序</span>
+                                <i class="fa fa-caret-right fr "></i>
+                            </div>
+                            <ul class="d-secondDrop s-secondDrop">
+                                <li class="s-thirdItem">
+                                    <a href="#">三级导航</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+{#    <div id="bottom_toolbar"></div>#}
+    <div id="top_toolbar"></div>
+    <div id="screen">
+        <div id="introduce"></div>
+        <img id="imgs" src="../static/img/intro.png">
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="../static/css/main.css">
+<link rel="stylesheet" href="../static/css/navigation.css">
+<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
+
+<script type="text/javascript" src="../static/js/homepage.js"></script>
+<script type="text/javascript" src="../static/js/navigation.js"></script>
 </html>
