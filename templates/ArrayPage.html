@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HomePage</title>
-    <script type="text/javascript" src="../static/lib/d3/d3.js"></script>
-    <script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
+    <title>ArrayPage</title>
+
+    <link rel="stylesheet" href="../static/css/arraypage.css">
+    <link rel="stylesheet" href="../static/css/navigation.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
 </head>
 
 {#导航栏，底部进度条，顶部功能条，主视图#}
@@ -146,7 +148,7 @@
                                 </li>
                             </ul>
                         </li>
-                       <li>
+                        <li>
                             <div class="d-secondNav s-secondNav">
                                 <i class="fa fa-minus-square-o"></i>
                                 <span>选择排序</span>
@@ -175,19 +177,34 @@
             </ul>
         </div>
     </div>
-{#  <div id="bottom_toolbar"></div>#}
+    <div id="bottom_toolbar"></div>
     <div id="top_toolbar"></div>
     <div id="screen">
-        <div id="introduce"></div>
-        <img id="imgs" src="../static/img/intro.png">
+        <div id="input_window">
+            <div id="custom_tool">
+                <span>数组 :</span>
+                <input type="text" class="inputs" placeholder="例：1,2,3,4,5" id="user_data" value="">
+                <button class="button" id="submit_bt">创建</button>
+                <button class="button" id="random_bt">随机</button>
+                <br>
+                <span>查找 :</span>
+                <input type="text" placeholder="想要查找的数" class="inputs" name="search_num" value="">
+                <button class="button" id="search_bt">查找</button>
+                <br>
+                <span>修改 :</span>
+                <input type="text" placeholder="数组下标,值" class="inputs" name="change_num" value="">
+                <button class="button" id="change_bt">查找</button>
+                <br>
+            </div>
+        </div>
+        <div id="annotation_words"></div>
+        <div id="annotation_code"></div>
     </div>
 </div>
 
 
-<link rel="stylesheet" href="../static/css/main.css">
-<link rel="stylesheet" href="../static/css/navigation.css">
-<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
-
-<script type="text/javascript" src="../static/js/homepage.js"></script>
+<script type="text/javascript" src="../static/lib/d3/d3.js"></script>
+<script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../static/js/arraypage.js"></script>
 <script type="text/javascript" src="../static/js/navigation.js"></script>
 </html>

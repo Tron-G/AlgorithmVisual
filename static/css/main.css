@@ -3,25 +3,16 @@ html body {
     font-size: 16px;
     font-family: "微软雅黑";
     color: #FFFFFF;
-    background-color: dodgerblue;
+    background-color: pink;
 }
 
 #main {
-    background-color: pink;
+    background-color: hotpink;
     position: fixed;
     top: 0;
     bottom: 0;
     height: 100%;
     width: 100%;
-}
-
-#bottom_toolbar {
-    position: absolute;
-    background: dimgray;
-    bottom: 0;
-    left: 15%;
-    width: 85%;
-    height: 10%;
 }
 
 #top_toolbar {
@@ -35,6 +26,7 @@ html body {
 
 #screen {
     position: absolute;
+    background: #f38181;
     top: 10%;
     left: 15%;
     width: 85%;
@@ -43,7 +35,7 @@ html body {
 
 #introduce {
     position: absolute;
-    background: #efe7be;
+    background: #fce38a;
     left: 0;
     width: 60%;
     height: 100%;

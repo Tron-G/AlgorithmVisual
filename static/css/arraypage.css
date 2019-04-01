@@ -1,0 +1,97 @@
+html body {
+    margin: 0;
+    font-size: 16px;
+    /*font-family: "微软雅黑", serif;*/
+    color: #FFFFFF;
+    background-color: pink;
+}
+
+#main {
+    background-color: pink;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#top_toolbar {
+    position: absolute;
+    background: whitesmoke;
+    top: 0;
+    left: 15%;
+    width: 85%;
+    height: 5%;
+}
+
+#bottom_toolbar {
+    position: absolute;
+    background: #4d4545;
+    bottom: 0;
+    left: 15%;
+    width: 85%;
+    height: 5%;
+}
+
+#screen {
+    position: absolute;
+    background: #FFFFFF;
+    font-weight: bold;
+    font-size: 20px;
+    top: 5%;
+    left: 15%;
+    width: 85%;
+    height: 90%;
+}
+
+
+#input_window{
+    position: absolute;
+    background: #7c7575;
+    top: 1%;
+    right: 0;
+    width: 25%;
+    height: 15%;
+}
+
+#custom_tool {
+    position: absolute;
+    top:15%;
+    left: 15%;
+
+}
+
+.inputs{
+     width: 30%;
+}
+
+.button {
+    background-color: #34495e;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 3px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 5px;
+}
+
+
+#annotation_words{
+    position: absolute;
+    background: #455d7a;
+    bottom: 29%;
+    right: 0;
+    width: 23%;
+    height: 8%;
+}
+
+#annotation_code{
+    position: absolute;
+    background: #233142;
+    bottom: 1%;
+    right: 0;
+    width: 23%;
+    height: 27%;
+}

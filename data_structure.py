@@ -28,7 +28,7 @@ class Array(DataStructure):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create()
+            self.__data = self.random_create(15, 999)
         else:
             self.__data = self.input_create(input_list)
         print(self.__data)
@@ -296,8 +296,12 @@ class BinaryTree(DataStructure):
 # bt = BinaryTree([1,2,3,4,5,-1,-1,-1,6])
 # bt = BinaryTree([1,2,3,-1,4,5])
 # bt = BinaryTree([1, 2, 3, 4, 5, -1, -1, -1, 6])
-bt = BinaryTree()
+# bt = BinaryTree()
 # re = bt.postorder()
-re = bt.inorder()
-print(re)
+# re = bt.inorder()
+# print(re)
+#
+
+
+
 
