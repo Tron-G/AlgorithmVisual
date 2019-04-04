@@ -177,24 +177,33 @@
             </ul>
         </div>
     </div>
-    <div id="bottom_toolbar"></div>
+    <div id="bottom_toolbar">
+        <div id= "play_bt">播放</div>{#播放暂停#}
+        <div id="next_bt"></div> {#步进#}
+        <div id="progress"></div> {#进度条#}
+    </div>
     <div id="top_toolbar"></div>
     <div id="screen">
         <div id="input_window">
-            <div id="custom_tool">
-                <span>数组 :</span>
-                <input type="text" class="inputs" placeholder="例：1,2,3,4,5" id="user_data" value="">
-                <button class="button" id="submit_bt">创建</button>
-                <button class="button" id="random_bt">随机</button>
-                <br>
-                <span>查找 :</span>
-                <input type="text" placeholder="想要查找的数" class="inputs" name="search_num" value="">
-                <button class="button" id="search_bt">查找</button>
-                <br>
-                <span>修改 :</span>
-                <input type="text" placeholder="数组下标,值" class="inputs" name="change_num" value="">
-                <button class="button" id="change_bt">查找</button>
-                <br>
+            <div id="input_page">
+                <div id="custom_tool">
+                    <span>数组 :</span>
+                    <input type="text" placeholder="例：1,2,3,4,5" class="inputs" id="user_data" value="">
+                    <button class="button" id="submit_bt">创建</button>
+                    <button class="button" id="random_bt">随机</button>
+                    <br>
+                    <span>查找 :</span>
+                    <input type="text" placeholder="想要查找的数" class="inputs" id="search_num" value="">
+                    <button class="button" id="search_bt">查找</button>
+                    <br>
+                    <span>修改 :</span>
+                    <input type="text" placeholder="数组下标,值" class="inputs" id="change_num" value="">
+                    <button class="button" id="change_bt">修改</button>
+                    <br>
+                </div>
+            </div>
+            <div id="hide_page">{#隐藏按钮#}
+                <div id="hide_bt"></div>
             </div>
         </div>
         <div id="annotation_words"></div>

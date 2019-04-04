@@ -33,6 +33,33 @@ html body {
     height: 5%;
 }
 
+#play_bt{
+    position: absolute;
+    background: darkred;
+    top: 20%;
+    left: 10%;
+    width: 2%;
+    height: 60%;
+}
+
+#next_bt{
+    position: absolute;
+    background: gold;
+    top: 20%;
+    left: 15%;
+    width: 2%;
+    height: 60%;
+}
+
+#progress{
+    position: absolute;
+    background: steelblue;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+}
+
 #screen {
     position: absolute;
     background: #FFFFFF;
@@ -47,24 +74,60 @@ html body {
 
 #input_window{
     position: absolute;
-    background: #7c7575;
     top: 1%;
     right: 0;
     width: 25%;
     height: 15%;
 }
 
+/*输入窗口*/
+#input_page{
+    position: absolute;
+    background: #7c7575;
+    width: 85%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+/*输入控件*/
 #custom_tool {
     position: absolute;
     top:15%;
-    left: 15%;
-
+    left: 10%;
 }
 
+#hide_page{
+    position: absolute;
+    width: 15%;
+    height: 100%;
+    right: 0;
+    background: #524c4c;
+}
+/*隐藏按钮*/
+#hide_bt {
+    position: absolute;
+    width: 30%;
+    height: 15%;
+    top: 43%;
+    left: 35%;
+    background: #669999;
+    border-radius: 50%;
+}
+#hide_bt:hover{
+    position: absolute;
+    width: 50%;
+    height: 25%;
+    top: 37%;
+    left: 25%;
+}
+
+/*输入文本框*/
 .inputs{
      width: 30%;
 }
 
+/*按钮*/
 .button {
     background-color: #34495e;
     border: none;

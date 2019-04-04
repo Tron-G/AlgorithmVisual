@@ -31,20 +31,22 @@ class Array(DataStructure):
             self.__data = self.random_create(15, 999)
         else:
             self.__data = self.input_create(input_list)
-        print(self.__data)
+        # print(self.__data)
 
     # 返回数据
     def get_data(self):
         return self.__data
 
-    # 返回下标为index处的值
-    def search(self, index):
-        return self.__data[index]
+    # 查找值为num的下标，未找到返回-1
+    def search(self, num):
+        if num in self.__data:
+            return self.__data.index(num)
+        else:
+            return -1
 
     # 修改下标为Index处的值
     def assign(self, index, value):
         self.__data[index] = value
-        pass
     pass
 
 
@@ -301,7 +303,6 @@ class BinaryTree(DataStructure):
 # re = bt.inorder()
 # print(re)
 #
-
 
 
 
