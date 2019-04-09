@@ -303,6 +303,3 @@ class BinaryTree(DataStructure):
 # re = bt.inorder()
 # print(re)
 #
-
-
-

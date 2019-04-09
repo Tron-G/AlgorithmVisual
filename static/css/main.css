@@ -1,7 +1,7 @@
 html body {
     margin: 0;
     font-size: 16px;
-    font-family: "微软雅黑";
+    font-family: "微软雅黑", serif;
     color: #FFFFFF;
     background-color: pink;
 }
@@ -26,7 +26,7 @@ html body {
 
 #screen {
     position: absolute;
-    background: #f38181;
+    background: #1BA8FE;
     top: 10%;
     left: 15%;
     width: 85%;

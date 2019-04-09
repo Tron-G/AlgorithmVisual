@@ -56,6 +56,9 @@ ul {
 .s-side {
     min-width: 200px;
     position: absolute;
+    font-family: "KaiTi", serif;
+    font-size: 1.1em;
+    font-weight: bold;
     top: 0;
     left: 0;
     width: 14%;
@@ -73,9 +76,10 @@ ul {
     display: inline-block;
     margin-left: 10px;
     font-size: 25px;
-    text-shadow: 0 0 5px lightskyblue;
+    font-family: Georgia, serif;
+    text-shadow: 0 0 5px white;
     font-style: italic;
-    color: #00adb5;
+    color: #14ffec;
     /*white-space: 10px;*/
 }
 
