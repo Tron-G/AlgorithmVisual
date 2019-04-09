@@ -14,6 +14,11 @@ def array_page():
     return render_template('ArrayPage.html')
 
 
+@app.route('/link_page')
+def link_page():
+    return render_template('LinkPage.html')
+
+
 @app.route('/test')
 def test_page():
     return render_template('test.html')
