@@ -83,13 +83,15 @@ function inputWindow() {
         if (animation_data.is_search) {
             if (!animation_data.is_pause) {                      //强制暂停并步进播放一次
                 animation_data.is_pause = true;
+                $("#play_bt").attr("class", "play");
                 animation_data.is_next = true;
-                animation_data.duration = 1000;
+                animation_data.duration = 800;
                 clearAllTimer(animation_data, true);
                 runAnimation(post_data, animation_data);
             } else {                                            // 步进播放
                 animation_data.is_next = true;
-                animation_data.duration = 1000;
+                animation_data.duration = 800;
+                clearAllTimer(animation_data, true);
                 runAnimation(post_data, animation_data);
             }
         }
@@ -428,8 +430,10 @@ function drawProgress(animation_data) {
     if (animation_data.frame.length > 0) {
         rect_length = width / animation_data.frame.length;
     }
-    else
+    else {
         rect_length = 0;
+        $("#play_bt").attr("class", "play");
+    }
     d3.select("#progress")
         .append("svg")
         .attr("id", "progress_svg")

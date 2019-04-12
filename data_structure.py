@@ -57,7 +57,7 @@ class LinkedList(DataStructure):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create()
+            self.__data = self.random_create(10, 999)
         else:
             self.__data = self.input_create(input_list)
         print(self.__data)
@@ -68,14 +68,10 @@ class LinkedList(DataStructure):
 
     # 返回值为target的序号
     def search(self, target):
-        search_data = {}
-        for i in range(len(self.__data)):
-            if self.__data[i] == target:
-                search_data[i] = 1
-            else:
-                search_data[i] = 0
-
-        return search_data
+        if target in self.__data:
+            return self.__data.index(target)
+        else:
+            return -1
 
     # 在序号为index处插入num
     def insert_num(self, index, num):
@@ -292,7 +288,6 @@ class BinaryTree(DataStructure):
                 if top == -1:
                     break
         return result
-
 
 # bt = BinaryTree(['a', 'b', 'c', 'd', -1, 'e', 'f', -1, 'g'])
 # bt = BinaryTree([1,2,3,4,5,-1,-1,-1,6])

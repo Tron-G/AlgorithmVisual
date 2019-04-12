@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import data_structure
 app = Flask(__name__, static_folder='static')
@@ -33,16 +34,14 @@ def array_method():
     if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
         m_array = data_structure.Array()
         data["array_data"] = m_array.get_data()
-        print("rd", data)
+
     elif data["input_tpye"] == 0 and data["operate_type"] == 0:
         data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
-        print("ip", data)
 
     if data["operate_type"] == 1:
         m_array = data_structure.Array(data["array_data"])
         data["search_num"] = int(data["search_num"])
         data["search_pos"] = m_array.search(data["search_num"])
-        print("ss", data)
 
     elif data["operate_type"] == 2:
         m_array = data_structure.Array(data["array_data"])
@@ -53,6 +52,33 @@ def array_method():
 
     return jsonify(data)
 
+
+@app.route('/link_method', methods=['POST', 'GET'])
+def link_method():
+    data = request.get_json()
+
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机链表
+        m_link = data_structure.LinkedList()
+        data["array_data"] = m_link.get_data()
+        print("rd", data)
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+        print("ip", data)
+
+    if data["operate_type"] == 1:                            # 查找
+        m_link = data_structure.LinkedList(data["array_data"])
+        data["search_num"] = int(data["search_num"])
+        data["search_pos"] = m_link.search(data["search_num"])
+        print("ss", data)
+
+    elif data["operate_type"] == 2:                           # 插入
+        m_link = data_structure.LinkedList(data["array_data"])
+        data["insert_pos"] = int(data["insert_pos"])
+        data["insert_num"] = int(data["insert_num"])
+        m_link.insert_num(data["insert_pos"], data["insert_num"])
+        data["array_data"] = m_link.get_data()
+
+    return jsonify(data)
 # =======================前后端数据交互==============================
 
 
