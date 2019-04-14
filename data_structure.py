@@ -7,7 +7,7 @@ class DataStructure:
 
     # 随机生成数据
     def random_create(self, max_len=10, max_num=100):
-        rand_len = random.randrange(4, max_len)
+        rand_len = random.randrange(3, max_len)
         rand_data = []
         for i in range(0, rand_len):
             rand_num = random.randrange(1, max_num)
@@ -107,11 +107,17 @@ class Stack(DataStructure):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create()
+            self.__data = self.random_create(10,999)
         else:
             self.__data = self.input_create(input_list)
         self.__top = len(self.__data) - 1
         print(self.__data)
+
+    def reverse_data(self):
+        temp = []
+        for i in range(0, len(self.__data)):
+            temp.append(self.__data[i])
+        self.__data = temp
 
     # 返回数据
     def get_data(self):
@@ -129,8 +135,10 @@ class Stack(DataStructure):
 
     # 入栈
     def push_num(self, num):
-        self.__data.append(num)
-        self.__top = self.__top + 1
+        temp = [num]
+        for i in range(0, len(self.__data)):
+            temp.append(self.__data[i])
+        self.__data = temp
     pass
 
 

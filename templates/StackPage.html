@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>主页</title>
-    <link rel="stylesheet" href="../static/css/main.css">
+    <title>栈</title>
+    <link rel="stylesheet" href="../static/css/stackpage.css">
     <link rel="stylesheet" href="../static/css/navigation.css">
     <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
-
 </head>
 
 {#导航栏，底部进度条，顶部功能条，主视图#}
@@ -18,7 +17,7 @@
                 <li class="s-firstItem first">
                     <a href="/">
                         <i class="fa fa-home"></i>
-                        <span>AlgorithmVisual</span>
+                        <span>AlgorithmVis</span>
                     </a>
                 </li>
 
@@ -153,16 +152,59 @@
             </ul>
         </div>
     </div>
-    {#  <div id="bottom_toolbar"></div>#}
-    <div id="top_toolbar"></div>
+    <div id="bottom_toolbar">
+         <!--底部功能栏-->
+        <div id= "play_bt" class = "play"></div>{#播放暂停#}
+        <div id="next_bt"></div> {#步进#}
+        <div id="progress"></div> {#进度条#}
+    </div>
+    <div id="top_toolbar">
+        <!--顶部功能栏-->
+    </div>
     <div id="screen">
-        <div id="introduce"></div>
-        <img id="imgs" src="../static/img/intro.png">
+        <div id="input_window">
+            {#输入窗口#}
+            <div id="input_page">
+                <div id="custom_tool">
+                    <span>栈 :</span>
+                    <input type="text" placeholder="例：1,2,3,4,5" class="inputs" id="user_data" value="">
+                    <button class="button" id="submit_bt">创建</button>
+                    <button class="button" id="random_bt">随机</button>
+                    <br>
+                    <span>进栈 :</span>
+                    <input type="text" placeholder="值" class="inputs" id="push_num" value="">
+                    <button class="button" id="push_bt">进栈</button>
+                    <br>
+                    <span>出栈 :</span>
+                    <button class="button" id="pop_bt">出栈</button>
+                    <br>
+                </div>
+            </div>
+            <div id="hide_page">
+                {#隐藏按钮#}
+                <div id="hide_bt1" class = "hide_right"></div>
+            </div>
+        </div>
+        <div id="hint_page">
+            {#解释窗口#}
+            <div id="hint_window"></div>
+            <div id="hint_hide">
+                <div id="hide_bt2" class = "hide_right"></div>
+            </div>
+        </div>
+        <div id="code_page">
+            {#伪代码窗口#}
+            <div id="code_window"></div>
+            <div id="code_hide">
+                <div id="hide_bt3" class = "hide_right"></div>
+            </div>
+        </div>
     </div>
 </div>
 
+
 <script type="text/javascript" src="../static/lib/d3/d3.js"></script>
 <script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="../static/js/homepage.js"></script>
+<script type="text/javascript" src="../static/js/stackpage.js"></script>
 <script type="text/javascript" src="../static/js/navigation.js"></script>
 </html>

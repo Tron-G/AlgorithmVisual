@@ -20,6 +20,9 @@ def link_page():
     return render_template('LinkPage.html')
 
 
+@app.route('/stack_page')
+def stack_page():
+    return render_template('StackPage.html')
 # ====================页面跳转=========================
 
 
@@ -82,6 +85,35 @@ def link_method():
         data["array_data"] = m_link.get_data()
 
     return jsonify(data)
+
+
+@app.route('/stack_method', methods=['POST', 'GET'])
+def stack_method():
+    data = request.get_json()
+
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
+        m_stack = data_structure.Stack()
+        data["array_data"] = m_stack.get_data()
+
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+        m_stack = data_structure.Stack(data["array_data"])
+        m_stack.reverse_data()
+        data["array_data"] = m_stack.get_data()
+
+    if data["operate_type"] == 1:  # 入栈
+        m_stack = data_structure.Stack(data["array_data"])
+        data["push_num"] = int(data["push_num"])
+        m_stack.push_num(data["push_num"])
+        data["array_data"] = m_stack.get_data()
+    if data["operate_type"] == 2:  # 出栈
+        m_stack = data_structure.Stack(data["array_data"])
+        m_stack.pop_num()
+        data["array_data"] = m_stack.get_data()
+
+    return jsonify(data)
+
+
 # =======================前后端数据交互==============================
 
 

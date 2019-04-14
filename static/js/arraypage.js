@@ -18,10 +18,8 @@ function inputWindow() {
             clearAllTimer(animation_data, true);            //清除动画定时器
             clearAllTimer(animation_data, false);           //animation_data初始化
             resetPostData(post_data, 0, result.slice(0));   //slice深拷贝
-
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));   //更新数据包
-            console.log("data", post_data);
             m_svg = drawArray(post_data.array_data);        //主视图绘制
             drawCode(post_data, animation_data, 0, 0);      //伪代码及提示窗口绘制
             drawProgress(animation_data);                   //重置进度条
@@ -32,10 +30,8 @@ function inputWindow() {
         clearAllTimer(animation_data, true);
         clearAllTimer(animation_data, false);
         resetPostData(post_data, 1);
-
         let temp = postData(post_data);
         post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-        console.log("data", post_data);
         m_svg = drawArray(post_data.array_data);
         drawCode(post_data, animation_data, 0, 0);
         drawProgress(animation_data);                       // 进度条重置
@@ -49,12 +45,9 @@ function inputWindow() {
             clearAllTimer(animation_data, false);               //初始化动画数据包
             animation_data.is_search = true;                    //执行查找标志
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 1, result);
-
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("search", post_data);
             m_svg = drawArray(post_data.array_data);            //重绘
-
             drawProgress(animation_data);                       // 进度条重置
             drawCode(post_data, animation_data, 2, 0);
             createAnimation(m_svg, post_data, animation_data); // 查找动画生成
@@ -151,6 +144,7 @@ function clearAllTimer(animation_data, do_clear) {
             "判断是否相等", "不相等,查找下一个,i = ", "未找到", "查找成功,数组下标i = "];
     }
 }
+
 
 /**
  * @description post_data 属性设置

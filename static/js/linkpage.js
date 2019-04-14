@@ -20,12 +20,10 @@ function inputWindow() {
             resetPostData(post_data, 0, result.slice(0));   //slice深拷贝
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));   //更新数据包
-
             resetSvgData(svg_data);
             drawLinkedList(post_data.array_data, svg_data);
             drawCodeOne(post_data, animation_data, 0, 0);
             drawProgress(animation_data, 0);                //重置进度条
-
         }
     });
     ///////////////////////////////--------随机创建--------///////////////////////////////////////
@@ -35,12 +33,10 @@ function inputWindow() {
         resetPostData(post_data, 1);
         let temp = postData(post_data);
         post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-        console.log("data", post_data);
         resetSvgData(svg_data);
         drawLinkedList(post_data.array_data, svg_data);
         drawProgress(animation_data, 0);                //重置进度条
         drawCodeOne(post_data, animation_data, 0, 0);
-
     });
     ///////////////////////////////--------查找功能--------///////////////////////////////////////
     $('#search_bt').click(function () {
@@ -84,15 +80,6 @@ function inputWindow() {
             drawLinkedList(post_data.array_data, svg_data);            //重绘
             drawProgress(animation_data, 0);
             errorWarning(18);
-            result = false;
-        }
-        if (post_data.array_data === null || post_data.array_data.length === 0) {
-            clearAllTimer(animation_data, true);                //清除所有定时器
-            clearAllTimer(animation_data, false);               //初始化动画数据包
-            resetSvgData(svg_data);                                     //重置svg_data
-            drawLinkedList(post_data.array_data, svg_data);            //重绘
-            drawProgress(animation_data, 0);
-            errorWarning(19);
             result = false;
         }
         if (result !== false) {
@@ -347,7 +334,6 @@ function drawLinkedList(array_data, svg_data) {
         .attr("width", svg_data.width)
         .attr("height", svg_data.height);
 
-
     let total_len = (svg_data.circle_radius * 2 + svg_data.arrow_len)
         * (array_data.length - 1) + svg_data.circle_radius * 2; //总长度
     let start_pos = (svg_data.width - total_len) / 2;
@@ -511,72 +497,123 @@ function insertAnimation(svg_data, post_data, animation_data) {
     let temp_frame;
     ///////////////////////////////////头部插入动画 1、新建节点 2、指向头 3、更换头///////////////////////////////
     if (post_data.insert_pos === 0) {
-        temp_frame = function () {
-            svg_data.m_svg.append('g')
-                .attr('class', "g_insert")
-                .append("circle")
-                .attr('class', "insert_node")
-                .attr("cx", svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
-                .attr("cy", svg_data.height / 2 - svg_data.circle_radius)
-                .attr("r", svg_data.circle_radius)
-                .attr("fill", "#a1de93")
-                .attr("stroke", "#6a2c70")
-                .attr("stroke-width", 3);
+        if (post_data.array_data.length === 1) {        //空链表插入
+            temp_frame = function () {
+                svg_data.m_svg.append('g')
+                    .attr('class', "g_insert")
+                    .append("circle")
+                    .attr('class', "insert_node")
+                    .attr("cx", (svg_data.width - 2 * svg_data.circle_radius) / 2)
+                    .attr("cy", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("r", svg_data.circle_radius)
+                    .attr("fill", "#a1de93")
+                    .attr("stroke", "#6a2c70")
+                    .attr("stroke-width", 3);
 
-            svg_data.m_svg.select('.g_insert')                              // 链表数字绘制
-                .append("text")
-                .attr('class', "insert_node")
-                .attr('x', svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
-                .attr('y', svg_data.height / 2 - svg_data.circle_radius)
-                .attr("dx", -svg_data.circle_radius / 2.5)
-                .attr("dy", svg_data.circle_radius / 4)
-                .attr("fill", "#b83b5e")
-                .text(post_data.insert_num);
+                svg_data.m_svg.select('.g_insert')                              // 链表数字绘制
+                    .append("text")
+                    .attr('class', "insert_node")
+                    .attr("x", (svg_data.width - 2 * svg_data.circle_radius) / 2)
+                    .attr('y', svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("dx", -svg_data.circle_radius / 2.5)
+                    .attr("dy", svg_data.circle_radius / 4)
+                    .attr("fill", "#b83b5e")
+                    .text(post_data.insert_num);
 
-            svg_data.m_svg.select('.g_insert')
-                .append("text")
-                .attr('class', "insert_node")
-                .attr("id", "insert_text")
-                .attr('x', svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
-                .attr('y', svg_data.height / 2 - svg_data.circle_radius)
-                .attr("dx", -svg_data.circle_radius)
-                .attr("dy", 2 * svg_data.circle_radius)
-                .attr("fill", "red")
-                .text("insert_vtx");
-        };
-        animation_data.insertframe.push(temp_frame);
-        temp_frame = function () {
-            svg_data.m_svg.select('.g_insert')
-                .append("line")
-                .attr("class", "insert_arrow")
-                .attr("x1", svg_data.circlepos[0] - svg_data.circle_radius - svg_data.arrow_len)
-                .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
-                .attr("x2", svg_data.circlepos[0] - svg_data.circle_radius - svg_data.arrow_len)
-                .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
-                .attr("stroke", "green")
-                .attr("stroke-width", 2)
-                .attr("marker-end", "url(#arrow)")
-                .transition()
-                .duration(animation_data.duration / 2)
-                .attr("x1", svg_data.circlepos[0] - svg_data.circle_radius - svg_data.arrow_len)
-                .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
-                .attr("x2", svg_data.circlepos[0] - svg_data.circle_radius)
-                .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
-        };
-        animation_data.insertframe.push(temp_frame);
-        temp_frame = function () {
-            svg_data.m_svg.select("#head_text").remove();
-            svg_data.m_svg.select("#insert_text").remove();
-            svg_data.m_svg.select(".g_insert")
-                .append("text")
-                .attr('x', svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
-                .attr('y', svg_data.height / 2 - svg_data.circle_radius)
-                .attr("dx", -svg_data.circle_radius)
-                .attr("dy", 2 * svg_data.circle_radius)
-                .attr("fill", "red")
-                .text("head");
-        };
-        animation_data.insertframe.push(temp_frame);
+                svg_data.m_svg.select('.g_insert')
+                    .append("text")
+                    .attr('class', "insert_node")
+                    .attr("id", "insert_text")
+                    .attr("x", (svg_data.width - 2 * svg_data.circle_radius) / 2)
+                    .attr('y', svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .text("insert_vtx");
+            };
+            animation_data.insertframe.push(temp_frame);
+            temp_frame = function () {
+                svg_data.m_svg.select("#insert_text")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", "white");
+
+                svg_data.m_svg.select("#insert_text")
+                    .text("head")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", "red");
+            };
+            animation_data.insertframe.push(temp_frame);
+        }
+        else {
+            temp_frame = function () {
+                svg_data.m_svg.append('g')
+                    .attr('class', "g_insert")
+                    .append("circle")
+                    .attr('class', "insert_node")
+                    .attr("cx", svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
+                    .attr("cy", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("r", svg_data.circle_radius)
+                    .attr("fill", "#a1de93")
+                    .attr("stroke", "#6a2c70")
+                    .attr("stroke-width", 3);
+
+                svg_data.m_svg.select('.g_insert')                              // 链表数字绘制
+                    .append("text")
+                    .attr('class', "insert_node")
+                    .attr('x', svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
+                    .attr('y', svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("dx", -svg_data.circle_radius / 2.5)
+                    .attr("dy", svg_data.circle_radius / 4)
+                    .attr("fill", "#b83b5e")
+                    .text(post_data.insert_num);
+
+                svg_data.m_svg.select('.g_insert')
+                    .append("text")
+                    .attr('class', "insert_node")
+                    .attr("id", "insert_text")
+                    .attr('x', svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
+                    .attr('y', svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .text("insert_vtx");
+            };
+            animation_data.insertframe.push(temp_frame);
+            temp_frame = function () {
+                svg_data.m_svg.select('.g_insert')
+                    .append("line")
+                    .attr("class", "insert_arrow")
+                    .attr("x1", svg_data.circlepos[0] - svg_data.circle_radius - svg_data.arrow_len)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[0] - svg_data.circle_radius - svg_data.arrow_len)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("stroke", "green")
+                    .attr("stroke-width", 2)
+                    .attr("marker-end", "url(#arrow)")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x1", svg_data.circlepos[0] - svg_data.circle_radius - svg_data.arrow_len)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[0] - svg_data.circle_radius)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+            };
+            animation_data.insertframe.push(temp_frame);
+            temp_frame = function () {
+                svg_data.m_svg.select("#head_text").remove();
+                svg_data.m_svg.select("#insert_text").remove();
+                svg_data.m_svg.select(".g_insert")
+                    .append("text")
+                    .attr('x', svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
+                    .attr('y', svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .text("head");
+            };
+            animation_data.insertframe.push(temp_frame);
+        }
         return;
     }
 
@@ -1398,12 +1435,20 @@ function runInsertAnimation(post_data, animation_data) {
 function showInsertCode(post_data, animation_data) {
 
     if (post_data.insert_pos === 0) {
-        if (animation_data.now_step === 0)
-            drawInsertCode(post_data, animation_data, 9, 0);
-        else if (animation_data.now_step === 1)
-            drawInsertCode(post_data, animation_data, 12, 1);
-        else if (animation_data.now_step === 2)
-            drawInsertCode(post_data, animation_data, 13, 2);
+        if (post_data.array_data.length === 1) {
+             if (animation_data.now_step === 0)
+                drawInsertCode(post_data, animation_data, 9, 0);
+            else if (animation_data.now_step === 1)
+                drawInsertCode(post_data, animation_data, 13, 1);
+        }
+        else {
+            if (animation_data.now_step === 0)
+                drawInsertCode(post_data, animation_data, 9, 0);
+            else if (animation_data.now_step === 1)
+                drawInsertCode(post_data, animation_data, 12, 1);
+            else if (animation_data.now_step === 2)
+                drawInsertCode(post_data, animation_data, 13, 2);
+        }
     }
     else if (post_data.insert_pos === (post_data.array_data.length - 1)) {
         if (animation_data.now_step === 0)
@@ -1704,8 +1749,12 @@ function drawCodeOne(post_data, animation_data, word_id, now_step) {
  */
 function drawInsertCode(post_data, animation_data, word_id, now_step) {
     let code_text = [];
-    if (post_data.insert_pos === 0)
-        code_text = ["temp = new Node( ); temp.data = input( );", "temp.next = head", "head = temp"];
+    if (post_data.insert_pos === 0){
+        if (post_data.array_data.length === 1)
+            code_text = ["temp = new Node( ); temp.data = input( );", "head = temp"];
+        else
+            code_text = ["temp = new Node( ); temp.data = input( );", "temp.next = head", "head = temp"];
+    }
     else if (post_data.insert_pos === (post_data.array_data.length - 1))
         code_text = ["temp = new Node( ); temp.data = input( );", "temp.next = tail", "tail = temp"];
     else
@@ -1741,19 +1790,19 @@ function drawInsertCode(post_data, animation_data, word_id, now_step) {
         .attr("fill", "#7f4a88");
 
     for (let index = 0; index < code_text.length; index++) {
-            code_svg.selectAll('g')
-                .append("text")
-                .text(code_text[index])
-                .attr('x', () => {
-                    if (index === 2 && post_data.insert_pos > 0 && post_data.insert_pos < (post_data.array_data.length - 1))
-                        return width / 5;
-                    else
-                        return width / 10;
-                })
-                .attr('y', index * rect_height)
-                .attr('dy', rect_height / 2)
-                .style("font-size", "15px")
-                .attr("fill", "white");
+        code_svg.selectAll('g')
+            .append("text")
+            .text(code_text[index])
+            .attr('x', () => {
+                if (index === 2 && post_data.insert_pos > 0 && post_data.insert_pos < (post_data.array_data.length - 1))
+                    return width / 5;
+                else
+                    return width / 10;
+            })
+            .attr('y', index * rect_height)
+            .attr('dy', rect_height / 2)
+            .style("font-size", "15px")
+            .attr("fill", "white");
     }
     code_svg.selectAll(".code_rect" + now_step)
         .transition()
@@ -1777,7 +1826,7 @@ function drawDeleteCode(post_data, animation_data, word_id, now_step) {
         code_text = ["temp = new Node( ); temp = head;", "head = head.next;", "delete(temp);"];
     else if (post_data.delete_pos === post_data.array_data.length)
         code_text = ["pre = new Node( ); pre = head;", "temp = new Node( ); temp = pre.next;",
-            "while(temp.next != NULL)","pre = pre.next; temp = pre.next;",
+            "while(temp.next != NULL)", "pre = pre.next; temp = pre.next;",
             "pre.next = NULL", "delete(temp); tail = pre;"];
     else
         code_text = ["pre/del/aft = new Node( ); pre = head;", "for(i = 0;i < delete_pos - 1;i++)", "pre = pre.next;",
@@ -2000,9 +2049,6 @@ function errorWarning(error_type) {
             break;
         case 18:
             alert("演示链表最大长度为10，无法继续插入");
-            break;
-        case 19:
-            alert("请保证链表不为空的条件下进行插入操作");
             break;
     }
 }
