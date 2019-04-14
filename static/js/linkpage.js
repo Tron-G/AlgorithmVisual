@@ -4,13 +4,11 @@
 function inputWindow() {
     let post_data = {};                     //向后台传输的数据包
     let svg_data = {};                       //主屏幕svg对象
-
     let animation_data = {};                //动画数据缓存
-    //
+
     resetSvgData(svg_data);
     resetPostData(post_data);                //post_data初始化
     clearAllTimer(animation_data, false);   //animation_data初始化
-
 
     ///////////////////////////////--------手动输入创建--------///////////////////////////////////////
     $('#submit_bt').click(function () {
@@ -48,6 +46,15 @@ function inputWindow() {
     $('#search_bt').click(function () {
         let search_num = $('#search_num').val();
         let result = checkError(post_data, search_num, 2);
+        if (post_data.array_data === null || post_data.array_data.length === 0) {
+            clearAllTimer(animation_data, true);                //清除所有定时器
+            clearAllTimer(animation_data, false);               //初始化动画数据包
+            resetSvgData(svg_data);                                     //重置svg_data
+            drawLinkedList(post_data.array_data, svg_data);            //重绘
+            drawProgress(animation_data, 0);
+            errorWarning(14);
+            result = false;
+        }
         if (result !== false) {
             clearAllTimer(animation_data, true);                //清除所有定时器
             clearAllTimer(animation_data, false);               //初始化动画数据包
@@ -70,38 +77,78 @@ function inputWindow() {
     $('#insert_bt').click(function () {
         let insert_data = $('#insert_num').val();
         let result = checkError(post_data, insert_data, 3);
-        if (result !== false && post_data.array_data.length < 10) {
+        if (post_data.array_data.length >= 10) {                  //链表长度超出范围
+            clearAllTimer(animation_data, true);                //清除所有定时器
+            clearAllTimer(animation_data, false);               //初始化动画数据包
+            resetSvgData(svg_data);                                     //重置svg_data
+            drawLinkedList(post_data.array_data, svg_data);            //重绘
+            drawProgress(animation_data, 0);
+            errorWarning(18);
+            result = false;
+        }
+        if (post_data.array_data === null || post_data.array_data.length === 0) {
+            clearAllTimer(animation_data, true);                //清除所有定时器
+            clearAllTimer(animation_data, false);               //初始化动画数据包
+            resetSvgData(svg_data);                                     //重置svg_data
+            drawLinkedList(post_data.array_data, svg_data);            //重绘
+            drawProgress(animation_data, 0);
+            errorWarning(19);
+            result = false;
+        }
+        if (result !== false) {
             clearAllTimer(animation_data, true);                //清除所有定时器
             clearAllTimer(animation_data, false);               //初始化动画数据包
             animation_data.is_insert = true;                    //执行插入标志
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 2, -1, -1, result[0], result[1]);
-
             resetSvgData(svg_data);                                     //重置svg_data
             drawLinkedList(post_data.array_data, svg_data);            //重绘
             drawProgress(animation_data, 0);
-
-
 
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
             console.log("insert", post_data);
 
-            drawInsertCode(post_data,animation_data,1,0);
+            drawInsertCode(post_data, animation_data, 1, 0);
             insertAnimation(svg_data, post_data, animation_data);
-            // drawLinkedList(post_data.array_data, svg_data);            //重绘
-
         }
-        else if(post_data.array_data.length >= 10)
-            errorWarning(18);
     });
-      ///////////////////////////////--------移除功能--------///////////////////////////////////////
+    ///////////////////////////////--------移除功能--------///////////////////////////////////////
     $('#delete_bt').click(function () {
         let insert_data = $('#delete_num').val();
-        let result = checkError(post_data, insert_data, 3);
+        let result = checkError(post_data, insert_data, 2);
+        if (post_data.array_data === null || post_data.array_data.length === 0) {
+            clearAllTimer(animation_data, true);                //清除所有定时器
+            clearAllTimer(animation_data, false);               //初始化动画数据包
+            resetSvgData(svg_data);                                     //重置svg_data
+            drawLinkedList(post_data.array_data, svg_data);            //重绘
+            drawProgress(animation_data, 0);
+            errorWarning(14);
+            result = false;
+        }
+        else if (result < 0 || result > (post_data.array_data.length - 1)) {
+            clearAllTimer(animation_data, true);                //清除所有定时器
+            clearAllTimer(animation_data, false);               //初始化动画数据包
+            resetSvgData(svg_data);                                     //重置svg_data
+            drawLinkedList(post_data.array_data, svg_data);            //重绘
+            drawProgress(animation_data, 0);
+            errorWarning(16);
+            result = false;
+        }
         if (result !== false) {
+            clearAllTimer(animation_data, true);                //清除所有定时器
+            clearAllTimer(animation_data, false);               //初始化动画数据包
+            animation_data.is_delete = true;                    //执行插入标志
+            resetPostData(post_data, post_data.input_tpye, post_data.array_data, 3, -1, -1, -1, -1, result);
+            resetSvgData(svg_data);                                     //重置svg_data
+            drawLinkedList(post_data.array_data, svg_data);            //重绘
+            drawProgress(animation_data, 0);
 
+            let temp = postData(post_data);
+            post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
+            console.log("delete", post_data);
 
-
+            drawDeleteCode(post_data, animation_data, 1, 0);
+            deleteAnimation(svg_data, post_data, animation_data);
 
         }
     });
@@ -147,9 +194,8 @@ function inputWindow() {
                 animation_data.is_pause = false;
                 $("#play_bt").attr("class", "pause");
                 animation_data.duration = 2000;
-                //runInsertAnimation(post_data, animation_data);
+                runDeleteAnimation(post_data, animation_data);
             }
-
         }
         else
             errorWarning(17);
@@ -185,22 +231,22 @@ function inputWindow() {
             }
         }
         else if (animation_data.is_delete) {                        //移除动画
-            // if (!animation_data.is_pause) {                      //强制暂停并步进播放一次
-            //     animation_data.is_pause = true;
-            //     animation_data.is_next = true;
-            //     animation_data.duration = 500;
-            //     clearAllTimer(animation_data, true);
-            //     runAnimation(post_data, animation_data);
-            // } else {                                            // 步进播放
-            //     animation_data.is_next = true;
-            //     animation_data.duration = 500;
-            //     runAnimation(post_data, animation_data);
-            // }
+            if (!animation_data.is_pause) {                      //强制暂停并步进播放一次
+                animation_data.is_pause = true;
+                $("#play_bt").attr("class", "play");
+                animation_data.is_next = true;
+                animation_data.duration = 800;
+                clearAllTimer(animation_data, true);
+                runDeleteAnimation(post_data, animation_data);
+            } else {                                            // 步进播放
+                animation_data.is_next = true;
+                animation_data.duration = 800;
+                runDeleteAnimation(post_data, animation_data);
+            }
         }
         else
             errorWarning(17);
     });
-
 
 
     hideAnimation();
@@ -209,7 +255,7 @@ function inputWindow() {
 inputWindow();
 
 /**
- * @description svg_data 重置更新
+ * @description svg_data 圆心x坐标重置更新
  * @param {object} svg_data svg相关数据
  */
 function resetSvgData(svg_data) {
@@ -279,7 +325,10 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.explain_words = ["链表创建成功(尾插法)", "请点击开始按钮开始运行算法", "判断数值是否相等",
             "不相等,查找下一个节点", "未找到", "查找成功", "判断是否到达插入点", "未到达，继续前进",
             "到达插入点，储存插入点为aft", "创建新节点", "新节点指向插入点", "原节点指向新节点", "新节点指向头部", "更换头部",
-            "尾部指向新节点", "更换尾部", "插入完成"];
+            "尾部指向新节点", "更换尾部", "插入完成", "保存原头部指针", "头部指针后移", "删除原头部指针", "新建指针pre并指向头部",
+            "新建指针temp保存pre的后继节点", "判断指针temp是否为空", "temp指针不为空,pre和temp指针后移", "temp指针为空,将指针pre的后继置空",
+            "删除temp指针(原尾部)尾部指针置为pre", "判断是否到达移除点", "储存将被删除节点的指针及其后继",
+            "将pre节点的后继指向aft", "删除节点", "移除节点完成"];
     }
 }
 
@@ -619,7 +668,7 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr("dx", -svg_data.circle_radius)
                     .attr("dy", 2 * svg_data.circle_radius)
                     .attr("fill", "red")
-                    .text(index + "/pre");
+                    .text("pre/" + index);
                 // drawProgress(animation_data);       // 进度条
                 if (index >= 1) {
                     svg_data.m_svg.select(".temp_text").remove();
@@ -662,7 +711,7 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr("dx", -svg_data.circle_radius)
                     .attr("dy", 2 * svg_data.circle_radius)
                     .attr("fill", "red")
-                    .text(index + "/aft");
+                    .text("aft/" + index);
 
 
                 svg_data.m_svg.append('g')            //新建节点
@@ -771,6 +820,537 @@ function insertAnimation(svg_data, post_data, animation_data) {
 
 }
 
+/**
+ * @description  移除过程的动画生成函数
+ * @param {object} svg_data 数组数据
+ * @param {object} post_data 数据包
+ * @param {object} animation_data 动画数据包
+ */
+function deleteAnimation(svg_data, post_data, animation_data) {
+    let temp_frame;
+    ///////////////////////////////////移除头部动画 1、获得头部指针 2、头部后移 3、移除原头部///////////////////////////////
+    if (post_data.delete_pos === 0) {
+        temp_frame = function () {
+            svg_data.m_svg.selectAll("#m_circle0")
+                .transition()
+                .duration(animation_data.duration / 2)
+                .attr("fill", "#fab57a")
+                .attr("stroke", "orange");
+
+            svg_data.m_svg.select(".g_circle0")
+                .append("text")
+                .attr("class", "temp_text")
+                .attr("x", svg_data.circlepos[0])
+                .attr("y", svg_data.height / 2)
+                .attr("dx", -svg_data.circle_radius)
+                .attr("dy", 2 * svg_data.circle_radius)
+                .attr("fill", "red")
+                .text("temp");
+        };
+        animation_data.deleteframe.push(temp_frame);
+
+        temp_frame = function () {
+            svg_data.m_svg.select(".g_arrow0")
+                .append("line")
+                .attr("class", "temp_arrow")
+                .attr("x1", svg_data.circlepos[0] + svg_data.circle_radius)
+                .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                .attr("x2", svg_data.circlepos[0] + svg_data.circle_radius)
+                .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                .attr("stroke", "green")
+                .attr("stroke-width", 2)
+                .attr("marker-end", "url(#arrow)")
+                .transition()
+                .duration(animation_data.duration / 2)
+                .attr("x1", svg_data.circlepos[0] + svg_data.circle_radius)
+                .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                .attr("x2", svg_data.circlepos[0] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
+
+            svg_data.m_svg.select("#m_circle1")
+                .transition()
+                .duration(animation_data.duration / 2)
+                .attr("fill", "#a1de93")
+                .attr("stroke", "#a1de93");
+
+            svg_data.m_svg.select("#head_text").remove();
+
+            svg_data.m_svg.select(".g_circle1")
+                .append("text")
+                .attr("class", "m_node1")
+                .attr("id", "head_text")
+                .attr("x", svg_data.circlepos[1])
+                .attr("y", svg_data.height / 2)
+                .attr("dx", -svg_data.circle_radius)
+                .attr("dy", svg_data.circle_radius)
+                .attr("fill", "red")
+                .text("head");
+        };
+        animation_data.deleteframe.push(temp_frame);
+
+        temp_frame = function () {
+            svg_data.m_svg.selectAll(".g_circle0").remove();
+            svg_data.m_svg.select(".temp_text").remove();
+            svg_data.m_svg.selectAll(".g_arrow0").remove();
+        };
+        animation_data.deleteframe.push(temp_frame);
+        return;
+    }
+
+    ///////////////////////////////////移除尾部动画/////////////////////////////////////
+    else if (post_data.delete_pos === post_data.array_data.length) {
+        for (let index = 0; index <= post_data.array_data.length; index++) {
+            if (index === 0) {                            //头结点
+                temp_frame = function () {
+                    svg_data.m_svg.select("#m_circle" + index)
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("fill", "orange")
+                        .attr("stroke", "#fab57a");
+
+                    svg_data.m_svg.select(".g_circle" + index)
+                        .append("text")
+                        .attr("class", "pre_text")
+                        .attr("x", svg_data.circlepos[index])
+                        .attr("y", svg_data.height / 2)
+                        .attr("dx", -svg_data.circle_radius)
+                        .attr("dy", 2 * svg_data.circle_radius)
+                        .attr("fill", "red")
+                        .text("pre/" + index);
+                };
+                animation_data.deleteframe.push(temp_frame);
+
+                temp_frame = function () {                 //保存后继节点
+                    svg_data.m_svg.select("#m_circle" + (index + 1))
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("fill", "#a1de93")
+                        .attr("stroke", "#a1de93");
+
+                    svg_data.m_svg.select(".g_circle" + (index + 1))
+                        .append("text")
+                        .attr("class", "temp_text")
+                        .attr("x", svg_data.circlepos[index + 1])
+                        .attr("y", svg_data.height / 2)
+                        .attr("dx", -svg_data.circle_radius)
+                        .attr("dy", 2 * svg_data.circle_radius)
+                        .attr("fill", "red")
+                        .text("temp");
+
+                    svg_data.m_svg.select(".g_arrow0")
+                        .append("line")
+                        .attr("x1", svg_data.circlepos[0] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[0] + svg_data.circle_radius)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("stroke", "orange")
+                        .attr("stroke-width", 2)
+                        .attr("marker-end", "url(#arrow)")
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("x1", svg_data.circlepos[0] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[0] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
+
+                };
+                animation_data.deleteframe.push(temp_frame);
+            }
+            else if (index === post_data.array_data.length) {     //尾节点动画
+                temp_frame = function () {
+                    svg_data.m_svg.selectAll(".g_arrow" + (index - 1)).remove();
+                };
+                animation_data.deleteframe.push(temp_frame);
+
+                temp_frame = function () {
+                    svg_data.m_svg.selectAll(".g_circle" + index).remove();
+                    svg_data.m_svg.select(".pre_text").remove();
+
+                    svg_data.m_svg.select("#m_circle" + (index - 1))
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("fill", "#a1de93")
+                        .attr("stroke", "#a1de93");
+
+                    svg_data.m_svg.select(".g_circle" + (index - 1))
+                        .append("text")
+                        .attr("x", svg_data.circlepos[index - 1])
+                        .attr("y", svg_data.height / 2)
+                        .attr("dx", -svg_data.circle_radius / 2)
+                        .attr("dy", svg_data.circle_radius)
+                        .attr("fill", "red")
+                        .text("tail");
+                };
+                animation_data.deleteframe.push(temp_frame);
+
+            }
+            else {                                      //中间查找
+                temp_frame = function () {
+                    svg_data.m_svg.selectAll(".pre_text").remove();
+                    svg_data.m_svg.selectAll(".temp_text").remove();
+
+                    svg_data.m_svg.select("#m_circle" + (index - 1))
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("fill", "white")
+                        .attr("stroke", "orange");
+
+                    svg_data.m_svg.select("#m_circle" + index)
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("fill", "orange")
+                        .attr("stroke", "#fab57a");
+
+                    svg_data.m_svg.select(".g_circle" + index)
+                        .append("text")
+                        .attr("class", "pre_text")
+                        .attr("x", svg_data.circlepos[index])
+                        .attr("y", svg_data.height / 2)
+                        .attr("dx", -svg_data.circle_radius)
+                        .attr("dy", 2 * svg_data.circle_radius)
+                        .attr("fill", "red")
+                        .text("pre/" + index);
+
+                    svg_data.m_svg.select(".g_arrow" + (index - 1))
+                        .append("line")
+                        .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("stroke", "orange")
+                        .attr("stroke-width", 2)
+                        .attr("marker-end", "url(#arrow)")
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[index - 1] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
+
+
+                    svg_data.m_svg.select("#m_circle" + (index + 1))
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("fill", "#a1de93")
+                        .attr("stroke", "#a1de93");
+
+                    svg_data.m_svg.select(".g_circle" + (index + 1))
+                        .append("text")
+                        .attr("class", "temp_text")
+                        .attr("x", svg_data.circlepos[index + 1])
+                        .attr("y", svg_data.height / 2)
+                        .attr("dx", -svg_data.circle_radius)
+                        .attr("dy", 2 * svg_data.circle_radius)
+                        .attr("fill", "red")
+                        .text("temp");
+
+                    svg_data.m_svg.select(".g_arrow" + index)
+                        .append("line")
+                        .attr("x1", svg_data.circlepos[index] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[index] + svg_data.circle_radius)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("stroke", "#a1de93")
+                        .attr("stroke-width", 2)
+                        .attr("marker-end", "url(#arrow)")
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("x1", svg_data.circlepos[index] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[index] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
+                };
+                animation_data.deleteframe.push(temp_frame);
+            }
+        }
+        return;
+    }
+
+    for (let index = 0; index < post_data.array_data.length; index++) {
+        //////////////////////////////////移除中间节点动画 1、查找目标位置 2、移除动画//////////////////////////////////
+        if (index < post_data.delete_pos) {
+            temp_frame = function () {                   //查找目标节点
+                svg_data.m_svg.selectAll("#m_circle" + index)
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", "#fab57a")
+                    .attr("stroke", "orange");
+                svg_data.m_svg.select(".g_circle" + index)
+                    .append("text")
+                    .attr("id", "pre_text")
+                    .attr("x", svg_data.circlepos[index])
+                    .attr("y", svg_data.height / 2)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .text("pre/" + index);
+
+                if (index >= 1) {
+                    svg_data.m_svg.select("#pre_text").remove();
+                    svg_data.m_svg.select("#m_circle" + (index - 1))
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("fill", "white");
+                    svg_data.m_svg.select(".g_arrow" + (index - 1))
+                        .append("line")
+                        .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("stroke", "orange")
+                        .attr("stroke-width", 2)
+                        .attr("marker-end", "url(#arrow)")
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                        .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                        .attr("x2", svg_data.circlepos[index - 1] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                        .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                }
+            };
+            animation_data.deleteframe.push(temp_frame);
+        }
+        //////////////////////移除动画 1、选中当前及后继 2、前驱指向当前后继 3、移除 4、归位//////////////////////////
+        else if (index === post_data.delete_pos) {
+            temp_frame = function () {                      //新建节点
+                svg_data.m_svg.select("#m_circle" + index)  //选中当前节点
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", "#393e46")
+                    .attr("stroke", "#393e46");
+                svg_data.m_svg.select(".g_circle" + index)
+                    .append("text")
+                    .attr("class", "m_node" + index)
+                    .attr("id", "del_text")
+                    .attr("x", svg_data.circlepos[index])
+                    .attr("y", svg_data.height / 2)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .text("del/" + index);
+
+                svg_data.m_svg.select(".g_arrow" + (index - 1))  //前驱箭头
+                    .append("line")
+                    .attr("id", "pre_arrow")
+                    .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("stroke", "orange")
+                    .attr("stroke-width", 2)
+                    .attr("marker-end", "url(#arrow)")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[index - 1] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
+
+                svg_data.m_svg.select("#m_circle" + (index + 1))  //选中下一个节点
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", "#a1de93")
+                    .attr("stroke", "#a1de93");
+                svg_data.m_svg.select(".g_circle" + (index + 1))
+                    .append("text")
+                    .attr("id", "aft_text")
+                    .attr("x", svg_data.circlepos[index + 1])
+                    .attr("y", svg_data.height / 2)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .text("aft/" + (index + 1));
+
+                svg_data.m_svg.select(".g_arrow" + index)    //后继箭头
+                    .append("line")
+                    .attr("id", "temp_arrow")
+                    .attr("x1", svg_data.circlepos[index] + svg_data.circle_radius)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[index] + svg_data.circle_radius)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("stroke", "red")
+                    .attr("stroke-width", 2)
+                    .attr("marker-end", "url(#arrow)")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x1", svg_data.circlepos[index] + svg_data.circle_radius)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[index] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
+
+            };
+            animation_data.deleteframe.push(temp_frame);
+
+            temp_frame = function () {              //更换节点后继,当前节点下移
+                svg_data.m_svg.select(".circle_arrow" + (index - 1)).remove(); //移除底层箭头
+                svg_data.m_svg.select(".circle_arrow" + index).remove();
+
+                svg_data.m_svg.selectAll(".m_node" + index)  //选中当前节点下移
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("cy", svg_data.height / 2 + svg_data.arrow_len)
+                    .attr("y", svg_data.height / 2 + svg_data.arrow_len);
+
+                svg_data.m_svg.select("#temp_arrow")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x1", svg_data.circlepos[index] + svg_data.circle_radius - 4)
+                    .attr("y1", svg_data.height / 2 + svg_data.arrow_len - 15)
+                    .attr("x2", svg_data.circlepos[index] + svg_data.circle_radius + svg_data.arrow_len)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius + 13);
+
+                svg_data.m_svg.select("#pre_arrow").remove();
+                svg_data.m_svg.select(".g_arrow" + (index - 1))
+                    .append("line")
+                    .attr("class", "circle_arrow" + (index - 1))
+                    .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("stroke", "orange")
+                    .attr("stroke-width", 2)
+                    .attr("marker-end", "url(#arrow)")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x1", svg_data.circlepos[index - 1] + svg_data.circle_radius)
+                    .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[index + 1] - svg_data.circle_radius - 6)
+                    .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
+
+            };
+            animation_data.deleteframe.push(temp_frame);
+
+            temp_frame = function () {              //移除节点
+                svg_data.m_svg.selectAll(".g_circle" + index).remove();
+                svg_data.m_svg.selectAll(".g_arrow" + index).remove();
+                svg_data.m_svg.select("#pre_text").remove();
+                svg_data.m_svg.select("#aft_text").remove();
+
+            };
+            animation_data.deleteframe.push(temp_frame);
+
+            temp_frame = function () {              //所有节点返回指定位置
+
+                svg_data.m_svg.select(".circle_arrow" + (index - 1))
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x2", svg_data.circlepos[index] - svg_data.circle_radius);
+
+                for (let j = (post_data.delete_pos + 1); j <= post_data.array_data.length; j++) {
+                    svg_data.m_svg.selectAll(".m_node" + j)
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("cx", svg_data.circlepos[j] - 2 * svg_data.circle_radius - svg_data.arrow_len)
+                        .attr("x", svg_data.circlepos[j] - 2 * svg_data.circle_radius - svg_data.arrow_len);
+
+                    svg_data.m_svg.selectAll(".circle_arrow" + j)
+                        .transition()
+                        .duration(animation_data.duration / 2)
+                        .attr("x1", svg_data.circlepos[j] - svg_data.circle_radius - svg_data.arrow_len)
+                        .attr("x2", svg_data.circlepos[j] - svg_data.circle_radius)
+                }
+            };
+            animation_data.deleteframe.push(temp_frame);
+        }
+        else
+            break;
+    }
+
+
+}
+
+
+/**
+ * @description   (Delete) 移除过程的动画运行函数
+ * @param {object} post_data
+ * @param {object} animation_data 动画数据包
+ */
+function runDeleteAnimation(post_data, animation_data) {
+    let timer = setTimeout(() => {
+        if (animation_data.is_next && animation_data.now_step < animation_data.deleteframe.length) {   //步进执行
+            drawProgress(animation_data, animation_data.deleteframe.length);
+            animation_data.deleteframe[animation_data.now_step]();        //执行主视图动画
+            showDeleteCode(post_data, animation_data);                     //伪代码及提示展示
+            console.log("正在播放第:" + animation_data.now_step + "帧");
+            animation_data.now_step++;
+            animation_data.is_next = false;
+            runDeleteAnimation(post_data, animation_data);
+        }
+        else {                                              //自动执行
+            if (animation_data.now_step > animation_data.deleteframe.length - 1) {
+                console.log("end", animation_data.now_step);
+                animation_data.is_pause = true;
+                $("#play_bt").attr("class", "play");         //切换播放图标
+                // alert("结束");
+                return;
+            }
+            else if (animation_data.is_pause) {
+                return;
+            }
+            drawProgress(animation_data, animation_data.deleteframe.length);
+            showDeleteCode(post_data, animation_data);
+            animation_data.deleteframe[animation_data.now_step]();
+            animation_data.now_step++;
+            console.log("正在播放第:" + animation_data.now_step + "帧");
+            runDeleteAnimation(post_data, animation_data);
+        }
+    }, animation_data.duration);
+    animation_data.all_timer.push(timer);                   // 计时器缓存
+}
+
+
+/**
+ * @description   移除过程的伪代码及提示展示函数
+ * @param {object} post_data
+ * @param {object} animation_data 动画数据包
+ */
+function showDeleteCode(post_data, animation_data) {
+    if (post_data.delete_pos === 0) {                               //移除头部提示框
+        if (animation_data.now_step === 0)
+            drawDeleteCode(post_data, animation_data, 17, 0);
+        else if (animation_data.now_step === 1)
+            drawDeleteCode(post_data, animation_data, 18, 1);
+        else if (animation_data.now_step === 2)
+            drawDeleteCode(post_data, animation_data, 19, 2);
+    }
+    else if (post_data.delete_pos === post_data.array_data.length) {    //移除尾部提示框
+        if (animation_data.now_step === 0)
+            drawDeleteCode(post_data, animation_data, 20, 0);
+        else if (animation_data.now_step === 1)
+            drawDeleteCode(post_data, animation_data, 21, 1);
+        else if (animation_data.now_step === (animation_data.deleteframe.length - 2))
+            drawDeleteCode(post_data, animation_data, 24, 4);
+        else if (animation_data.now_step === (animation_data.deleteframe.length - 1))
+            drawDeleteCode(post_data, animation_data, 25, 5);
+        else {
+            drawDeleteCode(post_data, animation_data, 22, 2);       //判断相等
+            let temp_timer = setTimeout(() => {
+                drawDeleteCode(post_data, animation_data, 23, 3);          //下一个
+            }, animation_data.duration / 2);
+            animation_data.all_timer.push(temp_timer);              // 计时器缓存
+        }
+    }
+    else {
+        if (animation_data.now_step === 0)
+            drawDeleteCode(post_data, animation_data, 20, 0);
+        else if (animation_data.now_step === (animation_data.deleteframe.length - 4))
+            drawDeleteCode(post_data, animation_data, 27, 3);
+        else if (animation_data.now_step === (animation_data.deleteframe.length - 3))
+            drawDeleteCode(post_data, animation_data, 28, 4);
+        else if (animation_data.now_step === (animation_data.deleteframe.length - 2))
+            drawDeleteCode(post_data, animation_data, 29, 5);
+        else if (animation_data.now_step === (animation_data.deleteframe.length - 1))
+            drawDeleteCode(post_data, animation_data, 30, 5);
+        else if (0 < animation_data.now_step < (animation_data.deleteframe.length - 1)) {
+            drawDeleteCode(post_data, animation_data, 26, 1);       //判断相等
+            let temp_timer = setTimeout(() => {
+                drawDeleteCode(post_data, animation_data, 7, 2);          //下一个
+            }, animation_data.duration / 2);
+            animation_data.all_timer.push(temp_timer);              // 计时器缓存
+        }
+    }
+}
+
 
 /**
  * @description   (Insert) 插入过程的动画运行函数
@@ -782,45 +1362,7 @@ function runInsertAnimation(post_data, animation_data) {
         if (animation_data.is_next && animation_data.now_step < animation_data.insertframe.length) {   //步进执行
             drawProgress(animation_data, animation_data.insertframe.length);
             animation_data.insertframe[animation_data.now_step]();        //执行主视图动画
-            if (post_data.insert_pos === 0) {
-                if (animation_data.now_step === 0)
-                    drawInsertCode(post_data, animation_data, 9, 0);
-                else if (animation_data.now_step === 1)
-                    drawInsertCode(post_data, animation_data, 12, 1);
-                else if (animation_data.now_step === 2)
-                    drawInsertCode(post_data, animation_data, 13, 2);
-            }
-            else if (post_data.insert_pos === (post_data.array_data.length - 1)) {
-                if (animation_data.now_step === 0)
-                    drawInsertCode(post_data, animation_data, 9, 0);
-                else if (animation_data.now_step === 1)
-                    drawInsertCode(post_data, animation_data, 14, 1);
-                else if (animation_data.now_step === 2)
-                    drawInsertCode(post_data, animation_data, 15, 2);
-            }
-            else {
-                if (animation_data.now_step < animation_data.insertframe.length - 4) {
-                    drawInsertCode(post_data, animation_data, 6, 1);       //判断相等
-                    let temp_timer = setTimeout(() => {
-                        drawInsertCode(post_data, animation_data, 7, 2);          //下一个
-                    }, animation_data.duration / 2);
-                    animation_data.all_timer.push(temp_timer);              // 计时器缓存
-                }
-                else if(animation_data.now_step === animation_data.insertframe.length - 4){
-                    drawInsertCode(post_data, animation_data, 8, 3);
-                    let temp_timer = setTimeout(() => {
-                        drawInsertCode(post_data, animation_data, 9, 4);          //下一个
-                    }, animation_data.duration / 2);
-                    animation_data.all_timer.push(temp_timer);              // 计时器缓存
-                }
-                else if(animation_data.now_step === animation_data.insertframe.length - 3)
-                    drawInsertCode(post_data, animation_data, 10, 5);
-                else if(animation_data.now_step === animation_data.insertframe.length - 2)
-                    drawInsertCode(post_data, animation_data, 11, 6);
-                else if(animation_data.now_step === animation_data.insertframe.length - 1)
-                    drawInsertCode(post_data, animation_data, 16, 6);
-
-            }
+            showInsertCode(post_data, animation_data);
             console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
@@ -837,54 +1379,68 @@ function runInsertAnimation(post_data, animation_data) {
             else if (animation_data.is_pause) {
                 return;
             }
+            drawProgress(animation_data, animation_data.insertframe.length);
+            showInsertCode(post_data, animation_data);
             animation_data.insertframe[animation_data.now_step]();
             console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
-            drawProgress(animation_data, animation_data.insertframe.length);
-
-            if (post_data.insert_pos === 0) {
-                if (animation_data.now_step === 0)
-                    drawInsertCode(post_data, animation_data, 9, 0);
-                else if (animation_data.now_step === 1)
-                    drawInsertCode(post_data, animation_data, 12, 1);
-                else if (animation_data.now_step === 2)
-                    drawInsertCode(post_data, animation_data, 13, 2);
-            }
-            else if (post_data.insert_pos === (post_data.array_data.length - 1)) {
-                if (animation_data.now_step === 0)
-                    drawInsertCode(post_data, animation_data, 9, 0);
-                else if (animation_data.now_step === 1)
-                    drawInsertCode(post_data, animation_data, 14, 1);
-                else if (animation_data.now_step === 2)
-                    drawInsertCode(post_data, animation_data, 15, 2);
-            }
-            else {
-                if (animation_data.now_step < animation_data.insertframe.length - 4) {
-                    drawInsertCode(post_data, animation_data, 6, 1);       //判断相等
-                    let temp_timer = setTimeout(() => {
-                        drawInsertCode(post_data, animation_data, 7, 2);          //下一个
-                    }, animation_data.duration / 2);
-                    animation_data.all_timer.push(temp_timer);              // 计时器缓存
-                }
-                else if(animation_data.now_step === animation_data.insertframe.length - 4){
-                    drawInsertCode(post_data, animation_data, 8, 3);
-                    let temp_timer = setTimeout(() => {
-                        drawInsertCode(post_data, animation_data, 9, 4);          //下一个
-                    }, animation_data.duration / 2);
-                    animation_data.all_timer.push(temp_timer);              // 计时器缓存
-                }
-                else if(animation_data.now_step === animation_data.insertframe.length - 3)
-                    drawInsertCode(post_data, animation_data, 10, 5);
-                else if(animation_data.now_step === animation_data.insertframe.length - 2)
-                    drawInsertCode(post_data, animation_data, 11, 6);
-                else if(animation_data.now_step === animation_data.insertframe.length - 1)
-                    drawInsertCode(post_data, animation_data, 16, 6);
-            }
             runInsertAnimation(post_data, animation_data);
         }
     }, animation_data.duration);
     animation_data.all_timer.push(timer);                   // 计时器缓存
 }
+
+/**
+ * @description   插入过程的伪代码及提示展示函数
+ * @param {object} post_data
+ * @param {object} animation_data 动画数据包
+ */
+function showInsertCode(post_data, animation_data) {
+
+    if (post_data.insert_pos === 0) {
+        if (animation_data.now_step === 0)
+            drawInsertCode(post_data, animation_data, 9, 0);
+        else if (animation_data.now_step === 1)
+            drawInsertCode(post_data, animation_data, 12, 1);
+        else if (animation_data.now_step === 2)
+            drawInsertCode(post_data, animation_data, 13, 2);
+    }
+    else if (post_data.insert_pos === (post_data.array_data.length - 1)) {
+        if (animation_data.now_step === 0)
+            drawInsertCode(post_data, animation_data, 9, 0);
+        else if (animation_data.now_step === 1)
+            drawInsertCode(post_data, animation_data, 14, 1);
+        else if (animation_data.now_step === 2)
+            drawInsertCode(post_data, animation_data, 15, 2);
+    }
+    else {
+        if (animation_data.now_step === 0)
+            drawInsertCode(post_data, animation_data, 20, 0);
+        else if (animation_data.now_step < animation_data.insertframe.length - 4) {
+            drawInsertCode(post_data, animation_data, 6, 1);       //判断相等
+            let temp_timer = setTimeout(() => {
+                drawInsertCode(post_data, animation_data, 7, 2);          //下一个
+            }, animation_data.duration / 2);
+            animation_data.all_timer.push(temp_timer);              // 计时器缓存
+        }
+        else if (animation_data.now_step === animation_data.insertframe.length - 4) {
+            drawInsertCode(post_data, animation_data, 8, 3);
+            let temp_timer = setTimeout(() => {
+                drawInsertCode(post_data, animation_data, 9, 4);          //下一个
+            }, animation_data.duration / 2);
+            animation_data.all_timer.push(temp_timer);              // 计时器缓存
+        }
+        else if (animation_data.now_step === animation_data.insertframe.length - 3)
+            drawInsertCode(post_data, animation_data, 10, 5);
+        else if (animation_data.now_step === animation_data.insertframe.length - 2)
+            drawInsertCode(post_data, animation_data, 11, 6);
+        else if (animation_data.now_step === animation_data.insertframe.length - 1)
+            drawInsertCode(post_data, animation_data, 16, 6);
+
+    }
+
+}
+
 
 /**
  * @description  (Search) 查找过程的动画运行函数
@@ -952,7 +1508,7 @@ function runSearchAnimation(post_data, animation_data) {
  * @param {number} frame_len 总帧数，0表示清空
  */
 function drawProgress(animation_data, frame_len) {
-    if(frame_len === 0)
+    if (frame_len === 0)
         $("#play_bt").attr("class", "play");
     d3.select("#progress_svg").remove();
     let screen = $("#progress");
@@ -1002,7 +1558,7 @@ function hintAnimation(post_data, animation_data, word_id) {
         .attr("width", width)
         .attr("height", height);
     svg.append("text")
-        .attr('x', width / 10)
+        .attr('x', width / 12)
         .attr('y', height / 2)
         .attr("dy", height / 9)
         .attr("fill", "#5c2626")
@@ -1185,40 +1741,11 @@ function drawInsertCode(post_data, animation_data, word_id, now_step) {
         .attr("fill", "#7f4a88");
 
     for (let index = 0; index < code_text.length; index++) {
-        let temp = code_text[index].split(",");
-        if (temp.length > 1) {
-            let text = code_svg.selectAll("g")
-                .append("text")
-                .attr("font-size", "15px")
-                .attr("fill", "white")
-                .attr('x', () => {
-                    if (index === 2)
-                        return width / 5;
-                    else
-                        return width / 10;
-                })
-                .attr('y', index * rect_height);
-            text.selectAll("tspan")
-                .data(temp)
-                .enter()
-                .append("tspan")
-                .attr("x", (d, i) => {
-                    if (i > 0)
-                        return 2 * text.attr("x");
-                    else
-                        return text.attr("x");
-                })
-                .attr("dy", rect_height / 3.5)
-                .text(function (d) {
-                    return d
-                })
-        }
-        else {
             code_svg.selectAll('g')
                 .append("text")
                 .text(code_text[index])
                 .attr('x', () => {
-                    if (index === 2)
+                    if (index === 2 && post_data.insert_pos > 0 && post_data.insert_pos < (post_data.array_data.length - 1))
                         return width / 5;
                     else
                         return width / 10;
@@ -1227,7 +1754,6 @@ function drawInsertCode(post_data, animation_data, word_id, now_step) {
                 .attr('dy', rect_height / 2)
                 .style("font-size", "15px")
                 .attr("fill", "white");
-        }
     }
     code_svg.selectAll(".code_rect" + now_step)
         .transition()
@@ -1238,6 +1764,78 @@ function drawInsertCode(post_data, animation_data, word_id, now_step) {
 
 }
 
+/**
+ * @description  移除算法窗口绘制
+ * @param {Object}  post_data
+ * @param {Object}  animation_data
+ * @param {number}  word_id 解释文字所在数组(animation_data.explain_words[])下标
+ * @param {number}  now_step 当前选中的代码块
+ */
+function drawDeleteCode(post_data, animation_data, word_id, now_step) {
+    let code_text = [];
+    if (post_data.delete_pos === 0)
+        code_text = ["temp = new Node( ); temp = head;", "head = head.next;", "delete(temp);"];
+    else if (post_data.delete_pos === post_data.array_data.length)
+        code_text = ["pre = new Node( ); pre = head;", "temp = new Node( ); temp = pre.next;",
+            "while(temp.next != NULL)","pre = pre.next; temp = pre.next;",
+            "pre.next = NULL", "delete(temp); tail = pre;"];
+    else
+        code_text = ["pre/del/aft = new Node( ); pre = head;", "for(i = 0;i < delete_pos - 1;i++)", "pre = pre.next;",
+            "del = pre.next;  aft = del.next", "pre.next = aft",
+            "delete(del);"];
+
+    d3.select("#code_svg").remove();
+    let screen = $("#code_window");
+    let width = screen.width();
+    let height = screen.height();
+    let rect_height = height / code_text.length;
+
+    let code_svg = d3.select("#code_window")
+        .append("svg")
+        .attr("id", "code_svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    code_svg.selectAll("rect")
+        .data(code_text)
+        .enter()
+        .append("g")
+        .append("rect")
+        .attr("class", (d, i) => {
+            return "code_rect" + i;
+        })
+        .attr('x', 0)
+        .attr('y', (d, i) => {
+            return i * rect_height;
+        })
+        .attr("width", width)
+        .attr("height", rect_height)
+        .attr("fill", "#7f4a88");
+
+    for (let index = 0; index < code_text.length; index++) {
+        code_svg.selectAll('g')
+            .append("text")
+            .text(code_text[index])
+            .attr('x', () => {
+                if (index === 2 && post_data.delete_pos > 0 && post_data.delete_pos < post_data.array_data.length
+                    || index === 3 && post_data.delete_pos === post_data.array_data.length)
+                    return width / 5;
+                else
+                    return width / 10;
+            })
+            .attr('y', index * rect_height)
+            .attr('dy', rect_height / 2)
+            .style("font-size", "15px")
+            .attr("fill", "white");
+    }
+    code_svg.selectAll(".code_rect" + now_step)
+        .transition()
+        .duration(500)
+        .attr("fill", "#ca82f8");
+
+    hintAnimation(post_data, animation_data, word_id); // 提示窗口动画
+
+}
 
 /**
  * @description 像后台传输数据
@@ -1392,7 +1990,7 @@ function errorWarning(error_type) {
             alert("输先输入链表");
             break;
         case 15:
-            alert("位置和修改值不能超过一组数");
+            alert("位置和修改值只能为一组数");
             break;
         case 16:
             alert("输入位置超出范围");
@@ -1402,6 +2000,9 @@ function errorWarning(error_type) {
             break;
         case 18:
             alert("演示链表最大长度为10，无法继续插入");
+            break;
+        case 19:
+            alert("请保证链表不为空的条件下进行插入操作");
             break;
     }
 }

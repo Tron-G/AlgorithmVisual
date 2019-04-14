@@ -20,9 +20,6 @@ def link_page():
     return render_template('LinkPage.html')
 
 
-@app.route('/test')
-def test_page():
-    return render_template('test.html')
 # ====================页面跳转=========================
 
 
@@ -76,6 +73,12 @@ def link_method():
         data["insert_pos"] = int(data["insert_pos"])
         data["insert_num"] = int(data["insert_num"])
         m_link.insert_num(data["insert_pos"], data["insert_num"])
+        data["array_data"] = m_link.get_data()
+
+    elif data["operate_type"] == 3:                           # 移除
+        m_link = data_structure.LinkedList(data["array_data"])
+        data["delete_pos"] = int(data["delete_pos"])
+        m_link.delete_num(data["delete_pos"])
         data["array_data"] = m_link.get_data()
 
     return jsonify(data)
