@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>链表</title>
-    <link rel="stylesheet" href="../static/css/linkpage.css">
+    <title>队列</title>
+    <link rel="stylesheet" href="../static/css/queuepage.css">
     <link rel="stylesheet" href="../static/css/navigation.css">
     <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
 </head>
@@ -166,22 +166,17 @@
             {#输入窗口#}
             <div id="input_page">
                 <div id="custom_tool">
-                    <span>链表 :</span>
+                    <span>队列 :</span>
                     <input type="text" placeholder="例：1,2,3,4,5" class="inputs" id="user_data" value="">
                     <button class="button" id="submit_bt">创建</button>
                     <button class="button" id="random_bt">随机</button>
                     <br>
-                    <span>查找 :</span>
-                    <input type="text" placeholder="想要查找的数" class="inputs" id="search_num" value="">
-                    <button class="button" id="search_bt">查找</button>
+                    <span>入队 :</span>
+                    <input type="text" placeholder="值" class="inputs" id="enqueue_num" value="">
+                    <button class="button" id="enqueue_bt">入队</button>
                     <br>
-                    <span>插入 :</span>
-                    <input type="text" placeholder="位置,值" class="inputs" id="insert_num" value="">
-                    <button class="button" id="insert_bt">插入</button>
-                    <br>
-                    <span>移除 :</span>
-                    <input type="text" placeholder="位置" class="inputs" id="delete_num" value="">
-                    <button class="button" id="delete_bt">移除</button>
+                    <span>出队 :</span>
+                    <button class="button" id="dequeue_bt">出队</button>
                     <br>
                 </div>
             </div>
@@ -210,6 +205,6 @@
 
 <script type="text/javascript" src="../static/lib/d3/d3.js"></script>
 <script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="../static/js/linkpage.js"></script>
+<script type="text/javascript" src="../static/js/queuepage.js"></script>
 <script type="text/javascript" src="../static/js/navigation.js"></script>
 </html>

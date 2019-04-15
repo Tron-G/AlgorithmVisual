@@ -1,0 +1,254 @@
+html body {
+    margin: 0;
+    color: #FFFFFF;
+    background-color: pink;
+}
+
+#main {
+    background-color: pink;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#top_toolbar {
+    position: absolute;
+    background: whitesmoke;
+    top: 0;
+    left: 15%;
+    width: 85%;
+    height: 5%;
+}
+
+#bottom_toolbar {
+    position: absolute;
+    background: #323232;
+    bottom: 0;
+    left: 15%;
+    width: 85%;
+    height: 5%;
+}
+
+#play_bt {
+    position: absolute;
+    background-size:100%;
+    background-repeat: no-repeat;
+    top: 20%;
+    left: 10%;
+    width: 2%;
+    height: 60%;
+}
+.play{
+    background-image: url(../img/play.png);
+}
+.pause{
+    background-image: url(../img/pause.png);
+}
+
+#next_bt {
+    position: absolute;
+    background: url(../img/next.png) no-repeat;
+    background-size: 100%;
+    top: 20%;
+    left: 15%;
+    width: 2%;
+    height: 60%;
+}
+
+#progress {
+    position: absolute;
+    background: lightgray;
+    top: 40%;
+    left: 22%;
+    width: 50%;
+    height: 20%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progress svg{
+    position: absolute;
+}
+#screen {
+    position: absolute;
+    background: #FFFFFF;
+    font-weight: bold;
+    font-size: 20px;
+    top: 5%;
+    left: 15%;
+    width: 85%;
+    height: 90%;
+}
+
+#input_window {
+    position: absolute;
+    top: 1%;
+    right: 0;
+    width: 25%;
+    height: 15%;
+}
+
+/*输入窗口*/
+#input_page {
+    position: absolute;
+    background: #7c7575;
+    width: 85%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow:auto;
+}
+
+/*输入控件*/
+#custom_tool {
+    position: absolute;
+    top: 15%;
+    left: 10%;
+}
+
+#hide_page {
+    position: absolute;
+    width: 15%;
+    height: 100%;
+    right: 0;
+    background: #524c4c;
+}
+
+/*隐藏按钮*/
+#hide_bt1 {
+    position: absolute;
+    width: 40%;
+    height: 20%;
+    top: 40%;
+    left: 30%;
+    background-size:100%;
+    background-repeat: no-repeat;
+}
+.hide_right{
+     background-image: url(../img/right.png);
+}
+.hide_left{
+    background-image: url(../img/left.png);
+}
+#hide_bt1:hover {
+    position: absolute;
+    width: 60%;
+    height: 30%;
+    top: 35%;
+    left: 20%;
+}
+
+/*输入文本框*/
+.inputs {
+    width: 30%;
+}
+
+/*按钮*/
+.button {
+    background-color: #34495e;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 3px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 5px;
+}
+
+/*提示窗口*/
+#hint_page {
+    position: absolute;
+    bottom: 29%;
+    right: 0;
+    width: 23%;
+    height: 8%;
+}
+
+#hint_window {
+    position: absolute;
+    background: #aacfd0;
+    font-weight: bold;
+    font-family: "KaiTi", serif;
+    font-size: 18px;
+    left: 0;
+    top: 0;
+    width: 85%;
+    height: 100%;
+}
+
+#hint_hide {
+    position: absolute;
+    background: #79a8a9;
+    right: 0;
+    top: 0;
+    width: 15%;
+    height: 100%;
+}
+
+#hide_bt2 {
+    position: absolute;
+    width: 30%;
+    height: 25%;
+    top: 37%;
+    left: 35%;
+    background-size:100%;
+    background-repeat: no-repeat;
+}
+
+#hide_bt2:hover {
+    position: absolute;
+    width: 55%;
+    height: 50%;
+    top: 25%;
+    left: 22%;
+}
+
+/*算法窗口*/
+#code_page {
+    position: absolute;
+    bottom: 1%;
+    right: 0;
+    width: 23%;
+    height: 27%;
+}
+
+#code_window {
+    position: absolute;
+    background: #7f4a88;
+    font: italic 2em Georgia, serif;
+    font-weight: normal;
+    left: 0;
+    top: 0;
+    width: 85%;
+    height: 100%;
+}
+
+#code_hide {
+    position: absolute;
+    background: #4a266a;
+    right: 0;
+    top: 0;
+    width: 15%;
+    height: 100%;
+}
+
+#hide_bt3 {
+    position: absolute;
+    width: 50%;
+    height: 13%;
+    top: 45%;
+    left: 25%;
+    background-size:100%;
+    background-repeat: no-repeat;
+}
+
+#hide_bt3:hover {
+    position: absolute;
+    width: 70%;
+    height: 18%;
+    top: 41%;
+    left: 15%;
+}

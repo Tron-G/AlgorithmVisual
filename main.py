@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import data_structure
+
 app = Flask(__name__, static_folder='static')
 
 
@@ -23,6 +24,13 @@ def link_page():
 @app.route('/stack_page')
 def stack_page():
     return render_template('StackPage.html')
+
+
+@app.route('/queue_page')
+def queue_page():
+    return render_template('QueuePage.html')
+
+
 # ====================页面跳转=========================
 
 
@@ -65,20 +73,20 @@ def link_method():
         data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
         print("ip", data)
 
-    if data["operate_type"] == 1:                            # 查找
+    if data["operate_type"] == 1:  # 查找
         m_link = data_structure.LinkedList(data["array_data"])
         data["search_num"] = int(data["search_num"])
         data["search_pos"] = m_link.search(data["search_num"])
         print("ss", data)
 
-    elif data["operate_type"] == 2:                           # 插入
+    elif data["operate_type"] == 2:  # 插入
         m_link = data_structure.LinkedList(data["array_data"])
         data["insert_pos"] = int(data["insert_pos"])
         data["insert_num"] = int(data["insert_num"])
         m_link.insert_num(data["insert_pos"], data["insert_num"])
         data["array_data"] = m_link.get_data()
 
-    elif data["operate_type"] == 3:                           # 移除
+    elif data["operate_type"] == 3:  # 移除
         m_link = data_structure.LinkedList(data["array_data"])
         data["delete_pos"] = int(data["delete_pos"])
         m_link.delete_num(data["delete_pos"])
@@ -110,6 +118,30 @@ def stack_method():
         m_stack = data_structure.Stack(data["array_data"])
         m_stack.pop_num()
         data["array_data"] = m_stack.get_data()
+
+    return jsonify(data)
+
+
+@app.route('/queue_method', methods=['POST', 'GET'])
+def queue_method():
+    data = request.get_json()
+
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
+        m_queue = data_structure.Queue()
+        data["array_data"] = m_queue.get_data()
+
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+
+    if data["operate_type"] == 1:  # 入队
+        m_queue = data_structure.Queue(data["array_data"])
+        data["enqueue_num"] = int(data["enqueue_num"])
+        m_queue.en_queue(data["enqueue_num"])
+        data["array_data"] = m_queue.get_data()
+    if data["operate_type"] == 2:  # 出队
+        m_queue = data_structure.Queue(data["array_data"])
+        m_queue.de_queue()
+        data["array_data"] = m_queue.get_data()
 
     return jsonify(data)
 

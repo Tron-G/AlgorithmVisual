@@ -312,7 +312,7 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.explain_words = ["链表创建成功(尾插法)", "请点击开始按钮开始运行算法", "判断数值是否相等",
             "不相等,查找下一个节点", "未找到", "查找成功", "判断是否到达插入点", "未到达，继续前进",
             "到达插入点，储存插入点为aft", "创建新节点", "新节点指向插入点", "原节点指向新节点", "新节点指向头部", "更换头部",
-            "尾部指向新节点", "更换尾部", "插入完成", "保存原头部指针", "头部指针后移", "删除原头部指针", "新建指针pre并指向头部",
+            "尾部指向新节点", "更换尾部", "插入完成", "保存原头部指针", "头部指针后移", "删除原头部指针", "新建指针pre/del/aft,pre指向头部",
             "新建指针temp保存pre的后继节点", "判断指针temp是否为空", "temp指针不为空,pre和temp指针后移", "temp指针为空,将指针pre的后继置空",
             "删除temp指针(原尾部)尾部指针置为pre", "判断是否到达移除点", "储存将被删除节点的指针及其后继",
             "将pre节点的后继指向aft", "删除节点", "移除节点完成"];
@@ -505,10 +505,14 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('class', "insert_node")
                     .attr("cx", (svg_data.width - 2 * svg_data.circle_radius) / 2)
                     .attr("cy", svg_data.height / 2 - svg_data.circle_radius)
-                    .attr("r", svg_data.circle_radius)
+                    .attr("r", 0)
                     .attr("fill", "#a1de93")
                     .attr("stroke", "#6a2c70")
-                    .attr("stroke-width", 3);
+                    .attr("stroke-width", 3)
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("r", svg_data.circle_radius);
+
 
                 svg_data.m_svg.select('.g_insert')                              // 链表数字绘制
                     .append("text")
@@ -517,8 +521,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                     .attr("dx", -svg_data.circle_radius / 2.5)
                     .attr("dy", svg_data.circle_radius / 4)
-                    .attr("fill", "#b83b5e")
-                    .text(post_data.insert_num);
+                    .attr("fill", "white")
+                    .text(post_data.insert_num)
+                    .transition()
+                    .duration(animation_data.duration)
+                    .attr("fill", "#b83b5e");
 
                 svg_data.m_svg.select('.g_insert')
                     .append("text")
@@ -528,20 +535,24 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                     .attr("dx", -svg_data.circle_radius)
                     .attr("dy", 2 * svg_data.circle_radius)
-                    .attr("fill", "red")
-                    .text("insert_vtx");
+                    .attr("fill", "white")
+                    .text("insert_vtx")
+                    .transition()
+                    .duration(animation_data.duration)
+                    .attr("fill", "#b83b5e");
             };
             animation_data.insertframe.push(temp_frame);
             temp_frame = function () {
                 svg_data.m_svg.select("#insert_text")
                     .transition()
-                    .duration(animation_data.duration / 2)
+                    .duration(animation_data.duration)
                     .attr("fill", "white");
 
                 svg_data.m_svg.select("#insert_text")
                     .text("head")
+                    .attr("fill", "white")
                     .transition()
-                    .duration(animation_data.duration / 2)
+                    .duration(animation_data.duration)
                     .attr("fill", "red");
             };
             animation_data.insertframe.push(temp_frame);
@@ -554,10 +565,13 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('class', "insert_node")
                     .attr("cx", svg_data.circlepos[0] - 2 * svg_data.circle_radius - svg_data.arrow_len)
                     .attr("cy", svg_data.height / 2 - svg_data.circle_radius)
-                    .attr("r", svg_data.circle_radius)
+                    .attr("r", 0)
                     .attr("fill", "#a1de93")
                     .attr("stroke", "#6a2c70")
-                    .attr("stroke-width", 3);
+                    .attr("stroke-width", 3)
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("r", svg_data.circle_radius);
 
                 svg_data.m_svg.select('.g_insert')                              // 链表数字绘制
                     .append("text")
@@ -566,8 +580,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                     .attr("dx", -svg_data.circle_radius / 2.5)
                     .attr("dy", svg_data.circle_radius / 4)
-                    .attr("fill", "#b83b5e")
-                    .text(post_data.insert_num);
+                    .attr("fill", "white")
+                    .text(post_data.insert_num)
+                    .transition()
+                    .duration(animation_data.duration)
+                    .attr("fill", "#b83b5e");
 
                 svg_data.m_svg.select('.g_insert')
                     .append("text")
@@ -577,8 +594,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                     .attr("dx", -svg_data.circle_radius)
                     .attr("dy", 2 * svg_data.circle_radius)
-                    .attr("fill", "red")
-                    .text("insert_vtx");
+                    .attr("fill", "white")
+                    .text("insert_vtx")
+                    .transition()
+                    .duration(animation_data.duration)
+                    .attr("fill", "#b83b5e");
             };
             animation_data.insertframe.push(temp_frame);
             temp_frame = function () {
@@ -609,8 +629,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                     .attr("dx", -svg_data.circle_radius)
                     .attr("dy", 2 * svg_data.circle_radius)
-                    .attr("fill", "red")
-                    .text("head");
+                    .attr("fill", "white")
+                    .text("head")
+                    .transition()
+                    .duration(animation_data.duration)
+                    .attr("fill", "red");
             };
             animation_data.insertframe.push(temp_frame);
         }
@@ -626,10 +649,13 @@ function insertAnimation(svg_data, post_data, animation_data) {
                 .attr('class', "insert_node")
                 .attr("cx", svg_data.circlepos[post_data.array_data.length - 2] + 2 * svg_data.circle_radius + svg_data.arrow_len)
                 .attr("cy", svg_data.height / 2 - svg_data.circle_radius)
-                .attr("r", svg_data.circle_radius)
+                .attr("r", 0)
                 .attr("fill", "#a1de93")
                 .attr("stroke", "#6a2c70")
-                .attr("stroke-width", 3);
+                .attr("stroke-width", 3)
+                .transition()
+                .duration(animation_data.duration / 2)
+                .attr("r", svg_data.circle_radius);
 
             svg_data.m_svg.select('.g_insert')                              // 链表数字绘制
                 .append("text")
@@ -638,8 +664,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                 .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                 .attr("dx", -svg_data.circle_radius / 2.5)
                 .attr("dy", svg_data.circle_radius / 4)
-                .attr("fill", "#b83b5e")
-                .text(post_data.insert_num);
+                .attr("fill", "white")
+                .text(post_data.insert_num)
+                .transition()
+                .duration(animation_data.duration)
+                .attr("fill", "#b83b5e");
 
             svg_data.m_svg.select('.g_insert')
                 .append("text")
@@ -649,8 +678,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                 .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                 .attr("dx", -svg_data.circle_radius)
                 .attr("dy", 2 * svg_data.circle_radius)
-                .attr("fill", "red")
-                .text("insert_vtx");
+                .attr("fill", "white")
+                .text("insert_vtx")
+                .transition()
+                .duration(animation_data.duration)
+                .attr("fill", "red");
         };
         animation_data.insertframe.push(temp_frame);
         temp_frame = function () {
@@ -665,7 +697,7 @@ function insertAnimation(svg_data, post_data, animation_data) {
                 .attr("stroke-width", 2)
                 .attr("marker-end", "url(#arrow)")
                 .transition()
-                .duration(animation_data.duration / 2)
+                .duration(animation_data.duration)
                 .attr("x1", svg_data.circlepos[post_data.array_data.length - 2] + svg_data.circle_radius)
                 .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
                 .attr("x2", svg_data.circlepos[post_data.array_data.length - 2] + svg_data.circle_radius + svg_data.arrow_len)
@@ -681,8 +713,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                 .attr('y', svg_data.height / 2 - svg_data.circle_radius)
                 .attr("dx", -svg_data.circle_radius / 2)
                 .attr("dy", 2 * svg_data.circle_radius)
-                .attr("fill", "red")
-                .text("tail");
+                .attr("fill", "white")
+                .text("tail")
+                .transition()
+                .duration(animation_data.duration)
+                .attr("fill", "red");
         };
         animation_data.insertframe.push(temp_frame);
         return;
@@ -750,17 +785,19 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr("fill", "red")
                     .text("aft/" + index);
 
-
                 svg_data.m_svg.append('g')            //新建节点
                     .attr('class', "g_insert")
                     .append("circle")
                     .attr('class', "insert_node")
                     .attr("cx", svg_data.circlepos[index])
                     .attr("cy", svg_data.height / 2 + svg_data.circle_radius + svg_data.arrow_len)
-                    .attr("r", svg_data.circle_radius)
+                    .attr("r", 0)
                     .attr("fill", "#a1de93")
                     .attr("stroke", "#a1de93")
-                    .attr("stroke-width", 3);
+                    .attr("stroke-width", 3)
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("r", svg_data.circle_radius);
 
                 svg_data.m_svg.select('.g_insert')                              // 链表数字绘制
                     .append("text")
@@ -769,8 +806,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('y', svg_data.height / 2 + svg_data.circle_radius + svg_data.arrow_len)
                     .attr("dx", -svg_data.circle_radius / 2.5)
                     .attr("dy", svg_data.circle_radius / 4)
-                    .attr("fill", "#b83b5e")
-                    .text(post_data.insert_num);
+                    .attr("fill", "white")
+                    .text(post_data.insert_num)
+                    .transition()
+                    .duration(animation_data.duration)
+                    .attr("fill", "#b83b5e");
 
                 svg_data.m_svg.select('.g_insert')
                     .append("text")
@@ -779,8 +819,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr('y', svg_data.height / 2 + svg_data.circle_radius + svg_data.arrow_len)
                     .attr("dx", -svg_data.circle_radius)
                     .attr("dy", svg_data.circle_radius * 2)
-                    .attr("fill", "red")
-                    .text("insert_vtx");
+                    .attr("fill", "white")
+                    .text("insert_vtx")
+                    .transition()
+                    .duration(animation_data.duration)
+                    .attr("fill", "red");
 
             };
             animation_data.insertframe.push(temp_frame);
@@ -847,7 +890,11 @@ function insertAnimation(svg_data, post_data, animation_data) {
                     .attr("x2", svg_data.circlepos[index] + svg_data.circle_radius + svg_data.arrow_len)
                     .attr("y2", svg_data.height / 2 - svg_data.circle_radius);
 
-                svg_data.m_svg.selectAll(".temp_text").remove();
+                svg_data.m_svg.selectAll(".temp_text")
+                    .transition()
+                    .duration(animation_data.duration / 5)
+                    .attr("fill", "white");
+
             };
             animation_data.insertframe.push(temp_frame);
         }

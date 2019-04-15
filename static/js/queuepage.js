@@ -21,7 +21,7 @@ function inputWindow() {
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));   //更新数据包
             resetSvgData(svg_data);
-            drawStack(post_data.array_data, svg_data);
+            drawQueue(post_data.array_data, svg_data);
             drawProgress(animation_data, 0);
             drawCode(post_data, animation_data, 0, 0);
         }
@@ -34,20 +34,20 @@ function inputWindow() {
         let temp = postData(post_data);
         post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
         resetSvgData(svg_data);
-        drawStack(post_data.array_data, svg_data);
+        drawQueue(post_data.array_data, svg_data);
         drawProgress(animation_data, 0);                //重置进度条
         drawCode(post_data, animation_data, 0, 0);
 
     });
-    ///////////////////////////////--------入栈功能--------///////////////////////////////////////
-    $('#push_bt').click(function () {
-        let push_num = $('#push_num').val();
-        let result = checkError(post_data, push_num, 2);
-        if(post_data.array_data.length === 10){
+    ///////////////////////////////--------入队功能--------///////////////////////////////////////
+    $('#enqueue_bt').click(function () {
+        let enqueue_num = $('#enqueue_num').val();
+        let result = checkError(post_data, enqueue_num, 2);
+        if (post_data.array_data.length === 15) {
             clearAllTimer(animation_data, true);                //清除所有定时器
             clearAllTimer(animation_data, false);               //初始化动画数据包
             resetSvgData(svg_data);                                     //重置svg_data
-            drawStack(post_data.array_data, svg_data);            //重绘
+            drawQueue(post_data.array_data, svg_data);            //重绘
             drawProgress(animation_data, 0);
             errorWarning(16);
             result = false;
@@ -55,28 +55,27 @@ function inputWindow() {
         if (result !== false) {
             clearAllTimer(animation_data, true);                //清除所有定时器
             clearAllTimer(animation_data, false);               //初始化动画数据包
-            animation_data.is_push = true;                    //执行入栈标志
+            animation_data.is_enqueue = true;                    //执行入队标志
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 1, result);
             resetSvgData(svg_data);
-            drawStack(post_data.array_data, svg_data);
+            drawQueue(post_data.array_data, svg_data);
             drawProgress(animation_data, 0);               //重置进度条
-
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            // console.log("push", post_data);
-            drawCode(post_data, animation_data, 5, 0);
-            pushAnimation(svg_data, post_data, animation_data)
+            // console.log("enqueue", post_data);
+            drawCode(post_data, animation_data, 1, 0);
+            enqueueAnimation(svg_data, post_data, animation_data)
 
         }
     });
-    ///////////////////////////////--------出栈功能--------///////////////////////////////////////
-    $('#pop_bt').click(function () {
+    ///////////////////////////////--------出队功能--------///////////////////////////////////////
+    $('#dequeue_bt').click(function () {
         let result = true;
         if (post_data.array_data === null || post_data.array_data.length === 0) {
             clearAllTimer(animation_data, true);                //清除所有定时器
             clearAllTimer(animation_data, false);               //初始化动画数据包
             resetSvgData(svg_data);                                     //重置svg_data
-            drawStack(post_data.array_data, svg_data);            //重绘
+            drawQueue(post_data.array_data, svg_data);            //重绘
             drawProgress(animation_data, 0);
             errorWarning(14);
             result = false;
@@ -84,24 +83,23 @@ function inputWindow() {
         if (result !== false) {
             clearAllTimer(animation_data, true);                //清除所有定时器
             clearAllTimer(animation_data, false);               //初始化动画数据包
-            animation_data.is_pop = true;                    //执行出栈标志
+            animation_data.is_dequeue = true;                    //执行出队标志
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 2);
             resetSvgData(svg_data);                                     //重置svg_data
-            drawStack(post_data.array_data, svg_data);            //重绘
+            drawQueue(post_data.array_data, svg_data);            //重绘
             drawProgress(animation_data, 0);
 
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
             // console.log("pop", post_data);
-
-            drawCode(post_data, animation_data, 5, 0);
-            popAnimation(svg_data, post_data, animation_data)
+            drawCode(post_data, animation_data, 1, 0);
+            dequeueAnimation(svg_data, post_data, animation_data)
         }
     });
 
     // ///////////////////////////////--------播放暂停功能--------////////////////////////////////////
     $("#play_bt").click(function () {
-        if (animation_data.is_push) {                         //入栈动画
+        if (animation_data.is_enqueue) {                         //入队动画
             if (!animation_data.is_pause) {                     //暂停
                 animation_data.is_pause = true;
                 // console.log("pause", animation_data.now_step);
@@ -111,11 +109,11 @@ function inputWindow() {
             else {
                 animation_data.is_pause = false;
                 $("#play_bt").attr("class", "pause");
-                animation_data.duration = 2000;
-                runPushAnimation(post_data, animation_data);
+                animation_data.duration = 1500;
+                runEnqueueAnimation(post_data, animation_data);
             }
         }
-        else if (animation_data.is_pop) {                         //出栈动画
+        else if (animation_data.is_dequeue) {                         //出队动画
             if (!animation_data.is_pause) {
                 animation_data.is_pause = true;
                 // console.log("pause", animation_data.now_step);
@@ -125,55 +123,53 @@ function inputWindow() {
             else {
                 animation_data.is_pause = false;
                 $("#play_bt").attr("class", "pause");
-                animation_data.duration = 2000;
-                runPopAnimation(post_data, animation_data);
+                animation_data.duration = 1500;
+                runDequeueAnimation(post_data, animation_data);
             }
         }
         else
-            errorWarning(17);
+            errorWarning(15);
     });
     // ///////////////////////////////--------步进功能--------////////////////////////////////////
     $('#next_bt').click(function () {
-        if (animation_data.is_push) {                        //入栈动画
+        if (animation_data.is_enqueue) {                        //入队动画
             if (!animation_data.is_pause) {                      //强制暂停并步进播放一次
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");
                 animation_data.is_next = true;
                 animation_data.duration = 1000;
                 clearAllTimer(animation_data, true);
-                runPushAnimation(post_data, animation_data);
+                runEnqueueAnimation(post_data, animation_data);
             } else {                                            // 步进播放
                 animation_data.is_next = true;
                 animation_data.duration = 1000;
-                runPushAnimation(post_data, animation_data);
+                runEnqueueAnimation(post_data, animation_data);
             }
         }
-        else if (animation_data.is_pop) {                        //出栈动画
+        else if (animation_data.is_dequeue) {                        //出队动画
             if (!animation_data.is_pause) {                      //强制暂停并步进播放一次
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");
                 animation_data.is_next = true;
                 animation_data.duration = 1000;
                 clearAllTimer(animation_data, true);
-                runPopAnimation(post_data, animation_data);
+                runDequeueAnimation(post_data, animation_data);
             } else {                                            // 步进播放
                 animation_data.is_next = true;
                 animation_data.duration = 1000;
-                runPopAnimation(post_data, animation_data);
+                runDequeueAnimation(post_data, animation_data);
             }
         }
         else
-            errorWarning(17);
+            errorWarning(15);
     });
-
-
     hideAnimation();
 }
 
 inputWindow();
 
 /**
- * @description svg_data 矩形y坐标重置更新
+ * @description svg_data 矩形x坐标重置更新
  * @param {object} svg_data svg相关数据
  */
 function resetSvgData(svg_data) {
@@ -181,7 +177,7 @@ function resetSvgData(svg_data) {
     let width = screen.width();
     let height = screen.height();
     svg_data.m_svg = null;
-    svg_data.rect_y = [];        //矩形y坐标
+    svg_data.rect_x = [];        //矩形x坐标
     svg_data.width = width;
     svg_data.height = height;
     svg_data.rect_len = 70;        //矩形长度
@@ -192,15 +188,15 @@ function resetSvgData(svg_data) {
  * @param {object} post_data 数据包
  * @param {number} input_tpye 数据生成方式，0默认为手动输入，1为随机
  * @param {object} array_data 保存链表值
- * @param {number} operate_type 进行的操作类型，0：无，1：进栈，2：出栈
- * @param {number} push_num 要入栈的数值
+ * @param {number} operate_type 进行的操作类型，0：无，1：入队，2：出队
+ * @param {number} enqueue_num 要入队的数值
  */
 function resetPostData(post_data, input_tpye = 0, array_data = null, operate_type = 0,
-                       push_num = -1) {
+                       enqueue_num = -1) {
     post_data.input_tpye = input_tpye;
     post_data.array_data = array_data;
     post_data.operate_type = operate_type;
-    post_data.push_num = push_num;
+    post_data.enqueue_num = enqueue_num;
 }
 
 
@@ -222,22 +218,23 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.all_timer = [];      //定时器缓存器
         animation_data.now_step = 0;        //当前执行动画的index
         animation_data.is_pause = true;     //暂停标记，默认暂停
-        animation_data.pushframe = [];     //入栈动画函数缓存器
-        animation_data.popframe = [];     //出栈动画函数缓存器
-        animation_data.duration = 1500;     //动画时间基数
-        animation_data.is_push = false;   //是否执行入栈标记
-        animation_data.is_pop = false;   //是否执行出栈标记
-        animation_data.explain_words = ["栈创建完成", "栈顶指针上移", "栈顶元素赋值", "栈顶元素置空", "栈顶指针下移", "请点击开始按钮开始运行算法"];
+        animation_data.enqueueframe = [];     //入队动画函数缓存器
+        animation_data.dequeueframe = [];     //出队动画函数缓存器
+        animation_data.duration = 1500;       //动画时间基数
+        animation_data.is_enqueue = false;   //是否执行入队标记
+        animation_data.is_dequeue = false;   //是否执行出队标记
+        animation_data.explain_words = ["队列创建完成", "请点击开始按钮开始运行算法", "当前数字入队",
+            "队尾指针后移", "队首数字出队", "队首指针后移"];
     }
 }
+
 
 /**
  * @description 主视图数组绘制
  * @param {Array} array_data 数组数据
  * @param svg_data
- * @return {object} svg svg对象
  */
-function drawStack(array_data, svg_data) {
+function drawQueue(array_data, svg_data) {
     d3.select("#screen_svg").remove();
 
     let svg = d3.select("#screen")
@@ -246,265 +243,299 @@ function drawStack(array_data, svg_data) {
         .attr("width", svg_data.width)
         .attr("height", svg_data.height);
 
-
     let total_len = svg_data.rect_len * array_data.length;  //总长度
-    let start_pos = (svg_data.height - total_len) / 2;
+    let start_pos = (svg_data.width - total_len) / 2;
 
-    svg.selectAll("rect")                           // 矩形绘制
-        .data(array_data)
-        .enter()
-        .append('g')
-        .attr('class', function (d, i) {
-            return "g_rect" + i;
-        })
-        .append("rect")
-        .attr('class', function (d, i) {
-            return "m_rect" + i;
-        })
-        .attr('id', function (d, i) {
-            return "m_rect" + i;
-        })
-        .attr("x", svg_data.width / 2)
-        .attr("y", function (d, i) {
-            svg_data.rect_y.push(start_pos + i * svg_data.rect_len);
-            return start_pos + i * svg_data.rect_len;
-        })
-        .attr("width", svg_data.rect_len)
-        .attr("height", svg_data.rect_len)
-        .attr("fill", "white")
-        .attr("stroke", "#006633")
-        .attr("stroke-width", 3);
+    if (array_data.length === 0) {
+        svg.append("g")
+            .attr("class", "g_rear")
+            .append("rect")
+            .attr("class", "rear_rect")
+            .attr("id", "rear_rect")
+            .attr("x", () => {
+                svg_data.rect_x.push(start_pos);
+                return start_pos;
+            })
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("width", svg_data.rect_len)
+            .attr("height", svg_data.rect_len)
+            .attr("fill", "white")
+            .attr("stroke", "#003399")
+            .attr("stroke-width", 3);
 
-    svg.selectAll('g')                              // 栈数字绘制
-        .append("text")
-        .attr('class', function (d, i) {
-            return "m_rect" + i;
-        })
-        .attr("x", svg_data.width / 2)
-        .attr("y", function (d, i) {
-            svg_data.rect_y.push(start_pos + i * svg_data.rect_len);
-            return start_pos + i * svg_data.rect_len;
-        })
-        .attr("dx", svg_data.rect_len / 4.5)
-        .attr("dy", svg_data.rect_len / 1.5)
-        .attr("fill", "#663300")
-        .text(function (d) {
-            return d;
-        });
+        svg.select(".g_rear")
+            .append("text")
+            .attr("class", "rear_text")
+            .attr("x", start_pos)
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("dx", svg_data.rect_len / 10)
+            .attr("dy", svg_data.rect_len * 1.5)
+            .attr("fill", "red")
+            .text("rear");
 
-    svg.select(".g_rect0")
-        .append("text")
-        .attr("class", "top_text")
-        .attr("x", svg_data.width / 2)
-        .attr("y", svg_data.rect_y[0])
-        .attr("dx", -svg_data.rect_len)
-        .attr("dy", svg_data.rect_len / 1.5)
-        .attr("fill", "red")
-        .text("top->");
+        svg.select(".g_rear")
+            .append("text")
+            .attr("class", "front_text")
+            .attr("x", start_pos)
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("dx", svg_data.rect_len / 10)
+            .attr("dy", svg_data.rect_len * 2)
+            .attr("fill", "red")
+            .text("front");
+    }
+    else {
+        svg.selectAll("rect")                           // 矩形绘制
+            .data(array_data)
+            .enter()
+            .append('g')
+            .attr('class', function (d, i) {
+                return "g_rect" + i;
+            })
+            .append("rect")
+            .attr('class', function (d, i) {
+                return "m_rect" + i;
+            })
+            .attr('id', function (d, i) {
+                return "m_rect" + i;
+            })
+            .attr("x", function (d, i) {
+                svg_data.rect_x.push(start_pos + i * svg_data.rect_len);
+                return start_pos + i * svg_data.rect_len;
+            })
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("width", svg_data.rect_len)
+            .attr("height", svg_data.rect_len)
+            .attr("fill", "white")
+            .attr("stroke", "#003399")
+            .attr("stroke-width", 3);
 
+        svg.selectAll('g')                              // 数字绘制
+            .append("text")
+            .attr('class', function (d, i) {
+                return "m_rect" + i;
+            })
+            .attr('id', function (d, i) {
+                return "rect_text" + i;
+            })
+            .attr("x", function (d, i) {
+                svg_data.rect_x.push(start_pos + i * svg_data.rect_len);
+                return start_pos + i * svg_data.rect_len;
+            })
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("dx", svg_data.rect_len / 4.5)
+            .attr("dy", svg_data.rect_len / 1.5)
+            .attr("fill", "#333333")
+            .text(function (d) {
+                return d;
+            });
+
+        svg.append("g")
+            .attr("class", "g_rear")
+            .append("rect")
+            .attr("class", "rear_rect")
+            .attr("id", "rear_rect")
+            .attr("x", svg_data.rect_x[svg_data.rect_x.length - 1] + svg_data.rect_len)
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("width", svg_data.rect_len)
+            .attr("height", svg_data.rect_len)
+            .attr("fill", "white")
+            .attr("stroke", "#003399")
+            .attr("stroke-width", 3);
+
+        svg.select(".g_rear")
+            .append("text")
+            .attr("class", "rear_text")
+            .attr("x", svg_data.rect_x[svg_data.rect_x.length - 1] + svg_data.rect_len)
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("dx", svg_data.rect_len / 10)
+            .attr("dy", svg_data.rect_len * 1.5)
+            .attr("fill", "red")
+            .text("rear");
+
+        svg.select(".g_rect0")
+            .append("text")
+            .attr("class", "front_text")
+            .attr("x", svg_data.rect_x[0])
+            .attr("y", svg_data.height / 2 - svg_data.rect_len)
+            .attr("dx", svg_data.rect_len / 10)
+            .attr("dy", svg_data.rect_len * 1.5)
+            .attr("fill", "red")
+            .text("front");
+    }
     svg_data.m_svg = svg;
 }
 
 
 /**
- * @description 入栈过程的动画生成函数
+ * @description 入队过程的动画生成函数
  * @param {object} svg_data 数组数据
  * @param {object} post_data 数据包
  * @param {object} animation_data 动画数据包
  */
-function pushAnimation(svg_data, post_data, animation_data) {
+function enqueueAnimation(svg_data, post_data, animation_data) {
     let temp_frame;
     if (post_data.array_data.length === 1) {
         temp_frame = function () {
-            svg_data.m_svg.append("g")
-                .attr("class", "g_push")
-                .append("text")
-                .attr("class", "top_text")
-                .attr("x", svg_data.width / 2)
-                .attr("y", svg_data.height / 2)
-                .attr("dx", -svg_data.rect_len)
-                .attr("dy", svg_data.rect_len / 1.5)
-                .attr("fill", "white")
-                .text("top->")
+            svg_data.m_svg.select("#rear_rect")
                 .transition()
                 .duration(animation_data.duration)
-                .attr("fill", "red");
+                .attr("fill", "#3ec1d3");
+            svg_data.m_svg.select(".g_rear")
+                .append("text")
+                .attr("x", svg_data.rect_x[0])
+                .attr("y", svg_data.height / 2 - svg_data.rect_len)
+                .attr("dx", svg_data.rect_len / 4.5)
+                .attr("dy", svg_data.rect_len / 1.5)
+                .attr("fill", "white")
+                .text(post_data.enqueue_num)
+                .transition()
+                .duration(animation_data.duration)
+                .attr("fill", "#333333");
         };
-        animation_data.pushframe.push(temp_frame);
+        animation_data.enqueueframe.push(temp_frame);
 
         temp_frame = function () {
-            svg_data.m_svg.select(".g_push")
+            svg_data.m_svg.selectAll(".front_text")
+                .transition()
+                .duration(animation_data.duration)
+                .attr("dy", svg_data.rect_len * 1.5);
+
+            svg_data.m_svg.select(".rear_text")
+                .transition()
+                .duration(animation_data.duration)
+                .attr("x", svg_data.rect_x[0] + svg_data.rect_len);
+
+            svg_data.m_svg.append("g")
+                .attr("class", "g_rear")
                 .append("rect")
-                .attr("class", "push_rect")
-                .attr("id", "temp_rect")
-                .attr("x", svg_data.width / 2)
-                .attr("y", svg_data.height / 2)
+                .attr("class", "rear_rect")
+                .attr("id", "rear_rect")
+                .attr("x", svg_data.rect_x[0] + svg_data.rect_len)
+                .attr("y", svg_data.height / 2 - svg_data.rect_len)
                 .attr("width", 0)
                 .attr("height", 0)
                 .attr("fill", "white")
-                .attr("stroke", "white")
+                .attr("stroke", "#003399")
                 .attr("stroke-width", 3)
                 .transition()
                 .duration(animation_data.duration / 2)
                 .attr("width", svg_data.rect_len)
                 .attr("height", svg_data.rect_len);
-
-            svg_data.m_svg.select('.g_push')                              // 栈数字绘制
-                .append("text")
-                .attr('class', "push_rect")
-                .attr("id", "temp_text")
-                .attr("x", svg_data.width / 2)
-                .attr("y", svg_data.height / 2)
-                .attr("dx", svg_data.rect_len / 4.5)
-                .attr("dy", svg_data.rect_len / 1.5)
-                .attr("fill", "white")
-                .text(post_data.push_num);
-
-            svg_data.m_svg.select('#temp_rect')
-                .transition()
-                .duration(animation_data.duration)
-                .attr("stroke", "#006633");
-
-            svg_data.m_svg.select('#temp_text')
-                .transition()
-                .duration(animation_data.duration)
-                .attr("fill", "#663300");
         };
-        animation_data.pushframe.push(temp_frame);
+        animation_data.enqueueframe.push(temp_frame);
     }
     else {
         temp_frame = function () {
+            svg_data.m_svg.select("#rear_rect")
+                .transition()
+                .duration(animation_data.duration)
+                .attr("fill", "#3ec1d3");
+            svg_data.m_svg.select(".g_rear")
+                .append("text")
+                .attr("x", svg_data.rect_x[svg_data.rect_x.length - 1] + svg_data.rect_len)
+                .attr("y", svg_data.height / 2 - svg_data.rect_len)
+                .attr("dx", svg_data.rect_len / 4.5)
+                .attr("dy", svg_data.rect_len / 1.5)
+                .attr("fill", "white")
+                .text(post_data.enqueue_num)
+                .transition()
+                .duration(animation_data.duration)
+                .attr("fill", "#333333");
+        };
+        animation_data.enqueueframe.push(temp_frame);
+
+        temp_frame = function () {
+            svg_data.m_svg.select(".rear_text")
+                .transition()
+                .duration(animation_data.duration)
+                .attr("x", svg_data.rect_x[svg_data.rect_x.length - 1] + 2 * svg_data.rect_len);
+
             svg_data.m_svg.append("g")
-                .attr("class", "g_push")
+                .attr("class", "g_rear")
                 .append("rect")
-                .attr("class", "push_rect")
-                .attr("x", svg_data.width / 2 + 2 * svg_data.rect_len)
-                .attr("y", svg_data.rect_y[0])
+                .attr("class", "rear_rect")
+                .attr("id", "rear_rect")
+                .attr("x", svg_data.rect_x[svg_data.rect_x.length - 1] + 2 * svg_data.rect_len)
+                .attr("y", svg_data.height / 2 - svg_data.rect_len)
                 .attr("width", 0)
                 .attr("height", 0)
-                .attr("fill", "#FFCC33")
-                .attr("stroke", "#006633")
+                .attr("fill", "white")
+                .attr("stroke", "#003399")
                 .attr("stroke-width", 3)
                 .transition()
                 .duration(animation_data.duration / 2)
                 .attr("width", svg_data.rect_len)
                 .attr("height", svg_data.rect_len);
-
-            svg_data.m_svg.select('.g_push')                              // 栈数字绘制
-                .append("text")
-                .attr('class', "push_rect")
-                .attr("x", svg_data.width / 2 + 2 * svg_data.rect_len)
-                .attr("y", svg_data.rect_y[0])
-                .attr("dx", svg_data.rect_len / 4.5)
-                .attr("dy", svg_data.rect_len / 1.5)
-                .attr("fill", "white")
-                .text(post_data.push_num)
-                .transition()
-                .duration(animation_data.duration)
-                .attr("fill", "#663300");
-
-
-            for (let index = 0; index < post_data.array_data.length; index++) {
-                svg_data.m_svg.selectAll(".m_rect" + index)
-                    .transition()
-                    .duration(animation_data.duration)
-                    .attr("y", svg_data.rect_y[index] + svg_data.rect_len)
-            }
         };
-        animation_data.pushframe.push(temp_frame);
-
-        temp_frame = function () {
-            svg_data.m_svg.selectAll(".push_rect")
-                .transition()
-                .duration(animation_data.duration)
-                .attr("x", svg_data.width / 2)
-        };
-        animation_data.pushframe.push(temp_frame);
+        animation_data.enqueueframe.push(temp_frame);
     }
 }
 
 
 /**
- * @description 出栈过程的动画生成函数
+ * @description 出队过程的动画生成函数
  * @param {object} svg_data 数组数据
  * @param {object} post_data 数据包
  * @param {object} animation_data 动画数据包
  */
-function popAnimation(svg_data, post_data, animation_data) {
+function dequeueAnimation(svg_data, post_data, animation_data) {
     let temp_frame;
+    temp_frame = function () {
+        svg_data.m_svg.select("#rect_text0")
+            .transition()
+            .duration(animation_data.duration)
+            .attr("fill", "white")
+            .attr("font-size", "1px");
+
+        svg_data.m_svg.select("#m_rect0")
+            .transition()
+            .duration(animation_data.duration)
+            .attr("fill", "#3ec1d3")
+            .attr("width", 0)
+            .attr("height", 0);
+    };
+    animation_data.dequeueframe.push(temp_frame);
+
     if (post_data.array_data.length === 0) {
         temp_frame = function () {
-            svg_data.m_svg.select("#m_rect0")
-                .attr("fill", "#FFCC33")
+            svg_data.m_svg.select(".front_text")
                 .transition()
-                .duration(animation_data.duration / 2)
-                .attr("fill", "white");
-            svg_data.m_svg.selectAll(".m_rect0")
-                .transition()
-                .duration(animation_data.duration / 2)
-                .attr("fill", "white");
-            svg_data.m_svg.selectAll(".m_rect0").remove();
-
+                .duration(animation_data.duration)
+                .attr("x", svg_data.rect_x[0] + svg_data.rect_len)
+                .attr("y", svg_data.height / 2 - svg_data.rect_len / 2);
         };
-        animation_data.popframe.push(temp_frame);
-        temp_frame = function () {
-            svg_data.m_svg.select(".top_text")
-                .transition()
-                .duration(animation_data.duration / 2)
-                .attr("fill", "white");
-        };
-        animation_data.popframe.push(temp_frame);
-
+        animation_data.dequeueframe.push(temp_frame);
     }
     else {
         temp_frame = function () {
-            svg_data.m_svg.selectAll("#m_rect0").attr("fill", "#FFCC33");
-            svg_data.m_svg.selectAll(".m_rect0")
+            svg_data.m_svg.select(".front_text")
                 .transition()
-                .duration(animation_data.duration / 2)
-                .attr("x", svg_data.width / 2 + 2 * svg_data.rect_len);
-
-            svg_data.m_svg.selectAll(".m_rect0")
-                .transition()
-                .delay(animation_data.duration / 2)
-                .duration(animation_data.duration / 2)
-                .attr("fill", "white")
-                .attr("stroke", "white");
-
+                .duration(animation_data.duration)
+                .attr("x", svg_data.rect_x[0] + svg_data.rect_len)
+                .attr("y", svg_data.height / 2 - svg_data.rect_len);
         };
-        animation_data.popframe.push(temp_frame);
-
-        temp_frame = function () {
-            svg_data.m_svg.selectAll(".m_rect0").remove();
-            for (let index = 1; index <= post_data.array_data.length; index++) {
-                svg_data.m_svg.selectAll(".m_rect" + index)
-                    .transition()
-                    .duration(animation_data.duration / 2)
-                    .attr("y", svg_data.rect_y[index] - svg_data.rect_len)
-            }
-        };
-        animation_data.popframe.push(temp_frame);
+        animation_data.dequeueframe.push(temp_frame);
     }
 }
 
 /**
- * @description  (pop) 出栈过程的动画运行函数
+ * @description  (enqueue) 入队过程的动画运行函数
  * @param {object} post_data
  * @param {object} animation_data 动画数据包
  */
-function runPopAnimation(post_data, animation_data) {
+function runEnqueueAnimation(post_data, animation_data) {
     let timer = setTimeout(() => {
-        if (animation_data.is_next && animation_data.now_step < animation_data.popframe.length) {   //步进执行
-            drawProgress(animation_data, animation_data.popframe.length);
+        if (animation_data.is_next && animation_data.now_step < animation_data.enqueueframe.length) {      //步进执行
+            drawProgress(animation_data, animation_data.enqueueframe.length);
             showCode(post_data, animation_data);
-            animation_data.popframe[animation_data.now_step]();//执行主视图动画
+            animation_data.enqueueframe[animation_data.now_step]();//执行主视图动画
             // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
-            runPopAnimation(post_data, animation_data);
+            runEnqueueAnimation(post_data, animation_data);
         }
         else {                                              //自动执行
-            if (animation_data.now_step > animation_data.popframe.length - 1) {
+            if (animation_data.now_step > animation_data.enqueueframe.length - 1) {
                 // console.log("end", animation_data.now_step);
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");         //切换播放图标
@@ -514,11 +545,11 @@ function runPopAnimation(post_data, animation_data) {
                 return;
             }
             showCode(post_data, animation_data);
-            drawProgress(animation_data, animation_data.popframe.length);
-            animation_data.popframe[animation_data.now_step]();
+            drawProgress(animation_data, animation_data.enqueueframe.length);
+            animation_data.enqueueframe[animation_data.now_step]();
             // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
-            runPopAnimation(post_data, animation_data);
+            runEnqueueAnimation(post_data, animation_data);
         }
     }, animation_data.duration);
     animation_data.all_timer.push(timer);                   // 计时器缓存
@@ -526,23 +557,23 @@ function runPopAnimation(post_data, animation_data) {
 
 
 /**
- * @description  (push) 入栈过程的动画运行函数
+ * @description  (dequeue) 出队过程的动画运行函数
  * @param {object} post_data
  * @param {object} animation_data 动画数据包
  */
-function runPushAnimation(post_data, animation_data) {
+function runDequeueAnimation(post_data, animation_data) {
     let timer = setTimeout(() => {
-        if (animation_data.is_next && animation_data.now_step < animation_data.pushframe.length) {      //步进执行
-            drawProgress(animation_data, animation_data.pushframe.length);
+        if (animation_data.is_next && animation_data.now_step < animation_data.dequeueframe.length) {      //步进执行
+            drawProgress(animation_data, animation_data.dequeueframe.length);
             showCode(post_data, animation_data);
-            animation_data.pushframe[animation_data.now_step]();//执行主视图动画
+            animation_data.dequeueframe[animation_data.now_step]();//执行主视图动画
             // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
-            runPushAnimation(post_data, animation_data);
+            runDequeueAnimation(post_data, animation_data);
         }
         else {                                              //自动执行
-            if (animation_data.now_step > animation_data.pushframe.length - 1) {
+            if (animation_data.now_step > animation_data.dequeueframe.length - 1) {
                 // console.log("end", animation_data.now_step);
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");         //切换播放图标
@@ -552,11 +583,11 @@ function runPushAnimation(post_data, animation_data) {
                 return;
             }
             showCode(post_data, animation_data);
-            drawProgress(animation_data, animation_data.pushframe.length);
-            animation_data.pushframe[animation_data.now_step]();
+            drawProgress(animation_data, animation_data.dequeueframe.length);
+            animation_data.dequeueframe[animation_data.now_step]();
             // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
-            runPushAnimation(post_data, animation_data);
+            runDequeueAnimation(post_data, animation_data);
         }
     }, animation_data.duration);
     animation_data.all_timer.push(timer);                   // 计时器缓存
@@ -564,22 +595,22 @@ function runPushAnimation(post_data, animation_data) {
 
 
 /**
- * @description   插入过程的伪代码及提示展示函数
+ * @description   伪代码及提示展示函数
  * @param {object} post_data
  * @param {object} animation_data 动画数据包
  */
 function showCode(post_data, animation_data) {
-    if (animation_data.is_push) {
+    if (animation_data.is_enqueue) {
         if (animation_data.now_step === 0)
-            drawCode(post_data, animation_data, 1, 0);
+            drawCode(post_data, animation_data, 2, 0);
         else if (animation_data.now_step === 1)
-            drawCode(post_data, animation_data, 2, 1);
+            drawCode(post_data, animation_data, 3, 1);
     }
-    else if (animation_data.is_pop) {
+    else if (animation_data.is_dequeue) {
         if (animation_data.now_step === 0)
-            drawCode(post_data, animation_data, 3, 0);
+            drawCode(post_data, animation_data, 4, 0);
         else if (animation_data.now_step === 1)
-            drawCode(post_data, animation_data, 4, 1);
+            drawCode(post_data, animation_data, 5, 1);
     }
 }
 
@@ -594,17 +625,17 @@ function showCode(post_data, animation_data) {
 function drawCode(post_data, animation_data, word_id, now_step) {
     let code_text = [];
     if (post_data.operate_type === 1)
-        code_text = ["stack.top++;", "stack.data[top] = input( )"];
+        code_text = ["queue.data[rear] = input( );", "queue.rear++;"];
     else if (post_data.operate_type === 0) {
         if (post_data.input_tpye === 0)
-            code_text = ["stack = new Stack( );,for(i = 0; i < length; i++){," +
-            "stack.top++;,stack.data[top] = input( );,}"];
+            code_text = ["queue = new Queue( );,for(i = 0; i < length; i++){," +
+            "queue.data[rear] = input( );,queue.rear++;,}"];
         else
-            code_text = ["stack = new Stack( );,for(i = 0; i < length; i++){," +
-            "stack.top++;,stack.data[top] = random( );,}"];
+            code_text = ["queue = new Queue( );,for(i = 0; i < length; i++){," +
+            "queue.data[rear] = random( );,queue.rear++;,}"];
     }
     else if (post_data.operate_type === 2)
-        code_text = ["stack.data[top] = -1", "stack.top--"];
+        code_text = ["queue.data[front] = -1", "queue.front++"];
 
     d3.select("#code_svg").remove();
     let screen = $("#code_window");
@@ -752,7 +783,7 @@ function drawProgress(animation_data, frame_len) {
 function postData(p_data) {
     let temp = $.ajax({
         type: 'POST',
-        url: "/stack_method",
+        url: "/queue_method",
         async: false,
         data: JSON.stringify(p_data),
         contentType: 'application/json',
@@ -780,8 +811,8 @@ function checkError(post_data, value, value_type) {
         }
         else {
             array_num = value.split(',');
-            if (array_num.length > 10) {
-                error_type = 11;            // 数组长度超过10
+            if (array_num.length > 15) {
+                error_type = 11;            // 数组长度超过15
             }
             else {
                 for (let i = 0; i < array_num.length; i++) {
@@ -843,7 +874,7 @@ function errorWarning(error_type) {
             alert("不能输入空值");
             break;
         case 11:
-            alert("请输入长度小于10的栈");
+            alert("请输入长度小于15的队列");
             break;
         case 12:
             alert("输入含非法字符，请重新输入");
@@ -852,13 +883,13 @@ function errorWarning(error_type) {
             alert("请输入0到999间的整数");
             break;
         case 14:
-            alert("输先输入栈");
+            alert("输先输入队列");
             break;
         case 15:
-            alert("请先执行出入栈操作");
+            alert("请先执行出入队操作");
             break;
         case 16:
-            alert("演示栈最大长度为10，无法继续入栈");
+            alert("演示队列最大长度为15，无法继续入队");
             break;
     }
 }

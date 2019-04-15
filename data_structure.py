@@ -60,7 +60,7 @@ class LinkedList(DataStructure):
             self.__data = self.random_create(10, 999)
         else:
             self.__data = self.input_create(input_list)
-        print(self.__data)
+        # print(self.__data)
 
     # 返回数据
     def get_data(self):
@@ -107,15 +107,15 @@ class Stack(DataStructure):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create(10,999)
+            self.__data = self.random_create(10, 999)
         else:
             self.__data = self.input_create(input_list)
         self.__top = len(self.__data) - 1
-        print(self.__data)
+        # print(self.__data)
 
     def reverse_data(self):
         temp = []
-        for i in range(0, len(self.__data)):
+        for i in range((len(self.__data) - 1), -1, -1):
             temp.append(self.__data[i])
         self.__data = temp
 
@@ -131,7 +131,7 @@ class Stack(DataStructure):
     def pop_num(self):
         if self.__top > -1:
             self.__top = self.__top - 1
-        self.__data.pop()
+        self.__data.pop(0)
 
     # 入栈
     def push_num(self, num):
@@ -152,12 +152,12 @@ class Queue(DataStructure):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create()
+            self.__data = self.random_create(15, 999)
         else:
             self.__data = self.input_create(input_list)
         # self.__front = -1
         # self.__rear = len(self.__data) - 1
-        print(self.__data)
+        # print(self.__data)
 
     # # 队列元素更新
     # def __renew_data(self):
@@ -296,6 +296,7 @@ class BinaryTree(DataStructure):
                 if top == -1:
                     break
         return result
+
 
 # bt = BinaryTree(['a', 'b', 'c', 'd', -1, 'e', 'f', -1, 'g'])
 # bt = BinaryTree([1,2,3,4,5,-1,-1,-1,6])
