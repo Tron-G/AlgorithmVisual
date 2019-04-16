@@ -3,10 +3,11 @@
  */
 function inputWindow() {
     let post_data = {};                     //向后台传输的数据包
-    let m_svg = null;                       //主屏幕svg对象
+    let svg_data = {};                       //主屏幕svg对象
     let animation_data = {};                //动画数据缓存
 
     resetPostData(post_data);                //post_data初始化
+    resetSvgData(svg_data);
     clearAllTimer(animation_data, false);   //animation_data初始化
 
 
@@ -20,7 +21,7 @@ function inputWindow() {
             resetPostData(post_data, 0, result.slice(0));   //slice深拷贝
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));   //更新数据包
-            m_svg = drawArray(post_data.array_data);        //主视图绘制
+            drawArray(post_data.array_data, svg_data);        //主视图绘制
             drawCode(post_data, animation_data, 0, 0);      //伪代码及提示窗口绘制
             drawProgress(animation_data);                   //重置进度条
         }
@@ -32,7 +33,7 @@ function inputWindow() {
         resetPostData(post_data, 1);
         let temp = postData(post_data);
         post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-        m_svg = drawArray(post_data.array_data);
+        drawArray(post_data.array_data, svg_data);
         drawCode(post_data, animation_data, 0, 0);
         drawProgress(animation_data);                       // 进度条重置
     });
@@ -47,10 +48,10 @@ function inputWindow() {
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 1, result);
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            m_svg = drawArray(post_data.array_data);            //重绘
+            drawArray(post_data.array_data, svg_data);            //重绘
             drawProgress(animation_data);                       // 进度条重置
             drawCode(post_data, animation_data, 2, 0);
-            createAnimation(m_svg, post_data, animation_data); // 查找动画生成
+            createAnimation(svg_data, post_data, animation_data); // 查找动画生成
         }
     });
     ///////////////////////////////--------播放暂停功能--------////////////////////////////////////
@@ -58,7 +59,6 @@ function inputWindow() {
         if (animation_data.is_search) {
             if (!animation_data.is_pause) {                     //暂停
                 animation_data.is_pause = true;
-                console.log("pause", animation_data.now_step);
                 $("#play_bt").attr("class", "play");            //图标切换
                 clearAllTimer(animation_data, true);           // 清除所有定时器
             } else {                                           // 播放
@@ -69,7 +69,7 @@ function inputWindow() {
             }
         }
         else
-            errorWarning(17);
+            errorWarning(15);
     });
     ///////////////////////////////--------步进功能--------////////////////////////////////////
     $('#next_bt').click(function () {
@@ -78,18 +78,18 @@ function inputWindow() {
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");
                 animation_data.is_next = true;
-                animation_data.duration = 800;
+                animation_data.duration = 600;
                 clearAllTimer(animation_data, true);
                 runAnimation(post_data, animation_data);
             } else {                                            // 步进播放
                 animation_data.is_next = true;
-                animation_data.duration = 800;
+                animation_data.duration = 600;
                 clearAllTimer(animation_data, true);
                 runAnimation(post_data, animation_data);
             }
         }
         else
-            errorWarning(17);
+            errorWarning(15);
     });
     ///////////////////////////////--------修改功能--------///////////////////////////////////////
     $('#change_bt').click(function () {
@@ -99,16 +99,15 @@ function inputWindow() {
             clearAllTimer(animation_data, false);
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 2, -1, -1, result[0], result[1]);
 
-            m_svg = drawArray(post_data.array_data);              //重绘
+            drawArray(post_data.array_data, svg_data);              //重绘
             let change_timer = setTimeout(function () {
-                changeAnimation(m_svg, post_data);
+                changeAnimation(svg_data, post_data, animation_data);
                 let temp = postData(post_data);
                 post_data = JSON.parse(JSON.stringify(temp));     //更新数据包
                 drawCode(post_data, animation_data, 1, 0);        //伪代码生成
                 drawProgress(animation_data);                     //重置进度条
-                console.log("change", post_data);
                 clearTimeout(change_timer);
-            }, 1000);
+            }, animation_data.duration / 2);
         }
     });
 
@@ -140,6 +139,9 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.is_search = false;   //是否执行查找标记
         animation_data.is_next = false;     //执行步进标记
         animation_data.is_find = false;     //是否查找成功标记
+        animation_data.code_rect_fill = "#7f4a88";
+        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["数组创建成功", "修改成功", "点击开始按钮开始查找",
             "判断是否相等", "不相等,查找下一个,i = ", "未找到", "查找成功,数组下标i = "];
     }
@@ -168,72 +170,44 @@ function resetPostData(post_data, input_tpye = 0, array_data = null, operate_typ
     post_data.change_num = change_num;
 }
 
+
 /**
- * @description div隐藏动画绘制
+ * @description svg_data 矩形y坐标重置更新
+ * @param {object} svg_data svg相关数据
  */
-function hideAnimation() {
-    let interval = 700;         //动画时间
-    let hide_state1 = false;
-    let hide_state2 = false;
-    let hide_state3 = false;
-    $("#hide_bt1").click(function () {
-        if (!hide_state1) {
-            $("#input_page").animate({left: '+85%'}, interval);
-            $("#hide_bt1").attr("class", "hide_left");
-            hide_state1 = true;
-        }
-        else {
-            $("#input_page").animate({left: '0%'}, interval);
-            $("#hide_bt1").attr("class", "hide_right");
-            hide_state1 = false;
-        }
-    });
-    $("#hide_bt2").click(function () {
-        if (!hide_state2) {
-            $("#hint_window").animate({left: '+85%'}, interval);
-            $("#hide_bt2").attr("class", "hide_left");
-            hide_state2 = true;
-        }
-        else {
-            $("#hint_window").animate({left: '0%'}, interval);
-            $("#hide_bt2").attr("class", "hide_right");
-            hide_state2 = false;
-        }
-    });
-    $("#hide_bt3").click(function () {
-        if (!hide_state3) {
-            $("#code_window").animate({left: '+85%'}, interval);
-            $("#hide_bt3").attr("class", "hide_left");
-            hide_state3 = true;
-        }
-        else {
-            $("#code_window").animate({left: '0%'}, interval);
-            $("#hide_bt3").attr("class", "hide_right");
-            hide_state3 = false;
-        }
-    });
+function resetSvgData(svg_data) {
+    let screen = $("#screen");
+    let width = screen.width();
+    let height = screen.height();
+    svg_data.m_svg = null;
+    svg_data.width = width;
+    svg_data.height = height;
+    svg_data.font_size = 20;       //主视图字体大小
+    svg_data.rect_stroke = "#4CB4E7";
+    svg_data.num_fill = "#537791";
+    svg_data.subscript_fill = "#A3A380";
+    svg_data.rect_search_fill = "#fab57a";
+    svg_data.rect_change_fill = "#a1de93";
+    svg_data.text_change_fill = "#FF0033";
+    svg_data.rect_len = 70;        //矩形长度
 }
 
 /**
  * @description 主视图数组绘制
  * @param {Array} array_data 数组数据
- * @return {object} svg svg对象
+ * @param svg_data
  */
-function drawArray(array_data) {
+function drawArray(array_data, svg_data) {
     d3.select("#screen_svg").remove();
-
-    let screen = $("#screen");
-    let width = screen.width();
-    let height = screen.height();
 
     let svg = d3.select("#screen")
         .append("svg")
         .attr("id", "screen_svg")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("width", svg_data.width)
+        .attr("height", svg_data.height);
 
-    let rect_length = 70;                           //矩形边长
-    let total_len = rect_length * array_data.length;//总长度
+    let total_len = svg_data.rect_len * array_data.length;//总长度
+    let start_pos = (svg_data.width - total_len) / 2;
     svg.selectAll("rect")                           // 数组矩形绘制
         .data(array_data)
         .enter()
@@ -243,14 +217,13 @@ function drawArray(array_data) {
             return "m_rect" + i;
         })
         .attr("x", function (d, i) {
-            let start_pos = (width - total_len) / 2;
-            return start_pos + i * rect_length;
+            return start_pos + i * svg_data.rect_len;
         })
-        .attr("y", height / 2 - rect_length)
-        .attr("width", rect_length)
-        .attr("height", rect_length)
+        .attr("y", svg_data.height / 2 - svg_data.rect_len)
+        .attr("width", svg_data.rect_len)
+        .attr("height", svg_data.rect_len)
         .attr("fill", "white")
-        .attr("stroke", "#4CB4E7")
+        .attr("stroke", svg_data.rect_stroke)
         .attr("stroke-width", 3);
 
     svg.selectAll('g')                              // 数组数字绘制
@@ -259,13 +232,13 @@ function drawArray(array_data) {
             return "rect_text" + i;
         })
         .attr('x', function (d, i) {
-            let start_pos = (width - total_len) / 2;
-            return start_pos + i * rect_length;
+            return start_pos + i * svg_data.rect_len;
         })
-        .attr('y', height / 2 - rect_length)
-        .attr("dx", rect_length / 4.5)
-        .attr("dy", rect_length / 1.5)
-        .attr("fill", "#537791")
+        .attr('y', svg_data.height / 2 - svg_data.rect_len)
+        .attr("dx", svg_data.rect_len / 4.5)
+        .attr("dy", svg_data.rect_len / 1.5)
+        .attr("font-size", svg_data.font_size)
+        .attr("fill", svg_data.num_fill)
         .text(function (d) {
             return d;
         });
@@ -276,47 +249,47 @@ function drawArray(array_data) {
             return "rect_num" + i;
         })
         .attr('x', function (d, i) {
-            let start_pos = (width - total_len) / 2;
-            return start_pos + i * rect_length;
+            return start_pos + i * svg_data.rect_len;
         })
-        .attr('y', height / 2 - rect_length)
-        .attr("dx", rect_length / 10)
-        .attr("dy", rect_length * 1.5)
-        .attr("fill", "#A3A380")
+        .attr('y', svg_data.height / 2 - svg_data.rect_len)
+        .attr("dx", svg_data.rect_len / 10)
+        .attr("dy", svg_data.rect_len * 1.5)
+        .attr("font-size", svg_data.font_size)
+        .attr("fill", svg_data.subscript_fill)
         .text(function (d, i) {
             return "a[" + i + "]";
         });
-    return svg;
+    svg_data.m_svg = svg;
 }
 
 /**
  * @description 查找过程的动画生成函数
- * @param {object} svg 数组数据
+ * @param {object} svg_data 数组数据
  * @param {object} post_data 数据包
  * @param {object} animation_data 动画数据包
  */
-function createAnimation(svg, post_data, animation_data) {
+function createAnimation(svg_data, post_data, animation_data) {
     animation_data.frame = post_data.array_data.map(function (d, i) {
         return function () {
-            svg.selectAll(".m_rect" + i)
+            svg_data.m_svg.selectAll(".m_rect" + i)
                 .transition()
                 .duration(animation_data.duration / 2)
-                .attr("fill", "#fab57a");
-            svg.selectAll(".rect_num" + i)
+                .attr("fill", svg_data.rect_search_fill);
+            svg_data.m_svg.selectAll(".rect_num" + i)
                 .transition()
                 .duration(animation_data.duration / 2)
-                .attr("fill", "#FF0033");
+                .attr("fill", svg_data.text_change_fill);
 
             drawProgress(animation_data);       // 进度条
             if (i >= 1) {
-                svg.selectAll(".m_rect" + (i - 1))
+                svg_data.m_svg.selectAll(".m_rect" + (i - 1))
                     .transition()
                     .duration(animation_data.duration / 4)
                     .attr("fill", "white");
-                svg.selectAll(".rect_num" + (i - 1))
+                svg_data.m_svg.selectAll(".rect_num" + (i - 1))
                     .transition()
                     .duration(animation_data.duration / 4)
-                    .attr("fill", "#A3A380");
+                    .attr("fill", svg_data.subscript_fill);
             }
         }
     });
@@ -332,15 +305,8 @@ function runAnimation(post_data, animation_data) {
         if (animation_data.is_next && animation_data.now_step < animation_data.frame.length
             && !animation_data.is_find) {                   //步进执行
             animation_data.frame[animation_data.now_step]();//执行主视图动画
-            drawCode(post_data, animation_data, 3, 1);      //提示窗口判断相等动画
-            let temp_timer = setTimeout(() => {
-                if (post_data.array_data[animation_data.now_step - 1] === post_data.search_num)
-                    drawCode(post_data, animation_data, 6, 4);  //查找成功
-                else
-                    drawCode(post_data, animation_data, 4, 2);  //下一个
-            }, animation_data.duration / 2);
-            animation_data.all_timer.push(temp_timer);       // 计时器缓存
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            showCode(post_data, animation_data);
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
             runAnimation(post_data, animation_data);
@@ -354,7 +320,6 @@ function runAnimation(post_data, animation_data) {
                 return;
             }
             else if (animation_data.now_step > animation_data.frame.length - 1) {
-                console.log("end", animation_data.now_step);
                 animation_data.is_pause = true;
                 drawCode(post_data, animation_data, 5, 3);
                 $("#play_bt").attr("class", "play");         //切换播放图标
@@ -365,15 +330,8 @@ function runAnimation(post_data, animation_data) {
                 return;
             }
             animation_data.frame[animation_data.now_step]();
-            drawCode(post_data, animation_data, 3, 1);      //判断相等
-            let temp_timer = setTimeout(() => {
-                if (post_data.array_data[animation_data.now_step - 1] === post_data.search_num)
-                    drawCode(post_data, animation_data, 6, 4);  //查找成功
-                else
-                    drawCode(post_data, animation_data, 4, 2);  //下一个
-            }, animation_data.duration / 2);
-            animation_data.all_timer.push(temp_timer);      // 计时器缓存
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            showCode(post_data, animation_data);
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             runAnimation(post_data, animation_data);
         }
@@ -381,69 +339,49 @@ function runAnimation(post_data, animation_data) {
     animation_data.all_timer.push(timer);                   // 计时器缓存
 }
 
+/**
+ * @description 伪代码执行展示
+ * @param {object} post_data
+ * @param {object} animation_data
+ */
+function showCode(post_data, animation_data) {
+    drawCode(post_data, animation_data, 3, 1);      //提示窗口判断相等动画
+    let temp_timer = setTimeout(() => {
+        if (post_data.array_data[animation_data.now_step - 1] === post_data.search_num)
+            drawCode(post_data, animation_data, 6, 4);  //查找成功
+        else
+            drawCode(post_data, animation_data, 4, 2);  //下一个
+    }, animation_data.duration / 2);
+    animation_data.all_timer.push(temp_timer);       // 计时器缓存
+}
+
 
 /**
  * @description 修改过程的动画绘制
- * @param {object} svg 数组数据
+ * @param {object} svg_data 数组数据
  * @param {object} post_data 数据包
+ * @param animation_data
  */
-function changeAnimation(svg, post_data) {
-    let interval = 600;            //动画时间
-
-    svg.selectAll(".m_rect" + post_data.change_pos)
+function changeAnimation(svg_data, post_data, animation_data) {
+    svg_data.m_svg.selectAll(".m_rect" + post_data.change_pos)
         .transition()
-        .duration(interval / 3)
-        .attr("fill", "#a1de93");
+        .duration(animation_data.duration / 6)
+        .attr("fill", svg_data.rect_change_fill);
 
-    svg.selectAll(".rect_num" + post_data.change_pos)
+    svg_data.m_svg.selectAll(".rect_num" + post_data.change_pos)
         .transition()
-        .duration(interval / 3)
-        .attr("fill", "#FF0033");
+        .duration(animation_data.duration / 6)
+        .attr("fill", svg_data.text_change_fill);
 
-    svg.selectAll(".rect_text" + post_data.change_pos)
+    svg_data.m_svg.selectAll(".rect_text" + post_data.change_pos)
         .transition()
-        .delay(interval / 2)
+        .delay(animation_data.duration / 4)
         .style("opacity", 0)
-        .duration(interval / 2)
+        .duration(animation_data.duration / 4)
         .transition()
-        .duration(interval / 2)
+        .duration(animation_data.duration / 4)
         .style("opacity", 1)
         .text(post_data.change_num);
-}
-
-/**
- * @description 进度条绘制
- * @param {Object} animation_data
- */
-function drawProgress(animation_data) {
-    d3.select("#progress_svg").remove();
-    let screen = $("#progress");
-    let width = screen.width();
-    let height = screen.height();
-    let rect_length;
-    if (animation_data.frame.length > 0) {
-        rect_length = width / animation_data.frame.length;
-    }
-    else {
-        rect_length = 0;
-        $("#play_bt").attr("class", "play");
-    }
-    d3.select("#progress")
-        .append("svg")
-        .attr("id", "progress_svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("rect")
-        .attr("class", "progress_rect")
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr("width", rect_length * animation_data.now_step)
-        .attr("height", height)
-        .attr("fill", "#0075f6")
-        .transition()
-        .duration(animation_data.duration)
-        .ease(d3.easeLinear)                                //v5 新写法，线性缓动
-        .attr("width", rect_length * (animation_data.now_step + 1));
 }
 
 
@@ -453,10 +391,10 @@ function drawProgress(animation_data) {
  * @param {object} animation_data
  * @param word_id 解释文字所在数组(animation_data.explain_words[])下标
  */
-function hintAnimation(post_data, animation_data, word_id) {
+function hintAnimationDraw(post_data, animation_data, word_id) {
     let temp = "";
     if (word_id === 4)
-        temp = animation_data.explain_words[word_id] + animation_data.now_step;
+        temp = animation_data.explain_words[word_id] + (animation_data.now_step - 1);
     else if (word_id === 6)
         temp = animation_data.explain_words[word_id] + (animation_data.now_step - 1);
     else
@@ -474,7 +412,7 @@ function hintAnimation(post_data, animation_data, word_id) {
         .attr('x', width / 10)
         .attr('y', height / 2)
         .attr("dy", height / 9)
-        .attr("fill", "#5c2626")
+        .attr("fill", animation_data.hint_text_fill)
         .text(temp);
 }
 
@@ -527,7 +465,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
         })
         .attr("width", width)
         .attr("height", rect_height)
-        .attr("fill", "#7f4a88");
+        .attr("fill", animation_data.code_rect_fill);
 
     for (let index = 0; index < code_text.length; index++) {
         let temp = code_text[index].split(",");
@@ -578,9 +516,9 @@ function drawCode(post_data, animation_data, word_id, now_step) {
     code_svg.selectAll(".code_rect" + now_step)
         .transition()
         .duration(500)
-        .attr("fill", "#ca82f8");
+        .attr("fill", animation_data.choose_rect_fill);
 
-    hintAnimation(post_data, animation_data, word_id); // 提示窗口动画
+    hintAnimationDraw(post_data, animation_data, word_id); // 提示窗口动画
 
 }
 
@@ -602,149 +540,4 @@ function postData(p_data) {
         }
     });
     return temp.responseJSON;
-}
-
-
-/**
- * @description 错误检查函数
- * @param {object} post_data
- * @param {string||number} value 待检查的值
- * @param {number} value_type 值的类型，1：数组 2：单值 3：下标和值
- * @return {boolean||number} 错误(false)或者正确结果
- */
-function checkError(post_data, value, value_type) {
-    let error_type = -1;                    // 错误类型
-    if (value_type === 1) {                 // 数组
-        let array_num;
-        if (value === "") {
-            error_type = 10;                // 空串
-        }
-        else {
-            array_num = value.split(',');
-            if (array_num.length > 20) {
-                error_type = 11;            // 数组长度超过20
-            }
-            else {
-                for (let i = 0; i < array_num.length; i++) {
-                    if (array_num[i] === "") {
-                        error_type = 10;    // 空串
-                    }
-                    if (isNaN(array_num[i]) === true || array_num[i].indexOf(" ") !== -1) {
-                        error_type = 12;    // 含有非法字符
-                    }
-                    else if (array_num[i] < 0 || array_num[i] > 999
-                        || array_num[i].indexOf('.') !== -1) {
-                        error_type = 13;    // 值超出范围或非整数
-                    }
-                    if (error_type !== -1) {
-                        break;
-                    }
-                }
-            }
-        }
-        if (error_type !== -1) {
-            errorWarning(error_type);
-            return false;
-        }
-        else {
-            return array_num;
-        }
-    }
-    else if (value_type === 2) {            // 单值
-        if (post_data.array_data === null) {
-            error_type = 14                 // 没有数组数据
-        }
-        else if (value === "") {
-            error_type = 10;                // 空值
-        }
-        else if (isNaN(value) === true || value.indexOf(" ") !== -1) {
-            error_type = 12;                // 含有非法字符
-        }
-        else if (value < 0 || value > 999
-            || value.indexOf('.') !== -1) {
-            error_type = 13;                // 值超出范围或非整数
-        }
-        if (error_type !== -1) {
-            errorWarning(error_type);
-            return false;
-        }
-        else {
-            return value;
-        }
-    }
-    else if (value_type === 3) {            //下标，值
-        let temp_num;
-        if (post_data.array_data === null) {
-            error_type = 14                 // 没有数组数据
-        }
-        else if (value === "") {
-            error_type = 10;                // 空值
-        }
-        else {
-            temp_num = value.split(',');
-            if (temp_num.length !== 2) {
-                error_type = 15;            // 输入数据长度错误
-            }
-            else {
-                for (let i = 0; i < temp_num.length; i++) {
-                    if (temp_num[i] === "") {
-                        error_type = 10;    // 空串
-                    }
-                    if (isNaN(temp_num[i]) === true || temp_num[i].indexOf(" ") !== -1) {
-                        error_type = 12;    // 含有非法字符
-                    }
-                    else if (temp_num[i] < 0 || temp_num[i] > 999
-                        || temp_num[i].indexOf('.') !== -1) {
-                        error_type = 13;    // 值超出范围或非整数
-                    }
-                    if (error_type !== -1) {
-                        break;
-                    }
-                }
-                if (temp_num[0] < 0 || temp_num[0] > post_data.array_data.length - 1) {
-                    error_type = 16;        // 下标超出范围
-                }
-            }
-        }
-        if (error_type !== -1) {
-            errorWarning(error_type);
-            return false;
-        }
-        else {
-            return temp_num;
-        }
-    }
-}
-
-/**
- * @description 错误提示函数
- * @param {Number} error_type 错误类型
- */
-function errorWarning(error_type) {
-    switch (error_type) {
-        case 10:
-            alert("不能输入空值");
-            break;
-        case 11:
-            alert("请输入长度小于20的数组");
-            break;
-        case 12:
-            alert("输入含非法字符，请重新输入");
-            break;
-        case 13:
-            alert("请输入0到999间的整数");
-            break;
-        case 14:
-            alert("输先输入数组");
-            break;
-        case 15:
-            alert("数组下标和修改值不能超过一组数");
-            break;
-        case 16:
-            alert("输入下标超出范围");
-            break;
-        case 17:
-            alert("请先执行查找操作");
-            break;
-    }
 }

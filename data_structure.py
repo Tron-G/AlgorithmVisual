@@ -28,7 +28,7 @@ class Array(DataStructure):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create(15, 999)
+            self.__data = self.random_create(10, 999)
         else:
             self.__data = self.input_create(input_list)
         # print(self.__data)
@@ -152,7 +152,7 @@ class Queue(DataStructure):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create(15, 999)
+            self.__data = self.random_create(10, 999)
         else:
             self.__data = self.input_create(input_list)
         # self.__front = -1

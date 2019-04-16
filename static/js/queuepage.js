@@ -181,6 +181,11 @@ function resetSvgData(svg_data) {
     svg_data.width = width;
     svg_data.height = height;
     svg_data.rect_len = 70;        //矩形长度
+    svg_data.font_size = 20;            //主视图字体大小
+    svg_data.rect_stoke = "#003399";
+    svg_data.rect_num_fill = "#333333";
+    svg_data.enqueue_rect_fill = "#3ec1d3";
+    svg_data.dequeue_rect_fill = "#393e46";
 }
 
 /**
@@ -198,7 +203,6 @@ function resetPostData(post_data, input_tpye = 0, array_data = null, operate_typ
     post_data.operate_type = operate_type;
     post_data.enqueue_num = enqueue_num;
 }
-
 
 /**
  * @description 清除动画定时器
@@ -223,6 +227,9 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.duration = 1500;       //动画时间基数
         animation_data.is_enqueue = false;   //是否执行入队标记
         animation_data.is_dequeue = false;   //是否执行出队标记
+        animation_data.code_rect_fill = "#7f4a88";
+        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["队列创建完成", "请点击开始按钮开始运行算法", "当前数字入队",
             "队尾指针后移", "队首数字出队", "队首指针后移"];
     }
@@ -260,7 +267,7 @@ function drawQueue(array_data, svg_data) {
             .attr("width", svg_data.rect_len)
             .attr("height", svg_data.rect_len)
             .attr("fill", "white")
-            .attr("stroke", "#003399")
+            .attr("stroke", svg_data.rect_stoke)
             .attr("stroke-width", 3);
 
         svg.select(".g_rear")
@@ -271,6 +278,7 @@ function drawQueue(array_data, svg_data) {
             .attr("dx", svg_data.rect_len / 10)
             .attr("dy", svg_data.rect_len * 1.5)
             .attr("fill", "red")
+            .attr("font-size", svg_data.font_size)
             .text("rear");
 
         svg.select(".g_rear")
@@ -281,6 +289,7 @@ function drawQueue(array_data, svg_data) {
             .attr("dx", svg_data.rect_len / 10)
             .attr("dy", svg_data.rect_len * 2)
             .attr("fill", "red")
+            .attr("font-size", svg_data.font_size)
             .text("front");
     }
     else {
@@ -306,7 +315,7 @@ function drawQueue(array_data, svg_data) {
             .attr("width", svg_data.rect_len)
             .attr("height", svg_data.rect_len)
             .attr("fill", "white")
-            .attr("stroke", "#003399")
+            .attr("stroke", svg_data.rect_stoke)
             .attr("stroke-width", 3);
 
         svg.selectAll('g')                              // 数字绘制
@@ -324,7 +333,8 @@ function drawQueue(array_data, svg_data) {
             .attr("y", svg_data.height / 2 - svg_data.rect_len)
             .attr("dx", svg_data.rect_len / 4.5)
             .attr("dy", svg_data.rect_len / 1.5)
-            .attr("fill", "#333333")
+            .attr("fill", svg_data.rect_num_fill)
+            .attr("font-size", svg_data.font_size)
             .text(function (d) {
                 return d;
             });
@@ -339,7 +349,7 @@ function drawQueue(array_data, svg_data) {
             .attr("width", svg_data.rect_len)
             .attr("height", svg_data.rect_len)
             .attr("fill", "white")
-            .attr("stroke", "#003399")
+            .attr("stroke", svg_data.rect_stoke)
             .attr("stroke-width", 3);
 
         svg.select(".g_rear")
@@ -350,6 +360,7 @@ function drawQueue(array_data, svg_data) {
             .attr("dx", svg_data.rect_len / 10)
             .attr("dy", svg_data.rect_len * 1.5)
             .attr("fill", "red")
+            .attr("font-size", svg_data.font_size)
             .text("rear");
 
         svg.select(".g_rect0")
@@ -360,6 +371,7 @@ function drawQueue(array_data, svg_data) {
             .attr("dx", svg_data.rect_len / 10)
             .attr("dy", svg_data.rect_len * 1.5)
             .attr("fill", "red")
+            .attr("font-size", svg_data.font_size)
             .text("front");
     }
     svg_data.m_svg = svg;
@@ -379,7 +391,7 @@ function enqueueAnimation(svg_data, post_data, animation_data) {
             svg_data.m_svg.select("#rear_rect")
                 .transition()
                 .duration(animation_data.duration)
-                .attr("fill", "#3ec1d3");
+                .attr("fill", svg_data.enqueue_rect_fill);
             svg_data.m_svg.select(".g_rear")
                 .append("text")
                 .attr("x", svg_data.rect_x[0])
@@ -387,10 +399,11 @@ function enqueueAnimation(svg_data, post_data, animation_data) {
                 .attr("dx", svg_data.rect_len / 4.5)
                 .attr("dy", svg_data.rect_len / 1.5)
                 .attr("fill", "white")
+                .attr("font-size", svg_data.font_size)
                 .text(post_data.enqueue_num)
                 .transition()
                 .duration(animation_data.duration)
-                .attr("fill", "#333333");
+                .attr("fill", svg_data.rect_num_fill);
         };
         animation_data.enqueueframe.push(temp_frame);
 
@@ -415,7 +428,7 @@ function enqueueAnimation(svg_data, post_data, animation_data) {
                 .attr("width", 0)
                 .attr("height", 0)
                 .attr("fill", "white")
-                .attr("stroke", "#003399")
+                .attr("stroke", svg_data.rect_stoke)
                 .attr("stroke-width", 3)
                 .transition()
                 .duration(animation_data.duration / 2)
@@ -429,7 +442,7 @@ function enqueueAnimation(svg_data, post_data, animation_data) {
             svg_data.m_svg.select("#rear_rect")
                 .transition()
                 .duration(animation_data.duration)
-                .attr("fill", "#3ec1d3");
+                .attr("fill", svg_data.enqueue_rect_fill);
             svg_data.m_svg.select(".g_rear")
                 .append("text")
                 .attr("x", svg_data.rect_x[svg_data.rect_x.length - 1] + svg_data.rect_len)
@@ -437,10 +450,11 @@ function enqueueAnimation(svg_data, post_data, animation_data) {
                 .attr("dx", svg_data.rect_len / 4.5)
                 .attr("dy", svg_data.rect_len / 1.5)
                 .attr("fill", "white")
+                .attr("font-size", svg_data.font_size)
                 .text(post_data.enqueue_num)
                 .transition()
                 .duration(animation_data.duration)
-                .attr("fill", "#333333");
+                .attr("fill", svg_data.rect_num_fill);
         };
         animation_data.enqueueframe.push(temp_frame);
 
@@ -460,7 +474,7 @@ function enqueueAnimation(svg_data, post_data, animation_data) {
                 .attr("width", 0)
                 .attr("height", 0)
                 .attr("fill", "white")
-                .attr("stroke", "#003399")
+                .attr("stroke", svg_data.rect_stoke)
                 .attr("stroke-width", 3)
                 .transition()
                 .duration(animation_data.duration / 2)
@@ -490,7 +504,7 @@ function dequeueAnimation(svg_data, post_data, animation_data) {
         svg_data.m_svg.select("#m_rect0")
             .transition()
             .duration(animation_data.duration)
-            .attr("fill", "#3ec1d3")
+            .attr("fill", svg_data.dequeue_rect_fill)
             .attr("width", 0)
             .attr("height", 0);
     };
@@ -663,7 +677,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
         })
         .attr("width", width)
         .attr("height", rect_height)
-        .attr("fill", "#7f4a88");
+        .attr("fill", animation_data.code_rect_fill);
 
     if (post_data.operate_type === 0) {
         let temp = code_text[0].split(",");
@@ -705,7 +719,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
     code_svg.selectAll(".code_rect" + now_step)
         .transition()
         .duration(500)
-        .attr("fill", "#ca82f8");
+        .attr("fill", animation_data.choose_rect_fill);
 
     hintAnimation(post_data, animation_data, word_id); // 提示窗口动画
 }
@@ -732,7 +746,7 @@ function hintAnimation(post_data, animation_data, word_id) {
         .attr('x', width / 12)
         .attr('y', height / 2)
         .attr("dy", height / 9)
-        .attr("fill", "#5c2626")
+        .attr("fill", animation_data.hint_text_fill)
         .text(temp);
 }
 

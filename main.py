@@ -31,6 +31,10 @@ def queue_page():
     return render_template('QueuePage.html')
 
 
+@app.route('/bisearch_page')
+def bisearch_page():
+    return render_template('BisearchPage.html')
+
 # ====================页面跳转=========================
 
 
@@ -145,6 +149,12 @@ def queue_method():
 
     return jsonify(data)
 
+
+@app.route('/bisearch_method', methods=['POST', 'GET'])
+def bisearch_method():
+    data = request.get_json()
+
+    return data
 
 # =======================前后端数据交互==============================
 

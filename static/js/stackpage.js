@@ -43,7 +43,7 @@ function inputWindow() {
     $('#push_bt').click(function () {
         let push_num = $('#push_num').val();
         let result = checkError(post_data, push_num, 2);
-        if(post_data.array_data.length === 10){
+        if (post_data.array_data.length === 10) {
             clearAllTimer(animation_data, true);                //清除所有定时器
             clearAllTimer(animation_data, false);               //初始化动画数据包
             resetSvgData(svg_data);                                     //重置svg_data
@@ -185,6 +185,11 @@ function resetSvgData(svg_data) {
     svg_data.width = width;
     svg_data.height = height;
     svg_data.rect_len = 70;        //矩形长度
+    svg_data.font_size = 20;            //主视图字体大小
+    svg_data.rect_stoke = "#006633";
+    svg_data.rect_num_fill = "#663300";
+    svg_data.push_rect_fill = "#FFCC33";
+    svg_data.pop_rect_fill = "#393e46";
 }
 
 /**
@@ -227,6 +232,9 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.duration = 1500;     //动画时间基数
         animation_data.is_push = false;   //是否执行入栈标记
         animation_data.is_pop = false;   //是否执行出栈标记
+        animation_data.code_rect_fill = "#7f4a88";
+        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["栈创建完成", "栈顶指针上移", "栈顶元素赋值", "栈顶元素置空", "栈顶指针下移", "请点击开始按钮开始运行算法"];
     }
 }
@@ -272,7 +280,7 @@ function drawStack(array_data, svg_data) {
         .attr("width", svg_data.rect_len)
         .attr("height", svg_data.rect_len)
         .attr("fill", "white")
-        .attr("stroke", "#006633")
+        .attr("stroke", svg_data.rect_stoke)
         .attr("stroke-width", 3);
 
     svg.selectAll('g')                              // 栈数字绘制
@@ -287,7 +295,8 @@ function drawStack(array_data, svg_data) {
         })
         .attr("dx", svg_data.rect_len / 4.5)
         .attr("dy", svg_data.rect_len / 1.5)
-        .attr("fill", "#663300")
+        .attr("fill", svg_data.rect_num_fill)
+        .attr("font-size", svg_data.font_size)
         .text(function (d) {
             return d;
         });
@@ -300,6 +309,7 @@ function drawStack(array_data, svg_data) {
         .attr("dx", -svg_data.rect_len)
         .attr("dy", svg_data.rect_len / 1.5)
         .attr("fill", "red")
+        .attr("font-size", svg_data.font_size)
         .text("top->");
 
     svg_data.m_svg = svg;
@@ -325,6 +335,7 @@ function pushAnimation(svg_data, post_data, animation_data) {
                 .attr("dx", -svg_data.rect_len)
                 .attr("dy", svg_data.rect_len / 1.5)
                 .attr("fill", "white")
+                .attr("font-size", svg_data.font_size)
                 .text("top->")
                 .transition()
                 .duration(animation_data.duration)
@@ -358,17 +369,18 @@ function pushAnimation(svg_data, post_data, animation_data) {
                 .attr("dx", svg_data.rect_len / 4.5)
                 .attr("dy", svg_data.rect_len / 1.5)
                 .attr("fill", "white")
+                .attr("font-size", svg_data.font_size)
                 .text(post_data.push_num);
 
             svg_data.m_svg.select('#temp_rect')
                 .transition()
                 .duration(animation_data.duration)
-                .attr("stroke", "#006633");
+                .attr("stroke", svg_data.rect_stoke);
 
             svg_data.m_svg.select('#temp_text')
                 .transition()
                 .duration(animation_data.duration)
-                .attr("fill", "#663300");
+                .attr("fill", svg_data.rect_num_fill);
         };
         animation_data.pushframe.push(temp_frame);
     }
@@ -382,8 +394,8 @@ function pushAnimation(svg_data, post_data, animation_data) {
                 .attr("y", svg_data.rect_y[0])
                 .attr("width", 0)
                 .attr("height", 0)
-                .attr("fill", "#FFCC33")
-                .attr("stroke", "#006633")
+                .attr("fill", svg_data.push_rect_fill)
+                .attr("stroke", svg_data.rect_stoke)
                 .attr("stroke-width", 3)
                 .transition()
                 .duration(animation_data.duration / 2)
@@ -398,10 +410,11 @@ function pushAnimation(svg_data, post_data, animation_data) {
                 .attr("dx", svg_data.rect_len / 4.5)
                 .attr("dy", svg_data.rect_len / 1.5)
                 .attr("fill", "white")
+                .attr("font-size", svg_data.font_size)
                 .text(post_data.push_num)
                 .transition()
                 .duration(animation_data.duration)
-                .attr("fill", "#663300");
+                .attr("fill", svg_data.rect_num_fill);
 
 
             for (let index = 0; index < post_data.array_data.length; index++) {
@@ -435,7 +448,7 @@ function popAnimation(svg_data, post_data, animation_data) {
     if (post_data.array_data.length === 0) {
         temp_frame = function () {
             svg_data.m_svg.select("#m_rect0")
-                .attr("fill", "#FFCC33")
+                .attr("fill", svg_data.pop_rect_fill)
                 .transition()
                 .duration(animation_data.duration / 2)
                 .attr("fill", "white");
@@ -458,7 +471,7 @@ function popAnimation(svg_data, post_data, animation_data) {
     }
     else {
         temp_frame = function () {
-            svg_data.m_svg.selectAll("#m_rect0").attr("fill", "#FFCC33");
+            svg_data.m_svg.selectAll("#m_rect0").attr("fill", svg_data.pop_rect_fill);
             svg_data.m_svg.selectAll(".m_rect0")
                 .transition()
                 .duration(animation_data.duration / 2)
@@ -632,7 +645,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
         })
         .attr("width", width)
         .attr("height", rect_height)
-        .attr("fill", "#7f4a88");
+        .attr("fill", animation_data.code_rect_fill);
 
     if (post_data.operate_type === 0) {
         let temp = code_text[0].split(",");
@@ -674,7 +687,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
     code_svg.selectAll(".code_rect" + now_step)
         .transition()
         .duration(500)
-        .attr("fill", "#ca82f8");
+        .attr("fill", animation_data.choose_rect_fill);
 
     hintAnimation(post_data, animation_data, word_id); // 提示窗口动画
 }
@@ -701,7 +714,7 @@ function hintAnimation(post_data, animation_data, word_id) {
         .attr('x', width / 12)
         .attr('y', height / 2)
         .attr("dy", height / 9)
-        .attr("fill", "#5c2626")
+        .attr("fill", animation_data.hint_text_fill)
         .text(temp);
 }
 
