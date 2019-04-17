@@ -23,7 +23,7 @@ function inputWindow() {
             post_data = JSON.parse(JSON.stringify(temp));   //更新数据包
             drawArray(post_data.array_data, svg_data);        //主视图绘制
             drawCode(post_data, animation_data, 0, 0);      //伪代码及提示窗口绘制
-            drawProgress(animation_data);                   //重置进度条
+            drawProgress(animation_data, 0);                   //重置进度条
         }
     });
     ///////////////////////////////--------随机创建--------///////////////////////////////////////
@@ -35,7 +35,7 @@ function inputWindow() {
         post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
         drawArray(post_data.array_data, svg_data);
         drawCode(post_data, animation_data, 0, 0);
-        drawProgress(animation_data);                       // 进度条重置
+        drawProgress(animation_data, 0);                       // 进度条重置
     });
     ///////////////////////////////--------查找功能--------///////////////////////////////////////
     $('#search_bt').click(function () {
@@ -49,7 +49,7 @@ function inputWindow() {
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
             drawArray(post_data.array_data, svg_data);            //重绘
-            drawProgress(animation_data);                       // 进度条重置
+            drawProgress(animation_data, 0);                       // 进度条重置
             drawCode(post_data, animation_data, 2, 0);
             createAnimation(svg_data, post_data, animation_data); // 查找动画生成
         }
@@ -69,7 +69,7 @@ function inputWindow() {
             }
         }
         else
-            errorWarning(15);
+            errorWarning(11);
     });
     ///////////////////////////////--------步进功能--------////////////////////////////////////
     $('#next_bt').click(function () {
@@ -89,12 +89,16 @@ function inputWindow() {
             }
         }
         else
-            errorWarning(15);
+            errorWarning(11);
     });
     ///////////////////////////////--------修改功能--------///////////////////////////////////////
     $('#change_bt').click(function () {
         let change_data = $('#change_num').val();
         let result = checkError(post_data, change_data, 3);
+        if (result[0] > (post_data.array_data.length - 1)) {
+            errorWarning(7);
+            result = false;
+        }
         if (result !== false) {
             clearAllTimer(animation_data, false);
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 2, -1, -1, result[0], result[1]);
@@ -105,7 +109,7 @@ function inputWindow() {
                 let temp = postData(post_data);
                 post_data = JSON.parse(JSON.stringify(temp));     //更新数据包
                 drawCode(post_data, animation_data, 1, 0);        //伪代码生成
-                drawProgress(animation_data);                     //重置进度条
+                drawProgress(animation_data, 0);                     //重置进度条
                 clearTimeout(change_timer);
             }, animation_data.duration / 2);
         }
@@ -280,7 +284,7 @@ function createAnimation(svg_data, post_data, animation_data) {
                 .duration(animation_data.duration / 2)
                 .attr("fill", svg_data.text_change_fill);
 
-            drawProgress(animation_data);       // 进度条
+            drawProgress(animation_data, animation_data.frame.length);       // 进度条
             if (i >= 1) {
                 svg_data.m_svg.selectAll(".m_rect" + (i - 1))
                     .transition()

@@ -23,8 +23,6 @@ function hintAnimation(post_data, animation_data, word_id) {
         .text(temp);
 }
 
-
-
 /**
  * @description div隐藏动画绘制
  */
@@ -74,19 +72,21 @@ function hideAnimation() {
 /**
  * @description 进度条绘制
  * @param {Object} animation_data
+ * @param {number} frame_len 总帧数，0表示清空
  */
-function drawProgress(animation_data) {
+function drawProgress(animation_data, frame_len) {
+    if (frame_len === 0)
+        $("#play_bt").attr("class", "play");
     d3.select("#progress_svg").remove();
     let screen = $("#progress");
     let width = screen.width();
     let height = screen.height();
     let rect_length;
-    if (animation_data.frame.length > 0) {
-        rect_length = width / animation_data.frame.length;
+    if (frame_len === 0) {
+        rect_length = 0;
     }
     else {
-        rect_length = 0;
-        $("#play_bt").attr("class", "play");
+        rect_length = width / frame_len;
     }
     d3.select("#progress")
         .append("svg")
@@ -111,10 +111,11 @@ function drawProgress(animation_data) {
  * @description 错误检查函数
  * @param {object} post_data
  * @param {string||number} value 待检查的值
- * @param {number} value_type 值的类型，1：数组 2：单值 3：下标和值
+ * @param {number} value_type 值的类型，1：数组 2：单值 3：位置和值(位置范围0 - length)
+ * @param list_len 数组最大长度
  * @return {boolean||number} 错误(false)或者正确结果
  */
-function checkError(post_data, value, value_type) {
+function checkError(post_data, value, value_type, list_len = 10) {
     let error_type = -1;                    // 错误类型
     if (value_type === 1) {                 // 数组
         let array_num;
@@ -123,8 +124,8 @@ function checkError(post_data, value, value_type) {
         }
         else {
             array_num = value.split(',');
-            if (array_num.length > 10) {
-                error_type = 11;            // 数组长度超过10
+            if (array_num.length > list_len) {
+                error_type = 5;            // 数组长度超过10
             }
             else {
                 for (let i = 0; i < array_num.length; i++) {
@@ -154,7 +155,7 @@ function checkError(post_data, value, value_type) {
     }
     else if (value_type === 2) {            // 单值
         if (post_data.array_data === null) {
-            error_type = 12;                 // 没有数组数据
+            error_type = 4;                 // 没有数组数据
         }
         else if (value === "") {
             error_type = 1;                // 空值
@@ -177,7 +178,7 @@ function checkError(post_data, value, value_type) {
     else if (value_type === 3) {            //下标，值
         let temp_num;
         if (post_data.array_data === null) {
-            error_type = 12;                 // 没有数组数据
+            error_type = 4;                 // 没有数组数据
         }
         else if (value === "") {
             error_type = 1;                // 空值
@@ -185,7 +186,7 @@ function checkError(post_data, value, value_type) {
         else {
             temp_num = value.split(',');
             if (temp_num.length !== 2) {
-                error_type = 13;            // 输入数据长度错误
+                error_type = 6;            // 输入数据长度错误
             }
             else {
                 for (let i = 0; i < temp_num.length; i++) {
@@ -203,8 +204,8 @@ function checkError(post_data, value, value_type) {
                         break;
                     }
                 }
-                if (temp_num[0] < 0 || temp_num[0] > post_data.array_data.length - 1) {
-                    error_type = 14;        // 下标超出范围
+                if (temp_num[0] < 0 || temp_num[0] > post_data.array_data.length) {
+                    error_type = 7;        // 下标超出范围
                 }
             }
         }
@@ -233,20 +234,38 @@ function errorWarning(error_type) {
         case 3:
             alert("请输入0到999间的整数");
             break;
+        case 4:
+            alert("请先输入数据结构数据");
+            break;
+        case 5:
+            alert("请输入长度不超过10的数据");
+            break;
+        case 6:
+            alert("位置和修改值只能为一组数");
+            break;
+        case 7:
+            alert("输入位置超出范围");
+            break;
         case 11:
-            alert("请输入长度不超过10的数组");
-            break;
-        case 12:
-            alert("输先输入数组");
-            break;
-        case 13:
-            alert("数组下标和修改值只能为一组数");
-            break;
-        case 14:
-            alert("输入下标超出范围");
-            break;
-        case 15:
             alert("请先执行查找操作");
+            break;
+        case 21:
+            alert("请先执行查找/插入/移除操作");
+            break;
+        case 22:
+            alert("演示链表最大长度为10，无法继续插入");
+            break;
+        case 30:
+            alert("请先执行出入栈操作");
+            break;
+        case 31:
+            alert("演示栈最大长度为10，无法继续入栈");
+            break;
+        case 40:
+            alert("请先执行出入队操作");
+            break;
+        case 41:
+            alert("演示队列最大长度为10，无法继续入队");
             break;
     }
 }

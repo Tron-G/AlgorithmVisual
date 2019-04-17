@@ -26,36 +26,44 @@ class Search(Algorithm):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create()
+            self.__data = self.random_create(15, 999)
         else:
             self.__data = self.input_create(input_list)
-        print(self.__data)
+        # print(self.__data)
+
+    def get_data(self):
+        self.__data.sort()
+        return self.__data
 
     # 折半查找
     # 数据格式： [{下标:数字},{下标:数字}...{1:1}或{0:0}是否成功的标志位]
     def binsearch(self, num):
         self.__data.sort()  # 排序处理
-        print(self.__data)
+        # print(self.__data)
         result = []
         length = len(self.__data)
         low = 0
         high = length - 1
+        mid = (low + high) // 2
+        # result.append([low, mid, high])
         find = False
         while low <= high:
+            # result.append([low, mid, high])
             mid = (low + high) // 2
+            result.append([low, mid, high])
             if self.__data[mid] == num:
-                result.append({mid: self.__data[mid]})
+                # result.append([low, mid, high])
                 find = True
                 break
-            if self.__data[mid] > num:
+            if num < self.__data[mid]:
                 high = mid - 1
             else:
                 low = mid + 1
-            result.append({mid: self.__data[mid]})
+
         if find:  # 最后一位为查找是否成功的标志位
-            result.append({1: 1})
+            result.append([mid])
         else:
-            result.append({0: 0})
+            result.append([-1])
         return result
 
     # 哈希表,开放地址法
@@ -113,8 +121,8 @@ class Search(Algorithm):
         return result
 
 
-# bi = Search()
+# bi = Search([11,15,17,29,44,2,58,64,7])
 # print(bi.hash_table())
 # print(bi.binary_sort_tree())
-# print(bi.binsearch(57))
+# print(bi.binsearch(11))
 

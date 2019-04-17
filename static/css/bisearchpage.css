@@ -161,7 +161,7 @@ html body {
 /*提示窗口*/
 #hint_page {
     position: absolute;
-    bottom: 29%;
+    bottom: 32%;
     right: 0;
     width: 23%;
     height: 8%;
@@ -172,7 +172,7 @@ html body {
     background: #aacfd0;
     font-weight: bold;
     font-family: "KaiTi", serif;
-    font-size: 18px;
+    font-size: 16px;
     left: 0;
     top: 0;
     width: 85%;
@@ -212,7 +212,7 @@ html body {
     bottom: 1%;
     right: 0;
     width: 23%;
-    height: 27%;
+    height: 30%;
 }
 
 #code_window {
