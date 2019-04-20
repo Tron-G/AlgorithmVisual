@@ -31,8 +31,11 @@ class Search(Algorithm):
             self.__data = self.input_create(input_list)
         # print(self.__data)
 
-    def get_data(self):
+    def get_sort_data(self):
         self.__data.sort()
+        return self.__data
+
+    def get_data(self):
         return self.__data
 
     # 折半查找
@@ -72,20 +75,35 @@ class Search(Algorithm):
         length = len(self.__data)
         hash = [-1] * length
         result = []
-        if length % 2 == 0:
-            p = length - 1
-        else:
-            p = length
+        p = 7
         for i in range(0, length):
             temp = [self.__data[i]]
-            position = self.__data[i] % p
+            position = (self.__data[i] % p) % length
             temp.append(position)
             while hash[position] != -1:
                 position = (position + 1) % length
                 temp.append(position)
             hash[position] = self.__data[i]
             result.append(temp)
+            # print(temp)
         result.append(hash)
+        return result
+
+    # result:[寻找过程,是否成功]
+    def hash_search(self, num):
+        result = []
+        key = (num % 7) % len(self.__data)
+        index = 0
+        while index < len(self.__data):
+            result.append(key)
+            if self.__data[key] == num:
+                result.append(1)
+                break
+            else:
+                key = (key + 1) % len(self.__data)
+                index = index + 1
+        if index == len(self.__data):
+            result.append(-1)
         return result
 
     # 二叉排序树,list 储存树结构，现在问题：初始化空树，空间浪费太多
@@ -121,8 +139,8 @@ class Search(Algorithm):
         return result
 
 
-# bi = Search([11,15,17,29,44,2,58,64,7])
+# bi = Search([14,1,23,68,20,19])
 # print(bi.hash_table())
 # print(bi.binary_sort_tree())
 # print(bi.binsearch(11))
-
+# print(bi.hash_search(1))

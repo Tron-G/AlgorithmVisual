@@ -38,7 +38,6 @@ function inputWindow() {
         drawProgress(animation_data, 0);                //重置进度条
         // console.log(post_data);
         drawCode(post_data, animation_data, 0, 0);
-
     });
     ///////////////////////////////--------查找功能--------///////////////////////////////////////
     $('#search_bt').click(function () {

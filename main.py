@@ -36,6 +36,10 @@ def queue_page():
 def bisearch_page():
     return render_template('BisearchPage.html')
 
+
+@app.route('/hash_page')
+def hash_page():
+    return render_template('HashPage.html')
 # ====================页面跳转=========================
 
 
@@ -157,12 +161,12 @@ def bisearch_method():
 
     if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
         bisearch = algorithm.Search()
-        data["array_data"] = bisearch.get_data()
+        data["array_data"] = bisearch.get_sort_data()
 
     elif data["input_tpye"] == 0 and data["operate_type"] == 0:
         data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
         bisearch = algorithm.Search(data["array_data"])
-        data["array_data"] = bisearch.get_data()
+        data["array_data"] = bisearch.get_sort_data()
 
     if data["operate_type"] == 1:  # 查找
         bisearch = algorithm.Search(data["array_data"])
@@ -171,6 +175,28 @@ def bisearch_method():
 
     return jsonify(data)
 
+
+@app.route('/hash_method', methods=['POST', 'GET'])
+def hash_method():
+    data = request.get_json()
+
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
+        hash = algorithm.Search()
+        data["create_process"] = hash.hash_table()
+        data["array_data"] = hash.get_data()
+
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+        hash = algorithm.Search(data["array_data"])
+        data["create_process"] = hash.hash_table()
+        data["array_data"] = hash.get_data()
+
+    if data["operate_type"] == 1:  # 查找
+        hash = algorithm.Search(data["create_process"][len(data["create_process"]) - 1])
+        data["search_num"] = int(data["search_num"])
+        data["search_process"] = hash.hash_search(data["search_num"])
+
+    return jsonify(data)
 # =======================前后端数据交互==============================
 
 
