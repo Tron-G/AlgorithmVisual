@@ -13,7 +13,7 @@ function inputWindow() {
     ///////////////////////////////--------手动输入创建--------///////////////////////////////////////
     $('#submit_bt').click(function () {
         let user_data = $('#user_data').val();
-        let result = checkError(post_data, user_data, 1);   //输入错误检查
+        let result = checkError(post_data, user_data, 1, 15);   //输入错误检查
         if (result !== false) {
             clearAllTimer(animation_data, true);            //清除动画定时器
             clearAllTimer(animation_data, false);           //animation_data初始化

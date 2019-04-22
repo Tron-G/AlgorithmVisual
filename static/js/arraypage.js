@@ -437,9 +437,9 @@ function drawCode(post_data, animation_data, word_id, now_step) {
     }
     else {
         if (post_data.input_tpye === 0)
-            code_text = ["for(i = 0; i < length; i++){,a[i] = input(),}"];
+            code_text = ["for i = 0 to length,a[i] = input()"];
         else
-            code_text = ["for(i = 0; i < random_length; i++){,a[i] = random(),}"];
+            code_text = ["for i = 0 to length,a[i] = random()"];
     }
 
     d3.select("#code_svg").remove();

@@ -124,8 +124,11 @@ function checkError(post_data, value, value_type, list_len = 10) {
         }
         else {
             array_num = value.split(',');
-            if (array_num.length > list_len) {
+            if (array_num.length > list_len && list_len === 10) {
                 error_type = 5;            // 数组长度超过10
+            }
+            else if(array_num.length > list_len && list_len === 15){
+                error_type = 8;            // 数组长度超过15
             }
             else {
                 for (let i = 0; i < array_num.length; i++) {
@@ -246,6 +249,9 @@ function errorWarning(error_type) {
         case 7:
             alert("输入位置超出范围");
             break;
+        case 8:
+            alert("请输入长度不超过15的数据");
+            break;
         case 11:
             alert("请先执行查找操作");
             break;
@@ -266,6 +272,9 @@ function errorWarning(error_type) {
             break;
         case 41:
             alert("演示队列最大长度为10，无法继续入队");
+            break;
+        case 50:
+            alert("请先执行排序操作");
             break;
     }
 }

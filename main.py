@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import data_structure
 import algorithm
+import sort
 
 app = Flask(__name__, static_folder='static')
 
@@ -40,6 +41,11 @@ def bisearch_page():
 @app.route('/hash_page')
 def hash_page():
     return render_template('HashPage.html')
+
+
+@app.route('/insert_sort_page')
+def insert_sort_page():
+    return render_template('InsertSortPage.html')
 # ====================页面跳转=========================
 
 
@@ -197,6 +203,26 @@ def hash_method():
         data["search_process"] = hash.hash_search(data["search_num"])
 
     return jsonify(data)
+
+
+@app.route('/insert_sort_method', methods=['POST', 'GET'])
+def insert_sort_method():
+    data = request.get_json()
+
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
+        insert_sort = sort.Sort()
+        data["array_data"] = insert_sort.get_data()
+
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+
+    if data["operate_type"] == 1:  # 排序
+        insert_sort = sort.Sort(data["array_data"])
+        data["sort_process"] = insert_sort.direct_insert_sort()
+
+    return jsonify(data)
+
+
 # =======================前后端数据交互==============================
 
 

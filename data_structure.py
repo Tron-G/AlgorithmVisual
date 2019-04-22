@@ -47,6 +47,7 @@ class Array(DataStructure):
     # 修改下标为Index处的值
     def assign(self, index, value):
         self.__data[index] = value
+
     pass
 
 
@@ -96,6 +97,7 @@ class LinkedList(DataStructure):
             else:
                 temp_data.append(self.__data[i])
         self.__data = temp_data
+
     pass
 
 
@@ -139,6 +141,7 @@ class Stack(DataStructure):
         for i in range(0, len(self.__data)):
             temp.append(self.__data[i])
         self.__data = temp
+
     pass
 
 
@@ -181,6 +184,7 @@ class Queue(DataStructure):
         # if self.__front < self.__rear:
         #     self.__front = self.__front + 1
         self.__data.pop(0)
+
     pass
 
 
@@ -218,7 +222,7 @@ class BinaryTree(DataStructure):
         return self.__data
 
     # 先序遍历
-    # result格式：[{序号：值}...],按照访问次序排列
+    # result格式：[[序号,值]...],按照访问次序排列
     def preorder(self):
         result = []
         temp = []
@@ -226,22 +230,22 @@ class BinaryTree(DataStructure):
         length = len(self.__data)
         if length > 0:
             top = top + 1
-            temp.append(dict({0: self.__data[0]}))
+            temp.append([0, self.__data[0]])
             while top > -1:
                 i = temp[top]
                 top = top - 1
                 temp.pop()
                 result.append(i)
-                left = (list(i.keys())[0] + 1) * 2 - 1
-                right = (list(i.keys())[0] + 1) * 2
+                left = (i[0] + 1) * 2 - 1
+                right = (i[0] + 1) * 2
                 if right < length:
                     if self.__data[right] != -1:
                         top = top + 1
-                        temp.append(dict({right: self.__data[right]}))
+                        temp.append([right, self.__data[right]])
                 if left < length:
                     if self.__data[left] != -1:
                         top = top + 1
-                        temp.append(dict({left: self.__data[left]}))
+                        temp.append([left, self.__data[left]])
         return result
 
     # 中序遍历
@@ -255,10 +259,10 @@ class BinaryTree(DataStructure):
             while top > -1 or i < length:
                 while i < length:
                     top = top + 1
-                    temp.append(dict({i: self.__data[i]}))
+                    temp.append([i, self.__data[i]])
                     i = (i + 1) * 2 - 1
                 if top > -1:
-                    i = list(temp[top].keys())[0]
+                    i = temp[top][0]
                     if self.__data[i] != -1:
                         result.append(temp[top])
                     top = top - 1
@@ -272,21 +276,20 @@ class BinaryTree(DataStructure):
         temp = []
         top = -1
         i = 0
-        left_visit = False
         length = len(self.__data)
         if length > 0:
             while True:
                 while i < length:
                     top = top + 1
-                    temp.append(dict({i: self.__data[i]}))
+                    temp.append([i, self.__data[i]])  # 左子树依次进栈
                     i = (i + 1) * 2 - 1
                 p = -1
                 left_visit = True
                 while top != -1 and left_visit:
-                    i = list(temp[top].keys())[0]
-                    if (i + 1) * 2 == p or (i + 1) * 2 >= length:
+                    i = temp[top][0]
+                    if (i + 1) * 2 == p or (i + 1) * 2 >= length:  # 右子树为空
                         if self.__data[i] != -1:
-                            result.append(temp[top])
+                            result.append(temp[top])  # 访问当前节点
                         top = top - 1
                         temp.pop()
                         p = i
@@ -302,8 +305,96 @@ class BinaryTree(DataStructure):
 # bt = BinaryTree([1,2,3,4,5,-1,-1,-1,6])
 # bt = BinaryTree([1,2,3,-1,4,5])
 # bt = BinaryTree([1, 2, 3, 4, 5, -1, -1, -1, 6])
+# bt = BinaryTree([3, 5, 8, 17, 13, 20, 23, 2, -1, 16, 11])
+# bt = BinaryTree([3,7,8,9,-1,-1,15,10,-1,-1,-1,-1,-1,1])
 # bt = BinaryTree()
+# bb = bt.preorder()
 # re = bt.postorder()
+
+
 # re = bt.inorder()
 # print(re)
 #
+
+
+def get_preorder_rode(data):
+    result = []
+    for idx, i in enumerate(data):
+        tmp_result = [0]
+        if idx == 0:
+            result.append(tmp_result)
+            continue
+        record_pre = present = i[0]
+        begin = record_last = last = data[idx - 1][0]
+        count = 0
+
+        while True:
+
+            if last % 2 == 1:
+                last += 1
+            if present % 2 == 1:
+                present += 1
+            root_last = int(last / 2) - 1
+            root_pre = int(present / 2) - 1
+
+            if root_pre == record_last:
+                tmp_result[0] = begin
+                tmp_result.append(record_pre)
+                break
+            else:
+                record_last = last = root_last
+                tmp_result.append(record_last)
+
+        result.append(tmp_result)
+    return result
+
+
+def get_postorder_rode(data):
+    def return_root(x):
+        if x % 2 == 1:
+            x += 1
+        return int(x / 2) - 1
+
+    result = []
+    for idx, i in enumerate(data):
+        tmp_result = [i[0]]
+        node = i[0]
+        if idx == 0:
+            while True:
+                if node != 0:
+                    node = return_root(node)
+                    tmp_result.insert(0, node)
+                else:
+                    break
+            result.append(tmp_result)
+            continue
+        pre_node = i[0]
+        last_node = data[idx - 1][0]
+        tmp_result = []
+        pre_result = [i[0]]
+        last_result = [data[idx - 1][0]]
+        count = 0
+        while True:
+
+            if return_root(last_node) == pre_node or return_root(pre_node) == last_node:
+                break
+            if return_root(pre_node) == return_root(last_node):
+                tmp_result.append(return_root(pre_node))
+                break
+            else:
+                pre_node = return_root(pre_node)
+                last_node = return_root(last_node)
+                pre_result.insert(0, pre_node)
+                last_result.append(last_node)
+
+        if tmp_result is not None:
+            tmp_result = last_result.extend(tmp_result)
+        if tmp_result is None:
+            tmp_result = last_result
+        # print(tmp_result, last_result, pre_result)
+        tmp_result.extend(pre_result)
+        result.append(tmp_result)
+    return result
+
+
+# print(get_postorder_rode(re))
