@@ -113,9 +113,10 @@ function drawProgress(animation_data, frame_len) {
  * @param {string||number} value 待检查的值
  * @param {number} value_type 值的类型，1：数组 2：单值 3：位置和值(位置范围0 - length)
  * @param list_len 数组最大长度
+ * @param max_num 最大数值
  * @return {boolean||number} 错误(false)或者正确结果
  */
-function checkError(post_data, value, value_type, list_len = 10) {
+function checkError(post_data, value, value_type, list_len = 10, max_num = 999) {
     let error_type = -1;                    // 错误类型
     if (value_type === 1) {                 // 数组
         let array_num;
@@ -138,9 +139,12 @@ function checkError(post_data, value, value_type, list_len = 10) {
                     if (isNaN(array_num[i]) === true || array_num[i].indexOf(" ") !== -1) {
                         error_type = 2;    // 含有非法字符
                     }
-                    else if (array_num[i] < 0 || array_num[i] > 999
+                    else if (array_num[i] < 0 || array_num[i] > max_num
                         || array_num[i].indexOf('.') !== -1) {
-                        error_type = 3;    // 值超出范围或非整数
+                        if(max_num === 999)
+                            error_type = 3;    // 值超出范围或非整数
+                        else if(max_num === 100)
+                            error_type = 9;
                     }
                     if (error_type !== -1) {
                         break;
@@ -166,7 +170,7 @@ function checkError(post_data, value, value_type, list_len = 10) {
         else if (isNaN(value) === true || value.indexOf(" ") !== -1) {
             error_type = 2;                // 含有非法字符
         }
-        else if (value < 0 || value > 999
+        else if (value < 0 || value > max_num
             || value.indexOf('.') !== -1) {
             error_type = 3;                // 值超出范围或非整数
         }
@@ -199,7 +203,7 @@ function checkError(post_data, value, value_type, list_len = 10) {
                     if (isNaN(temp_num[i]) === true || temp_num[i].indexOf(" ") !== -1) {
                         error_type = 2;    // 含有非法字符
                     }
-                    else if (temp_num[i] < 0 || temp_num[i] > 999
+                    else if (temp_num[i] < 0 || temp_num[i] > max_num
                         || temp_num[i].indexOf('.') !== -1) {
                         error_type = 3;    // 值超出范围或非整数
                     }
@@ -251,6 +255,9 @@ function errorWarning(error_type) {
             break;
         case 8:
             alert("请输入长度不超过15的数据");
+            break;
+        case 9:
+            alert("请输入0到100间的整数");
             break;
         case 11:
             alert("请先执行查找操作");

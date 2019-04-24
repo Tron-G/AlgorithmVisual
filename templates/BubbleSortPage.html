@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>队列</title>
-    <link rel="stylesheet" href="../static/css/queuepage.css">
+    <title>冒泡排序</title>
+    <link rel="stylesheet" href="../static/css/bubblesortpage.css">
     <link rel="stylesheet" href="../static/css/navigation.css">
     <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
 </head>
@@ -20,7 +20,6 @@
                         <span>AlgorithmVis</span>
                     </a>
                 </li>
-
                 <li class="first">
                     <div class="d-firstNav s-firstNav clearfix">
                         <i class="fa fa-bars"></i>
@@ -138,17 +137,13 @@
             {#输入窗口#}
             <div id="input_page">
                 <div id="custom_tool">
-                    <span>队列 :</span>
-                    <input type="text" placeholder="例：1,2,3,4,5" class="inputs" id="user_data" value="">
+                    <span>创建 :</span>
+                    <input type="text" placeholder="数组" class="inputs" id="user_data" value="">
                     <button class="button" id="submit_bt">创建</button>
                     <button class="button" id="random_bt">随机</button>
                     <br>
-                    <span>入队 :</span>
-                    <input type="text" placeholder="值" class="inputs" id="enqueue_num" value="">
-                    <button class="button" id="enqueue_bt">入队</button>
-                    <br>
-                    <span>出队 :</span>
-                    <button class="button" id="dequeue_bt">出队</button>
+                    <span>插入排序 :</span>
+                    <button class="button" id="sort_bt">排序</button>
                     <br>
                 </div>
             </div>
@@ -178,6 +173,6 @@
 <script type="text/javascript" src="../static/lib/d3/d3.js"></script>
 <script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="../static/js/TOOL.js"></script>
-<script type="text/javascript" src="../static/js/queuepage.js"></script>
+<script type="text/javascript" src="../static/js/bubblesortpage.js"></script>
 <script type="text/javascript" src="../static/js/navigation.js"></script>
 </html>

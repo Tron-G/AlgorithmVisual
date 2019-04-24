@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import copy
+
 from algorithm import Algorithm
 
 
@@ -9,7 +11,7 @@ class Sort(Algorithm):
     # 数据初始化
     def __init__(self, input_list=None):
         if input_list is None:
-            self.__data = self.random_create(15, 999)
+            self.__data = self.random_create(15, 100)
         else:
             self.__data = self.input_create(input_list)
         print(self.__data)
@@ -43,6 +45,21 @@ class Sort(Algorithm):
         result.append(sort_list)
         return result
 
+    def bubble_sort(self):
+        result = []
+        tep = copy.deepcopy(self.__data)
+        for i in range(len(tep) - 1):  # 这个循环负责设置冒泡排序进行的次数
+            temp1 = []
+            for j in range(len(tep) - i - 1):  # j为列表下标
+                temp = []
+                if tep[j] > tep[j + 1]:
+                    temp.append(i)
+                    temp.append(j)
+                    temp.append(j + 1)
+                    tep[j], tep[j + 1] = tep[j + 1], tep[j]
+                    temp1.append(temp)
+            result.append(temp1)
+        return result
 
-# ss = Sort([19, 14, 23, 1, 68, 20])
-# print(ss.direct_insert_sort())
+# ss = Sort([5,4,3,2,1])
+# print(ss.bubble_sort())
