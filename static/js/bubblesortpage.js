@@ -166,7 +166,6 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.is_pause = true;     //暂停标记，默认暂停
         animation_data.is_next = false;     //执行步进标记
         animation_data.sortframe = [];     //排序动画函数缓存器
-        animation_data.sorted = [];
         animation_data.duration = 1000;       //动画时间基数
         animation_data.is_sort = false;   //是否执行排序标记
         animation_data.code_rect_fill = "#4f5d76";

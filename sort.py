@@ -61,5 +61,23 @@ class Sort(Algorithm):
             result.append(temp1)
         return result
 
-# ss = Sort([5,4,3,2,1])
-# print(ss.bubble_sort())
+    def selection_sort(self):
+        result = []
+        tp = copy.deepcopy(self.__data)
+        for i in range(0, len(tp) - 1):
+            min_ = i
+            temp = [i]
+            for j in range(i + 1, len(tp)):
+                if tp[j] <= tp[min_]:
+                    min_ = j
+                    temp.append(j)
+            tp[i], tp[min_] = tp[min_], tp[i]  # swap
+            temp.append(min_)
+            result.append(temp)
+            print(tp)
+
+        return result
+
+
+# ss = Sort()
+# print(ss.selection_sort())

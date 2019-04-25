@@ -51,6 +51,11 @@ def insert_sort_page():
 @app.route('/bubble_sort_page')
 def bubble_sort_page():
     return render_template('BubbleSortPage.html')
+
+
+@app.route('/selection_sort_page')
+def selection_sort_page():
+    return render_template('SelectionSortPage.html')
 # ====================页面跳转=========================
 
 
@@ -242,6 +247,24 @@ def bubble_sort_method():
     if data["operate_type"] == 1:  # 排序
         bubble_sort = sort.Sort(data["array_data"])
         data["sort_process"] = bubble_sort.bubble_sort()
+
+    return jsonify(data)
+
+
+@app.route('/selection_sort_method', methods=['POST', 'GET'])
+def selection_sort_method():
+    data = request.get_json()
+
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
+        selection_sort = sort.Sort()
+        data["array_data"] = selection_sort.get_data()
+
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+
+    if data["operate_type"] == 1:  # 排序
+        selection_sort = sort.Sort(data["array_data"])
+        data["sort_process"] = selection_sort.selection_sort()
 
     return jsonify(data)
 # =======================前后端数据交互==============================
