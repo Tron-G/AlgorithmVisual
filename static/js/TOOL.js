@@ -283,5 +283,11 @@ function errorWarning(error_type) {
         case 50:
             alert("请先执行排序操作");
             break;
+        case 60:
+            alert("输入节点的父节点不能为空");
+            break;
+        case 61:
+            alert("请先执行遍历操作");
+            break;
     }
 }

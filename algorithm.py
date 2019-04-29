@@ -39,7 +39,7 @@ class Search(Algorithm):
         return self.__data
 
     # 折半查找
-    # 数据格式： [{下标:数字},{下标:数字}...{1:1}或{0:0}是否成功的标志位]
+    # 数据格式： [[下标:数字],[下标:数字]...[mid]或[-1]是否成功的标志位]
     def binsearch(self, num):
         self.__data.sort()  # 排序处理
         # print(self.__data)
@@ -108,35 +108,35 @@ class Search(Algorithm):
 
     # 二叉排序树,list 储存树结构，现在问题：初始化空树，空间浪费太多
     # 数据格式： [[数字,寻找过程],[数字,寻找过程]...[二叉排序树]]
-    def binary_sort_tree(self):
-        self.__data = self.random_create(10, 100)
-        length = len(self.__data)
-        print(self.__data)
-        print(length)
-        result = []
-        sort_tree = [-1] * (pow(2, length) - 1)
-        print(len(sort_tree))
-        for i in range(0, length):
-            temp = [self.__data[i]]
-            if i == 0:
-                sort_tree[0] = self.__data[0]
-                position = 0
-                temp.append(position)
-                result.append(temp)
-                continue
-            position = 0
-            temp.append(position)
-            while sort_tree[position] != -1:
-                if self.__data[i] <= sort_tree[position]:
-                    position = (position + 1) * 2 - 1
-                else:
-                    position = (position + 1) * 2
-                temp.append(position)
-            sort_tree[position] = self.__data[i]
-            result.append(temp)
-        print(sort_tree)
-        result.append(sort_tree)
-        return result
+    # def binary_sort_tree(self):
+    #     self.__data = self.random_create(10, 100)
+    #     length = len(self.__data)
+    #     print(self.__data)
+    #     print(length)
+    #     result = []
+    #     sort_tree = [-1] * (pow(2, length) - 1)
+    #     print(len(sort_tree))
+    #     for i in range(0, length):
+    #         temp = [self.__data[i]]
+    #         if i == 0:
+    #             sort_tree[0] = self.__data[0]
+    #             position = 0
+    #             temp.append(position)
+    #             result.append(temp)
+    #             continue
+    #         position = 0
+    #         temp.append(position)
+    #         while sort_tree[position] != -1:
+    #             if self.__data[i] <= sort_tree[position]:
+    #                 position = (position + 1) * 2 - 1
+    #             else:
+    #                 position = (position + 1) * 2
+    #             temp.append(position)
+    #         sort_tree[position] = self.__data[i]
+    #         result.append(temp)
+    #     print(sort_tree)
+    #     result.append(sort_tree)
+    #     return result
 
 
 # bi = Search([14,1,23,68,20,19])

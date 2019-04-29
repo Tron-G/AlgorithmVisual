@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>链表</title>
-    <link rel="stylesheet" href="../static/css/linkpage.css">
+    <title>二叉树</title>
+    <link rel="stylesheet" href="../static/css/binarytreepage.css">
     <link rel="stylesheet" href="../static/css/navigation.css">
     <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
 </head>
@@ -20,7 +20,6 @@
                         <span>AlgorithmVis</span>
                     </a>
                 </li>
-
                 <li class="first">
                     <div class="d-firstNav s-firstNav clearfix">
                         <i class="fa fa-bars"></i>
@@ -138,22 +137,19 @@
             {#输入窗口#}
             <div id="input_page">
                 <div id="custom_tool">
-                    <span>链表 :</span>
-                    <input type="text" placeholder="例：1,2,3,4,5" class="inputs" id="user_data" value="">
+                    <span>建树 :</span>
+                    <input type="text" placeholder="顺序存储(数组)" class="inputs" id="user_data" value="">
                     <button class="button" id="submit_bt">创建</button>
                     <button class="button" id="random_bt">随机</button>
                     <br>
-                    <span>查找 :</span>
-                    <input type="text" placeholder="想要查找的数" class="inputs" id="search_num" value="">
-                    <button class="button" id="search_bt">查找</button>
+                    <span>先序遍历 :</span>
+                    <button class="button" id="preorder_bt">先序遍历</button>
                     <br>
-                    <span>插入 :</span>
-                    <input type="text" placeholder="位置,值" class="inputs" id="insert_num" value="">
-                    <button class="button" id="insert_bt">插入</button>
+                    <span>中序遍历 :</span>
+                    <button class="button" id="inorder_bt">中序遍历</button>
                     <br>
-                    <span>移除 :</span>
-                    <input type="text" placeholder="位置" class="inputs" id="delete_num" value="">
-                    <button class="button" id="delete_bt">移除</button>
+                    <span>后序遍历 :</span>
+                    <button class="button" id="postorder_bt">后序遍历</button>
                     <br>
                 </div>
             </div>
@@ -183,6 +179,6 @@
 <script type="text/javascript" src="../static/lib/d3/d3.js"></script>
 <script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="../static/js/TOOL.js"></script>
-<script type="text/javascript" src="../static/js/linkpage.js"></script>
+<script type="text/javascript" src="../static/js/binarytreepage.js"></script>
 <script type="text/javascript" src="../static/js/navigation.js"></script>
 </html>

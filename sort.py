@@ -14,7 +14,7 @@ class Sort(Algorithm):
             self.__data = self.random_create(15, 100)
         else:
             self.__data = self.input_create(input_list)
-        print(self.__data)
+        # print(self.__data)
 
     def get_data(self):
         return self.__data
@@ -45,6 +45,8 @@ class Sort(Algorithm):
         result.append(sort_list)
         return result
 
+    # 冒泡排序
+    # 数据格式：[[第几次循环,交换下标1，交换下标2].......]
     def bubble_sort(self):
         result = []
         tep = copy.deepcopy(self.__data)
@@ -61,6 +63,8 @@ class Sort(Algorithm):
             result.append(temp1)
         return result
 
+    # 选择排序
+    # 数据格式：[[第几次循环,最小值小标1，最小值小标2...]...]
     def selection_sort(self):
         result = []
         tp = copy.deepcopy(self.__data)
@@ -74,7 +78,7 @@ class Sort(Algorithm):
             tp[i], tp[min_] = tp[min_], tp[i]  # swap
             temp.append(min_)
             result.append(temp)
-            print(tp)
+            # print(tp)
 
         return result
 

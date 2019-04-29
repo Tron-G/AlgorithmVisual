@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, jsonify
 import data_structure
 import algorithm
 import sort
@@ -33,6 +33,11 @@ def queue_page():
     return render_template('QueuePage.html')
 
 
+@app.route('/binary_tree_page')
+def binary_tree_page():
+    return render_template('BinaryTreePage.html')
+
+
 @app.route('/bisearch_page')
 def bisearch_page():
     return render_template('BisearchPage.html')
@@ -60,6 +65,8 @@ def selection_sort_page():
 
 
 # =======================前后端数据交互==============================
+
+# =======================线性结构===================================
 @app.route('/array_method', methods=['POST', 'GET'])
 def array_method():
     data = request.get_json()
@@ -93,16 +100,16 @@ def link_method():
     if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机链表
         m_link = data_structure.LinkedList()
         data["array_data"] = m_link.get_data()
-        print("rd", data)
+        # print("rd", data)
     elif data["input_tpye"] == 0 and data["operate_type"] == 0:
         data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
-        print("ip", data)
+        # print("ip", data)
 
     if data["operate_type"] == 1:  # 查找
         m_link = data_structure.LinkedList(data["array_data"])
         data["search_num"] = int(data["search_num"])
         data["search_pos"] = m_link.search(data["search_num"])
-        print("ss", data)
+        # print("ss", data)
 
     elif data["operate_type"] == 2:  # 插入
         m_link = data_structure.LinkedList(data["array_data"])
@@ -171,6 +178,34 @@ def queue_method():
     return jsonify(data)
 
 
+# =======================二叉树===================================
+@app.route('/binary_tree_method', methods=['POST', 'GET'])
+def binary_tree_method():
+    data = request.get_json()
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
+        bin_tree = data_structure.BinaryTree()
+        data["array_data"] = bin_tree.get_data()
+        data["tree_depth"] = bin_tree.calc_depth()
+
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+        bin_tree = data_structure.BinaryTree(data["array_data"])
+        data["tree_depth"] = bin_tree.calc_depth()
+
+    if data["operate_type"] == 1:  # 先序
+        bin_tree = data_structure.BinaryTree(data["array_data"])
+        data["search_process"] = bin_tree.preorder()
+    elif data["operate_type"] == 2:  # 中序
+        bin_tree = data_structure.BinaryTree(data["array_data"])
+        data["search_process"] = bin_tree.inorder()
+    elif data["operate_type"] == 3:  # 后序
+        bin_tree = data_structure.BinaryTree(data["array_data"])
+        data["search_process"] = bin_tree.postorder()
+
+    return jsonify(data)
+
+
+# =======================查找===================================
 @app.route('/bisearch_method', methods=['POST', 'GET'])
 def bisearch_method():
     data = request.get_json()
@@ -215,6 +250,7 @@ def hash_method():
     return jsonify(data)
 
 
+# =======================排序===================================
 @app.route('/insert_sort_method', methods=['POST', 'GET'])
 def insert_sort_method():
     data = request.get_json()

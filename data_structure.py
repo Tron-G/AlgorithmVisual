@@ -201,17 +201,17 @@ class BinaryTree(DataStructure):
         print(self.__data)
 
     # 随机规则覆写
-    def random_create(self, max_len=16, max_num=100):
-        rand_len = random.randrange(4, max_len)
+    def random_create(self, max_len=16, max_num=999):
+        rand_len = random.randrange(3, max_len)
         rand_data = []
         for i in range(0, rand_len):
             if i == 0:
-                rand_num = random.randrange(1, 100)
+                rand_num = random.randrange(1, max_num)
                 rand_data.append(rand_num)
             else:
                 temp_num = random.randint(1, 10)
-                if temp_num > 3 and rand_data[int((i + 1) / 2) - 1] != -1:
-                    rand_num = random.randrange(1, 100)
+                if temp_num > 2 and rand_data[int((i + 1) / 2) - 1] != -1:
+                    rand_num = random.randrange(1, max_num)
                     rand_data.append(rand_num)
                 else:
                     rand_data.append(-1)
@@ -220,6 +220,28 @@ class BinaryTree(DataStructure):
     # 返回数据
     def get_data(self):
         return self.__data
+
+    # 计算二叉树深度
+    def calc_depth(self):
+        length = len(self.__data)
+        dep = 0
+        if self.__data[0] != -1:
+            dep += 1
+        if length > 1:
+            if self.__data[1] != -1 or self.__data[2] != -1:
+                dep += 1
+        three_floor = False
+        four_floor = False
+        if length > 3:
+            for i in range(3, length):
+                if 3 <= i <= 6 and self.__data[i] != -1 and three_floor is False:
+                    dep += 1
+                    three_floor = True
+                if 7 <= i <= 14 and self.__data[i] != -1 and four_floor is False:
+                    dep += 1
+                    four_floor = True
+
+        return dep
 
     # 先序遍历
     # result格式：[[序号,值]...],按照访问次序排列
@@ -246,7 +268,9 @@ class BinaryTree(DataStructure):
                     if self.__data[left] != -1:
                         top = top + 1
                         temp.append([left, self.__data[left]])
-        return result
+
+        track_result = self.get_preorder_data(result)
+        return track_result
 
     # 中序遍历
     def inorder(self):
@@ -268,7 +292,9 @@ class BinaryTree(DataStructure):
                     top = top - 1
                     temp.pop()
                     i = (i + 1) * 2
-        return result
+
+        track_result = self.get_inorder_data(result)
+        return track_result
 
     # 后序遍历
     def postorder(self):
@@ -298,103 +324,147 @@ class BinaryTree(DataStructure):
                         left_visit = False
                 if top == -1:
                     break
+
+        track_result = self.get_postorder_data(result)
+        return track_result
+
+    # 先序遍历轨迹数据
+    def get_preorder_data(self, data):
+        result = []
+        for idx, i in enumerate(data):
+            tmp_result = [0]
+            if idx == 0:
+                result.append(tmp_result)
+                continue
+            record_pre = present = i[0]
+            begin = record_last = last = data[idx - 1][0]
+            count = 0
+
+            while True:
+
+                if last % 2 == 1:
+                    last += 1
+                if present % 2 == 1:
+                    present += 1
+                root_last = int(last / 2) - 1
+                root_pre = int(present / 2) - 1
+
+                if root_pre == record_last:
+                    tmp_result[0] = begin
+                    tmp_result.append(record_pre)
+                    break
+                else:
+                    record_last = last = root_last
+                    tmp_result.append(record_last)
+
+            result.append(tmp_result)
         return result
 
+    # 后序遍历轨迹数据
+    def get_postorder_data(self, data):
+        def return_root(x):
+            if x % 2 == 1:
+                x += 1
+            return int(x / 2) - 1
+
+        result = []
+        for idx, i in enumerate(data):
+            tmp_result = [i[0]]
+            node = i[0]
+            if idx == 0:
+                while True:
+                    if node != 0:
+                        node = return_root(node)
+                        tmp_result.insert(0, node)
+                    else:
+                        break
+                result.append(tmp_result)
+                continue
+            pre_node = i[0]
+            last_node = data[idx - 1][0]
+            tmp_result = []
+            pre_result = [i[0]]
+            last_result = [data[idx - 1][0]]
+            count = 0
+            while True:
+
+                if return_root(last_node) == pre_node or return_root(pre_node) == last_node:
+                    break
+                if return_root(pre_node) == return_root(last_node):
+                    tmp_result.append(return_root(pre_node))
+                    break
+                else:
+                    pre_node = return_root(pre_node)
+                    last_node = return_root(last_node)
+                    pre_result.insert(0, pre_node)
+                    last_result.append(last_node)
+
+            if tmp_result is not None:
+                tmp_result = last_result.extend(tmp_result)
+            if tmp_result is None:
+                tmp_result = last_result
+            # print(tmp_result, last_result, pre_result)
+            tmp_result.extend(pre_result)
+            result.append(tmp_result)
+        return result
+
+    # 中序遍历轨迹数据
+    def get_inorder_data(self, data):
+        def return_root(x):
+            if x % 2 == 1: x += 1
+            return int(x / 2) - 1
+
+        result = []
+        for idx, i in enumerate(data):
+            if idx == 0:
+                node = i[0]
+                tmp_result = [node]
+                while True:
+                    if node == 0:
+                        break
+                    else:
+                        node = return_root(node)
+                        tmp_result.insert(0, node)
+                result.append(tmp_result)
+                continue
+                # print(tmp_result)
+            pre_node = i[0]
+            last_node = data[idx - 1][0]
+            pre_result = [pre_node]
+            last_result = [last_node]
+
+            while True:
+                if last_node == pre_node:
+                    break
+                else:
+                    if last_node > pre_node:
+                        last_node = return_root(last_node)
+                        last_result.append(last_node)
+                    else:
+                        pre_node = return_root(pre_node)
+                        pre_result.insert(0, pre_node)
+
+            if len(last_result) > len(pre_result):
+                tmp_result = last_result
+            else:
+                tmp_result = pre_result
+            result.append(tmp_result)
+        return result
 
 # bt = BinaryTree(['a', 'b', 'c', 'd', -1, 'e', 'f', -1, 'g'])
 # bt = BinaryTree([1,2,3,4,5,-1,-1,-1,6])
 # bt = BinaryTree([1,2,3,-1,4,5])
 # bt = BinaryTree([1, 2, 3, 4, 5, -1, -1, -1, 6])
-# bt = BinaryTree([3, 5, 8, 17, 13, 20, 23, 2, -1, 16, 11])
+# bt = BinaryTree([472, 651, 95, 148, 36, 527, 476, 940, 315, 799, 765, 245])
 # bt = BinaryTree([3,7,8,9,-1,-1,15,10,-1,-1,-1,-1,-1,1])
 # bt = BinaryTree()
 # bb = bt.preorder()
 # re = bt.postorder()
 
-
+# print(bt.calc_depth())
 # re = bt.inorder()
 # print(re)
-#
 
 
-def get_preorder_rode(data):
-    result = []
-    for idx, i in enumerate(data):
-        tmp_result = [0]
-        if idx == 0:
-            result.append(tmp_result)
-            continue
-        record_pre = present = i[0]
-        begin = record_last = last = data[idx - 1][0]
-        count = 0
-
-        while True:
-
-            if last % 2 == 1:
-                last += 1
-            if present % 2 == 1:
-                present += 1
-            root_last = int(last / 2) - 1
-            root_pre = int(present / 2) - 1
-
-            if root_pre == record_last:
-                tmp_result[0] = begin
-                tmp_result.append(record_pre)
-                break
-            else:
-                record_last = last = root_last
-                tmp_result.append(record_last)
-
-        result.append(tmp_result)
-    return result
-
-
-def get_postorder_rode(data):
-    def return_root(x):
-        if x % 2 == 1:
-            x += 1
-        return int(x / 2) - 1
-
-    result = []
-    for idx, i in enumerate(data):
-        tmp_result = [i[0]]
-        node = i[0]
-        if idx == 0:
-            while True:
-                if node != 0:
-                    node = return_root(node)
-                    tmp_result.insert(0, node)
-                else:
-                    break
-            result.append(tmp_result)
-            continue
-        pre_node = i[0]
-        last_node = data[idx - 1][0]
-        tmp_result = []
-        pre_result = [i[0]]
-        last_result = [data[idx - 1][0]]
-        count = 0
-        while True:
-
-            if return_root(last_node) == pre_node or return_root(pre_node) == last_node:
-                break
-            if return_root(pre_node) == return_root(last_node):
-                tmp_result.append(return_root(pre_node))
-                break
-            else:
-                pre_node = return_root(pre_node)
-                last_node = return_root(last_node)
-                pre_result.insert(0, pre_node)
-                last_result.append(last_node)
-
-        if tmp_result is not None:
-            tmp_result = last_result.extend(tmp_result)
-        if tmp_result is None:
-            tmp_result = last_result
-        # print(tmp_result, last_result, pre_result)
-        tmp_result.extend(pre_result)
-        result.append(tmp_result)
-    return result
-
-
-# print(get_postorder_rode(re))
+# bb = BinaryTree()
+# print(bb.inorder())
