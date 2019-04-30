@@ -165,8 +165,8 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.searchframe = [];     //查找动画函数缓存器
         animation_data.duration = 2000;       //动画时间基数
         animation_data.is_search = false;   //是否执行查找标记
-        animation_data.code_rect_fill = "#7f4a88";
-        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.code_rect_fill = "#4f5d76";
+        animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["数组创建完成", "请点击开始按钮开始运行算法", "计算三个查找标志位置",
             "待查找范围是否为空", "查找成功,目标下标：i = ", "查找失败，目标不存在", "目标小于中间数值，移动高位标志",

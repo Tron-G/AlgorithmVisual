@@ -239,8 +239,8 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.duration = 1500;     //动画时间基数
         animation_data.is_push = false;   //是否执行入栈标记
         animation_data.is_pop = false;   //是否执行出栈标记
-        animation_data.code_rect_fill = "#7f4a88";
-        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.code_rect_fill = "#4f5d76";
+        animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["栈创建完成", "栈顶指针上移", "栈顶元素赋值", "栈顶元素置空", "栈顶指针下移", "请点击开始按钮开始运行算法"];
     }

@@ -61,6 +61,11 @@ def bubble_sort_page():
 @app.route('/selection_sort_page')
 def selection_sort_page():
     return render_template('SelectionSortPage.html')
+
+
+@app.route('/quick_sort_page')
+def quick_sort_page():
+    return render_template('QuickSortPage.html')
 # ====================页面跳转=========================
 
 
@@ -81,7 +86,7 @@ def array_method():
     if data["operate_type"] == 1:
         m_array = data_structure.Array(data["array_data"])
         data["search_num"] = int(data["search_num"])
-        data["search_pos"] = m_array.search(data["search_num"])
+        data["search_process"] = m_array.search(data["search_num"])
 
     elif data["operate_type"] == 2:
         m_array = data_structure.Array(data["array_data"])
@@ -301,6 +306,24 @@ def selection_sort_method():
     if data["operate_type"] == 1:  # 排序
         selection_sort = sort.Sort(data["array_data"])
         data["sort_process"] = selection_sort.selection_sort()
+
+    return jsonify(data)
+
+
+@app.route('/quick_sort_method', methods=['POST', 'GET'])
+def quick_sort_method():
+    data = request.get_json()
+
+    if data["input_tpye"] == 1 and data["operate_type"] == 0:  # 生成随机数组
+        quick_sort = sort.Sort()
+        data["array_data"] = quick_sort.get_data()
+
+    elif data["input_tpye"] == 0 and data["operate_type"] == 0:
+        data["array_data"] = list(map(int, data["array_data"]))  # 字符格式转数字
+
+    if data["operate_type"] == 1:  # 排序
+        quick_sort = sort.Sort(data["array_data"])
+        data["sort_process"] = quick_sort.get_quick_sort_data()
 
     return jsonify(data)
 # =======================前后端数据交互==============================

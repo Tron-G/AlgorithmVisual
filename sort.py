@@ -82,6 +82,56 @@ class Sort(Algorithm):
 
         return result
 
+    def get_quick_sort_data(self):
+        """快速排序过程数据"""
+        result = []
+        end = len(self.__data) - 1
+        self.quick_sort(result, self.__data, 0, end, 0)
+        key = 0
+        nums = 0
+        idx = 1
+        for i in range(0, len(result)):
+            if i > 0:
+                if result[i][0][0] < result[i - 1][0][0]:
+                    key = i
+                    nums = result[i - 1][0][0]
+        for j in range(key, len(result)):
+            for p in range(0, len(result[j])):
+                result[j][p][0] = nums + idx
+            idx += 1
+        return result
 
+    def quick_sort(self, result, data, start, end, turn):
+        """快速排序"""
+        i = start
+        j = end
+        if start == end:
+            result.append([[turn, data[start], data[start]]])
+            turn += 1
+        if start < end:
+            temp = [[turn, start, end]]
+            tmp = data[start]
+            while i != j:
+                while j > i and data[j] > tmp:
+                    j -= 1
+                data[i] = data[j]
+                temp.append([turn, i, j])
+                while i < j and data[i] < tmp:
+                    i += 1
+                data[j] = data[i]
+                temp.append([turn, i, j])
+            data[i] = tmp
+            result.append(temp)
+            # print(start, end, data)
+            turn += 1
+            t = self.quick_sort(result, data, start, i - 1, turn)
+            t = self.quick_sort(result, data, i + 1, end, t)
+        return turn
+
+# data = [6, 8, 7, 9, 0, 1, 3, 2, 4, 5]
+# ss = Sort(data)
+# kk = ss.get_quick_sort_data()
+# for i in kk:
+#     print(i)
 # ss = Sort()
 # print(ss.selection_sort())

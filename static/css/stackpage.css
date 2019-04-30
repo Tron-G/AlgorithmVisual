@@ -217,7 +217,7 @@ html body {
 
 #code_window {
     position: absolute;
-    background: #7f4a88;
+    background: #4f5d76;
     font: italic 2em Georgia, serif;
     font-weight: normal;
     left: 0;
@@ -228,7 +228,7 @@ html body {
 
 #code_hide {
     position: absolute;
-    background: #4a266a;
+    background: #2e3541;
     right: 0;
     top: 0;
     width: 15%;

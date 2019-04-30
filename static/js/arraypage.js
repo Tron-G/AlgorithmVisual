@@ -101,7 +101,7 @@ function inputWindow() {
         }
         if (result !== false) {
             clearAllTimer(animation_data, false);
-            resetPostData(post_data, post_data.input_tpye, post_data.array_data, 2, -1, -1, result[0], result[1]);
+            resetPostData(post_data, post_data.input_tpye, post_data.array_data, 2, -1, result[0], result[1]);
 
             drawArray(post_data.array_data, svg_data);              //重绘
             let change_timer = setTimeout(function () {
@@ -143,8 +143,8 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.is_search = false;   //是否执行查找标记
         animation_data.is_next = false;     //执行步进标记
         animation_data.is_find = false;     //是否查找成功标记
-        animation_data.code_rect_fill = "#7f4a88";
-        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.code_rect_fill = "#4f5d76";
+        animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["数组创建成功", "修改成功", "点击开始按钮开始查找",
             "判断是否相等", "不相等,查找下一个,i = ", "未找到", "查找成功,数组下标i = "];
@@ -159,19 +159,19 @@ function clearAllTimer(animation_data, do_clear) {
  * @param {object} array_data 保存数组值
  * @param {number} operate_type 进行的操作类型，0：无，1：查找，2：修改
  * @param {number} search_num 要查找的数值
- * @param {number} search_pos 查找的数值的下标（后台修改生成，默认-1表示未找到）
  * @param {number} change_pos 要修改的数值下标
  * @param {number} change_num 要修改的数值
+ * @param search_process 查找过程数据(后台)
  */
 function resetPostData(post_data, input_tpye = 0, array_data = null, operate_type = 0,
-                       search_num = -1, search_pos = -1, change_pos = -1, change_num = -1) {
+                       search_num = -1, change_pos = -1, change_num = -1, search_process = null) {
     post_data.input_tpye = input_tpye;
     post_data.array_data = array_data;
     post_data.operate_type = operate_type;
     post_data.search_num = search_num;
-    post_data.search_pos = search_pos;
     post_data.change_pos = change_pos;
     post_data.change_num = change_num;
+    post_data.search_process = search_process;
 }
 
 
@@ -191,8 +191,10 @@ function resetSvgData(svg_data) {
     svg_data.num_fill = "#537791";
     svg_data.subscript_fill = "#A3A380";
     svg_data.rect_search_fill = "#fab57a";
-    svg_data.rect_change_fill = "#a1de93";
+    svg_data.rect_change_fill = "#a56cc1";
     svg_data.text_change_fill = "#FF0033";
+    svg_data.search_fail_fill = "red";
+    svg_data.search_succ_fill = "#a1de93";
     svg_data.rect_len = 70;        //矩形长度
 }
 
@@ -273,30 +275,53 @@ function drawArray(array_data, svg_data) {
  * @param {object} animation_data 动画数据包
  */
 function createAnimation(svg_data, post_data, animation_data) {
-    animation_data.frame = post_data.array_data.map(function (d, i) {
-        return function () {
-            svg_data.m_svg.selectAll(".m_rect" + i)
-                .transition()
-                .duration(animation_data.duration / 2)
-                .attr("fill", svg_data.rect_search_fill);
-            svg_data.m_svg.selectAll(".rect_num" + i)
-                .transition()
-                .duration(animation_data.duration / 2)
-                .attr("fill", svg_data.text_change_fill);
 
-            drawProgress(animation_data, animation_data.frame.length);       // 进度条
-            if (i >= 1) {
-                svg_data.m_svg.selectAll(".m_rect" + (i - 1))
+    let temp_frame;
+    for (let idx = 0; idx < (post_data.search_process.length - 1); idx++) {
+        temp_frame = function () {
+            if (idx === (post_data.search_process.length - 2) && post_data.search_process[post_data.search_process.length - 1] === -1) {
+                svg_data.m_svg.selectAll(".m_rect" + post_data.search_process[idx])
                     .transition()
-                    .duration(animation_data.duration / 4)
-                    .attr("fill", "white");
-                svg_data.m_svg.selectAll(".rect_num" + (i - 1))
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.search_fail_fill);
+                svg_data.m_svg.selectAll(".rect_num" + post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.text_change_fill);
+            }
+            else if (idx === (post_data.search_process.length - 2) && post_data.search_process[post_data.search_process.length - 1] === 1) {
+                svg_data.m_svg.selectAll(".m_rect" + post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.search_succ_fill);
+                svg_data.m_svg.selectAll(".rect_num" + post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.text_change_fill);
+            }
+            else {
+                svg_data.m_svg.selectAll(".m_rect" + post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.rect_search_fill);
+                svg_data.m_svg.selectAll(".rect_num" + post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.text_change_fill);
+            }
+            if (idx >= 1) {
+                // svg_data.m_svg.selectAll(".m_rect" + post_data.search_process[idx - 1])
+                //     .transition()
+                //     .duration(animation_data.duration / 4)
+                //     .attr("fill", "white");
+                svg_data.m_svg.selectAll(".rect_num" + post_data.search_process[idx - 1])
                     .transition()
                     .duration(animation_data.duration / 4)
                     .attr("fill", svg_data.subscript_fill);
             }
-        }
-    });
+        };
+        animation_data.frame.push(temp_frame);
+    }
 }
 
 /**
@@ -308,6 +333,7 @@ function runAnimation(post_data, animation_data) {
     let timer = setTimeout(() => {
         if (animation_data.is_next && animation_data.now_step < animation_data.frame.length
             && !animation_data.is_find) {                   //步进执行
+            drawProgress(animation_data, animation_data.frame.length);       // 进度条
             animation_data.frame[animation_data.now_step]();//执行主视图动画
             showCode(post_data, animation_data);
             // console.log("正在播放第:" + animation_data.now_step + "帧");
@@ -325,7 +351,6 @@ function runAnimation(post_data, animation_data) {
             }
             else if (animation_data.now_step > animation_data.frame.length - 1) {
                 animation_data.is_pause = true;
-                drawCode(post_data, animation_data, 5, 3);
                 $("#play_bt").attr("class", "play");         //切换播放图标
                 // alert("查找失败");
                 return;
@@ -333,9 +358,10 @@ function runAnimation(post_data, animation_data) {
             else if (animation_data.is_pause) {
                 return;
             }
+            drawProgress(animation_data, animation_data.frame.length);       // 进度条
             animation_data.frame[animation_data.now_step]();
             showCode(post_data, animation_data);
-            // console.log("正在播放第:" + animation_data.now_step + "帧");
+            // console.log("正在播放第:" + animation_data.now_step + "帧", post_data.search_process.length);
             animation_data.now_step++;
             runAnimation(post_data, animation_data);
         }
@@ -351,8 +377,12 @@ function runAnimation(post_data, animation_data) {
 function showCode(post_data, animation_data) {
     drawCode(post_data, animation_data, 3, 1);      //提示窗口判断相等动画
     let temp_timer = setTimeout(() => {
-        if (post_data.array_data[animation_data.now_step - 1] === post_data.search_num)
+        if (animation_data.now_step === post_data.search_process.length - 1
+            && post_data.search_process[post_data.search_process.length - 1] === 1)
             drawCode(post_data, animation_data, 6, 4);  //查找成功
+        else if(animation_data.now_step === post_data.search_process.length - 1
+            && post_data.search_process[post_data.search_process.length - 1] === -1)
+            drawCode(post_data, animation_data, 5, 3);  //查找失败
         else
             drawCode(post_data, animation_data, 4, 2);  //下一个
     }, animation_data.duration / 2);

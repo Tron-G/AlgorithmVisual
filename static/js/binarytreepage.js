@@ -511,7 +511,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                     }
 
                     if(post_data.search_process.length === 1)
-                        drawCode(post_data, animation_data, 2, 2, post_data.array_data[post_data.search_process[idx][k]]);
+                        drawCode(post_data, animation_data, 2, 3, post_data.array_data[post_data.search_process[idx][k]]);
 
                     svg_data.m_svg.select("#m_circle" + post_data.search_process[idx][k])
                         .transition()
@@ -528,7 +528,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                     if (k === post_data.search_process[idx].length - 1) {
                         done_id.push(post_data.search_process[idx][k]);
                         let temp_timer = setTimeout(() => {
-                            drawCode(post_data, animation_data, 2, 2, post_data.array_data[post_data.search_process[idx][k]]);
+                            drawCode(post_data, animation_data, 2, 3, post_data.array_data[post_data.search_process[idx][k]]);
                         }, animation_data.duration / 2);
                         animation_data.all_timer.push(temp_timer);              // 计时器缓存
                     }
@@ -554,7 +554,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                         if (post_data.search_process[idx][k] > post_data.search_process[idx][k - 1]){
                             line_id = post_data.search_process[idx][k];
                             if ((post_data.search_process[idx][k] + 1) === (post_data.search_process[idx][k - 1] + 1) * 2) {
-                                drawCode(post_data, animation_data, 3, 3);                           //左子树
+                                drawCode(post_data, animation_data, 3, 2);                           //左子树
                             }
                             else if ((post_data.search_process[idx][k] + 1) === (((post_data.search_process[idx][k - 1] + 1) * 2) + 1)) {
                                 drawCode(post_data, animation_data, 4, 4);                         //右子树
@@ -625,7 +625,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                     if (k === post_data.search_process[idx].length - 1){
                         done_id.push(post_data.search_process[idx][k]);
                          let temp_timer = setTimeout(() => {
-                            drawCode(post_data, animation_data, 2, 2, post_data.array_data[post_data.search_process[idx][k]]);
+                            drawCode(post_data, animation_data, 2, 4, post_data.array_data[post_data.search_process[idx][k]]);
                         }, animation_data.duration / 2);
                         animation_data.all_timer.push(temp_timer);              // 计时器缓存
                     }
@@ -652,10 +652,10 @@ function searchAnimation(svg_data, post_data, animation_data) {
                         if (post_data.search_process[idx][k] > post_data.search_process[idx][k - 1]){
                             line_id = post_data.search_process[idx][k];
                             if ((post_data.search_process[idx][k] + 1) === (post_data.search_process[idx][k - 1] + 1) * 2) {
-                                drawCode(post_data, animation_data, 3, 3);                           //左子树
+                                drawCode(post_data, animation_data, 3, 2);                           //左子树
                             }
                             else if ((post_data.search_process[idx][k] + 1) === (((post_data.search_process[idx][k - 1] + 1) * 2) + 1)) {
-                                drawCode(post_data, animation_data, 4, 4);                         //右子树
+                                drawCode(post_data, animation_data, 4, 3);                         //右子树
                             }
                         }
                         else{

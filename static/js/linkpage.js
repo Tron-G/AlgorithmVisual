@@ -326,8 +326,8 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.is_delete = false;   //是否执行移除标记
         animation_data.is_next = false;     //执行步进标记
         animation_data.is_find = false;     //是否查找成功标记
-        animation_data.code_rect_fill = "#7f4a88";
-        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.code_rect_fill = "#4f5d76";
+        animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["链表创建成功(尾插法)", "请点击开始按钮开始运行算法", "判断数值是否相等",
             "不相等,查找下一个节点", "未找到", "查找成功", "判断是否到达插入点", "未到达，继续前进",

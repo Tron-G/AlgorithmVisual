@@ -37,12 +37,20 @@ class Array(DataStructure):
     def get_data(self):
         return self.__data
 
-    # 查找值为num的下标，未找到返回-1
+    # 查找过程数据，末位为成功标志
     def search(self, num):
+        result = []
+        for i in range(0, len(self.__data)):
+            result.append(i)
+            if self.__data[i] == num:
+                break
+
         if num in self.__data:
-            return self.__data.index(num)
+            result.append(1)
         else:
-            return -1
+            result.append(-1)
+
+        return result
 
     # 修改下标为Index处的值
     def assign(self, index, value):
@@ -363,8 +371,8 @@ class BinaryTree(DataStructure):
     # 后序遍历轨迹数据
     def get_postorder_data(self, data):
         def return_root(x):
-            if x % 2 == 1:
-                x += 1
+            if x == 0: return 0
+            if x % 2 == 1: x += 1
             return int(x / 2) - 1
 
         result = []
@@ -396,15 +404,16 @@ class BinaryTree(DataStructure):
                 else:
                     pre_node = return_root(pre_node)
                     last_node = return_root(last_node)
-                    pre_result.insert(0, pre_node)
-                    last_result.append(last_node)
+                    if pre_node not in pre_result:
+                        pre_result.insert(0, pre_node)
+                    if last_node not in last_result:
+                        last_result.append(last_node)
 
-            if tmp_result is not None:
-                tmp_result = last_result.extend(tmp_result)
-            if tmp_result is None:
-                tmp_result = last_result
+            if tmp_result != None: tmp_result = last_result.extend(tmp_result)
+            if tmp_result == None: tmp_result = last_result
             # print(tmp_result, last_result, pre_result)
             tmp_result.extend(pre_result)
+            # print(last_result,pre_result,tmp_result)
             result.append(tmp_result)
         return result
 

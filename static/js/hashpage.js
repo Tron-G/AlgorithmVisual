@@ -229,8 +229,8 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.duration = 2000;       //动画时间基数
         animation_data.is_create = false;   //是否执行创建标记
         animation_data.is_search = false;   //是否执行查找标记
-        animation_data.code_rect_fill = "#7f4a88";
-        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.code_rect_fill = "#4f5d76";
+        animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["请点击开始按钮开始创建哈希表(开放定址)", "请点击开始按钮开始运行查找算法",
             "新建空表，初始哈希除数为7", "依次向哈希表中填入数值", "计算哈希地址,pos=", "判断地址所在内存是否为空",

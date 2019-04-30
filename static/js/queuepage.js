@@ -234,8 +234,8 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.duration = 1500;       //动画时间基数
         animation_data.is_enqueue = false;   //是否执行入队标记
         animation_data.is_dequeue = false;   //是否执行出队标记
-        animation_data.code_rect_fill = "#7f4a88";
-        animation_data.choose_rect_fill = "#ca82f8";
+        animation_data.code_rect_fill = "#4f5d76";
+        animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
         animation_data.explain_words = ["队列创建完成", "请点击开始按钮开始运行算法", "当前数字入队",
             "队尾指针后移", "队首数字出队", "队首指针后移"];
