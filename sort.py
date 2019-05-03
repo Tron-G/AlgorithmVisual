@@ -86,7 +86,8 @@ class Sort(Algorithm):
         """快速排序过程数据"""
         result = []
         end = len(self.__data) - 1
-        self.quick_sort(result, self.__data, 0, end, 0)
+        datas = copy.deepcopy(self.__data)
+        self.quick_sort(result, datas, 0, end, 0)
         key = 0
         nums = 0
         idx = 1
@@ -106,32 +107,44 @@ class Sort(Algorithm):
         i = start
         j = end
         if start == end:
-            result.append([[turn, data[start], data[start]]])
+            result.append([[turn, start, start]])
             turn += 1
         if start < end:
-            temp = [[turn, start, end]]
+            process = [[turn, start, end]]
             tmp = data[start]
             while i != j:
-                while j > i and data[j] > tmp:
+                process_j = [turn]
+                while j > i and data[j] >= tmp:
+                    process_j.append(j)
                     j -= 1
                 data[i] = data[j]
-                temp.append([turn, i, j])
-                while i < j and data[i] < tmp:
+                process_j.append(i)
+                process_j.append(j)
+                process.append(process_j)
+
+                process_i = [turn]
+                while i < j and data[i] <= tmp:
+                    process_i.append(i)
                     i += 1
                 data[j] = data[i]
-                temp.append([turn, i, j])
+
+                process_i.append(i)
+                process_i.append(j)
+                process.append(process_i)
             data[i] = tmp
-            result.append(temp)
+            result.append(process)
             # print(start, end, data)
             turn += 1
             t = self.quick_sort(result, data, start, i - 1, turn)
             t = self.quick_sort(result, data, i + 1, end, t)
         return turn
 
+
+# data = [49, 38, 65, 97, 76, 13, 27, 49]
 # data = [6, 8, 7, 9, 0, 1, 3, 2, 4, 5]
 # ss = Sort(data)
 # kk = ss.get_quick_sort_data()
 # for i in kk:
 #     print(i)
-# ss = Sort()
-# print(ss.selection_sort())
+#
+# print(ss.get_data())

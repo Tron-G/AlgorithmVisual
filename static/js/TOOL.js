@@ -67,6 +67,18 @@ function hideAnimation() {
             hide_state3 = false;
         }
     });
+    $("#hide_bt4").click(function () {
+        if (!hide_state3) {
+            $("#intro_window").animate({left: '+85%'}, interval);
+            $("#hide_bt4").attr("class", "hide_left");
+            hide_state3 = true;
+        }
+        else {
+            $("#intro_window").animate({left: '0%'}, interval);
+            $("#hide_bt4").attr("class", "hide_right");
+            hide_state3 = false;
+        }
+    });
 }
 
 /**

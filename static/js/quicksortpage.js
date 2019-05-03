@@ -58,14 +58,14 @@ function inputWindow() {
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
             console.log("sort", post_data);
-            // drawCode(post_data, animation_data, 1, 0);
-            // sortAnimation(svg_data, post_data, animation_data);
+            drawCode(post_data, animation_data, 1, 0);
+            sortAnimation(svg_data, post_data, animation_data);
         }
     });
 
     // ///////////////////////////////--------播放暂停功能--------////////////////////////////////////
     $("#play_bt").click(function () {
-        if (animation_data.is_sort) {                         //入队动画
+        if (animation_data.is_sort) {                         //动画
             if (!animation_data.is_pause) {                     //暂停
                 animation_data.is_pause = true;
                 // console.log("pause", animation_data.now_step);
@@ -75,7 +75,7 @@ function inputWindow() {
             else {
                 animation_data.is_pause = false;
                 $("#play_bt").attr("class", "pause");
-                animation_data.duration = 1000;
+                animation_data.duration = 2000;
                 runAnimation(post_data, animation_data);
             }
         }
@@ -89,12 +89,12 @@ function inputWindow() {
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");
                 animation_data.is_next = true;
-                animation_data.duration = 500;
+                animation_data.duration = 1000;
                 clearAllTimer(animation_data, true);
                 runAnimation(post_data, animation_data);
             } else {                                            // 步进播放
                 animation_data.is_next = true;
-                animation_data.duration = 500;
+                animation_data.duration = 1000;
                 runAnimation(post_data, animation_data);
             }
         }
@@ -126,6 +126,7 @@ function resetSvgData(svg_data) {
     svg_data.rect_done_fill = "#112d4e";
     svg_data.rect_search_fill = "#fab57a";
     svg_data.rect_choose_fill = "#a1de93";
+    svg_data.base_num_fill = "#606470";
     svg_data.mark_fill = "red";
 }
 
@@ -166,13 +167,14 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.is_pause = true;     //暂停标记，默认暂停
         animation_data.is_next = false;     //执行步进标记
         animation_data.sortframe = [];     //排序动画函数缓存器
-        animation_data.duration = 1000;       //动画时间基数
+        animation_data.duration = 2000;       //动画时间基数
         animation_data.is_sort = false;   //是否执行排序标记
         animation_data.code_rect_fill = "#4f5d76";
         animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
-        animation_data.explain_words = ["数组创建完成", "请点击开始按钮运行算法", "遍历数组未排序部分，寻找最小值",
-            "当前数字小于最小值，更新最小值", "将最小值交换到数组未排序部分首位","排序完成"];
+        animation_data.explain_words = ["数组创建完成", "请点击开始按钮运行算法", "向左寻找第一个小于基准元素的值",
+            "向右寻找第一个大于基准元素的值", "将a[j]和基准元素的位置交换", "将a[i]和基准元素的位置交换", "基准元素归位",
+            "向左区间递归进行排序", "向右区间递归进行排序", "排序完成", "对所有元素进行第一次排序"];
     }
 }
 
@@ -240,6 +242,40 @@ function drawHistogram(array_data, svg_data) {
             .attr("fill", svg_data.num_fill)
             .text(array_data[index]);
     }
+    svg.select(".g_rect0")
+        .append("text")
+        .attr('class', "i")
+        .attr('x', svg_data.rect_x[0])
+        .attr('y', 2 * svg_data.height / 3)
+        .attr("dx", svg_data.rect_width / 4)
+        .attr("dy", svg_data.rect_width)
+        .attr("font-size", svg_data.font_size * 1.3)
+        .attr("fill", svg_data.mark_fill)
+        .text("i");
+    if (array_data.length === 1) {
+        svg.select(".g_rect0")
+            .append("text")
+            .attr('class', "j")
+            .attr('x', svg_data.rect_x[0])
+            .attr('y', 2 * svg_data.height / 3)
+            .attr("dx", svg_data.rect_width / 4)
+            .attr("dy", svg_data.rect_width * 1.5)
+            .attr("font-size", svg_data.font_size * 1.3)
+            .attr("fill", svg_data.mark_fill)
+            .text("j");
+    }
+    else {
+        svg.select(".g_rect" + (array_data.length - 1))
+            .append("text")
+            .attr('class', "j")
+            .attr('x', svg_data.rect_x[array_data.length - 1])
+            .attr('y', 2 * svg_data.height / 3)
+            .attr("dx", svg_data.rect_width / 4)
+            .attr("dy", svg_data.rect_width * 1.5)
+            .attr("font-size", svg_data.font_size * 1.3)
+            .attr("fill", svg_data.mark_fill)
+            .text("j");
+    }
     svg_data.m_svg = svg;
 }
 
@@ -253,8 +289,302 @@ function drawHistogram(array_data, svg_data) {
 function sortAnimation(svg_data, post_data, animation_data) {
 
     let temp_frame;
+    for (let idx = 0; idx < post_data.sort_process.length; idx++) {
 
+        if (post_data.sort_process[idx].length === 1) {
+            temp_frame = function () {
+                if (idx > 0 && post_data.sort_process[idx][0][1]
+                    < post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1][post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1].length - 1]) {
+                    drawCode(post_data, animation_data, 7, 5); // 左递归
+                    let temp_timer = setTimeout(() => {
+                        drawCode(post_data, animation_data, 6, 2);
+                    }, animation_data.duration / 2);
+                    animation_data.all_timer.push(temp_timer);       // 计时器缓存
+                }
 
+                else if (idx > 0 &&post_data.sort_process[idx][0][1]
+                    > post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1][post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1].length - 1]){
+                    drawCode(post_data, animation_data, 8, 6);  //右递归
+                    let temp_timer = setTimeout(() => {
+                        drawCode(post_data, animation_data, 6, 2);
+                    }, animation_data.duration / 2);
+                    animation_data.all_timer.push(temp_timer);       // 计时器缓存
+                }
+
+                svg_data.m_svg.selectAll(".m_rect" + post_data.sort_process[idx][0][1])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.rect_done_fill);
+
+                svg_data.m_svg.select(".i")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x", svg_data.rect_x[post_data.sort_process[idx][0][1]]);
+
+                svg_data.m_svg.select(".j")
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("x", svg_data.rect_x[post_data.sort_process[idx][0][1]]);
+            };
+            animation_data.sortframe.push(temp_frame);
+        }
+        else {
+            temp_frame = function () {                                          //重新划定范围
+                if(idx === 0)
+                    drawCode(post_data, animation_data, 10, 0);
+                if (idx > 0 && post_data.sort_process[idx][0][1]
+                    < post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1][post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1].length - 1])
+                    drawCode(post_data, animation_data, 7, 5); // 左递归
+                else if (idx > 0 &&post_data.sort_process[idx][0][1]
+                    > post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1][post_data.sort_process[idx - 1][post_data.sort_process[idx - 1].length - 1].length - 1])
+                    drawCode(post_data, animation_data, 8, 6);  //右递归
+
+                svg_data.m_svg.select(".i")
+                    .transition()
+                    .duration(animation_data.duration / 3)
+                    .attr("x", svg_data.rect_x[post_data.sort_process[idx][0][1]]);
+
+                svg_data.m_svg.select(".j")
+                    .transition()
+                    .duration(animation_data.duration / 3)
+                    .attr("x", svg_data.rect_x[post_data.sort_process[idx][0][2]]);
+
+                svg_data.m_svg.select("#m_rect" + post_data.sort_process[idx][0][1])
+                    .attr("fill",svg_data.base_num_fill);
+
+            };
+            animation_data.sortframe.push(temp_frame);
+            for (let k = 1; k < post_data.sort_process[idx].length; k += 2) {
+                ///////////////////////////////////////////////////////////////////////遍历  j 前移
+
+                for (let p = 1; p < (post_data.sort_process[idx][k].length - 2); p++) {
+                    temp_frame = function () {
+
+                        drawCode(post_data, animation_data, 2, 1);
+
+                        svg_data.m_svg.selectAll(".m_rect" + post_data.sort_process[idx][k][p])
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.rect_search_fill);
+
+                        svg_data.m_svg.select(".j")
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("x", svg_data.rect_x[post_data.sort_process[idx][k][p]]);
+
+                        if (p > 1) {
+                            svg_data.m_svg.select("#m_rect" + post_data.sort_process[idx][k][p - 1])
+                                .transition()
+                                .duration(animation_data.duration / 2)
+                                .attr("fill", ()=>{
+                                    // if(p === 2)
+                                    //     return svg_data.base_num_fill;
+                                    // else
+                                        return svg_data.rect_fill;
+                                });
+                            svg_data.m_svg.select("#rect_text" + post_data.sort_process[idx][k][p - 1])
+                                .transition()
+                                .duration(animation_data.duration / 2)
+                                .attr("fill", svg_data.num_fill);
+                        }
+
+                    };
+                    animation_data.sortframe.push(temp_frame);
+                }
+                //////////////////////////////////////////////////////////////////////// 交换 j
+                let base_num_pos = post_data.sort_process[idx][k][post_data.sort_process[idx][k].length - 2];
+                let temp_j = post_data.sort_process[idx][k][post_data.sort_process[idx][k].length - 1];
+                if (temp_j !== base_num_pos) {                                      // 交换  j
+                    temp_frame = function () {
+                        if (post_data.sort_process[idx][k].length > 3) {
+                            svg_data.m_svg.select("#m_rect" + post_data.sort_process[idx][k][post_data.sort_process[idx][k].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 3)
+                                .attr("fill", svg_data.rect_fill);
+                            svg_data.m_svg.select("#rect_text" + post_data.sort_process[idx][k][post_data.sort_process[idx][k].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 3)
+                                .attr("fill", svg_data.num_fill);
+                        }
+
+                        drawCode(post_data, animation_data, 4, 2);
+
+                        svg_data.m_svg.select(".j")
+                            .transition()
+                            .duration(animation_data.duration / 3)
+                            .attr("x", svg_data.rect_x[temp_j]);
+
+                        svg_data.m_svg.selectAll(".m_rect" + base_num_pos)
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.base_num_fill)
+                            .attr("x", svg_data.rect_x[temp_j]);
+
+                        svg_data.m_svg.selectAll(".m_rect" + temp_j)
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.rect_choose_fill)
+                            .attr("x", svg_data.rect_x[base_num_pos]);
+
+                        svg_data.m_svg.selectAll(".m_rect" + base_num_pos).attr("class", "tmp_class");
+                        svg_data.m_svg.select("#m_rect" + base_num_pos).attr("id", "tmp_rect");
+                        svg_data.m_svg.select("#rect_text" + base_num_pos).attr("id", "tmp_text");
+
+                        svg_data.m_svg.selectAll(".m_rect" + temp_j).attr("class", "m_rect" + base_num_pos);
+                        svg_data.m_svg.select("#m_rect" + temp_j).attr("id", "m_rect" + base_num_pos);
+                        svg_data.m_svg.select("#rect_text" + temp_j).attr("id", "rect_text" + base_num_pos);
+
+                        svg_data.m_svg.selectAll(".tmp_class").attr("class", "m_rect" + temp_j);
+                        svg_data.m_svg.select("#tmp_rect").attr("id", "m_rect" + temp_j);
+                        svg_data.m_svg.select("#tmp_text").attr("id", "rect_text" + temp_j);
+                    };
+                    animation_data.sortframe.push(temp_frame);
+                }
+                else {
+                    temp_frame = function () {
+
+                        drawCode(post_data, animation_data, 6, 2);
+
+                        svg_data.m_svg.selectAll(".m_rect" + temp_j)
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.rect_done_fill);
+
+                        svg_data.m_svg.select(".j")
+                            .transition()
+                            .duration(animation_data.duration / 3)
+                            .attr("x", svg_data.rect_x[temp_j]);
+
+                        if (post_data.sort_process[idx][k].length > 3) {
+                            svg_data.m_svg.select("#m_rect" + post_data.sort_process[idx][k][post_data.sort_process[idx][k].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 3)
+                                .attr("fill", svg_data.rect_fill);
+                            svg_data.m_svg.select("#rect_text" + post_data.sort_process[idx][k][post_data.sort_process[idx][k].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 3)
+                                .attr("fill", svg_data.num_fill);
+                        }
+                    };
+                    animation_data.sortframe.push(temp_frame);
+
+                }
+                ////////////////////////////////////////////////////////////////////// i 后移
+                for (let p = 1; p < (post_data.sort_process[idx][k + 1].length - 2); p++) {
+                    temp_frame = function () {
+
+                        drawCode(post_data, animation_data, 3, 3);
+                        svg_data.m_svg.selectAll(".m_rect" + post_data.sort_process[idx][k + 1][p])
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.rect_search_fill);
+
+                        svg_data.m_svg.select(".i")
+                            .transition()
+                            .duration(animation_data.duration / 3)
+                            .attr("x", svg_data.rect_x[post_data.sort_process[idx][k + 1][p]]);
+
+                        if (p > 1) {
+                            svg_data.m_svg.select("#m_rect" + post_data.sort_process[idx][k + 1][p - 1])
+                                .transition()
+                                .duration(animation_data.duration / 2)
+                                .attr("fill", ()=>{
+                                    // if(p === 2)
+                                    //     return svg_data.base_num_fill;
+                                    // else
+                                        return svg_data.rect_fill;
+                                });
+                            svg_data.m_svg.select("#rect_text" + post_data.sort_process[idx][k + 1][p - 1])
+                                .transition()
+                                .duration(animation_data.duration / 2)
+                                .attr("fill", svg_data.num_fill);
+                        }
+
+                    };
+                    animation_data.sortframe.push(temp_frame);
+                }
+                //////////////////////////////////////////////////////////////////////// 交换  i
+                let base_num_pos1 = post_data.sort_process[idx][k + 1][post_data.sort_process[idx][k + 1].length - 1];
+                let temp_i = post_data.sort_process[idx][k + 1][post_data.sort_process[idx][k + 1].length - 2];
+                if (temp_i !== base_num_pos1) {                                      // 交换  i
+                    temp_frame = function () {
+
+                        if (post_data.sort_process[idx][k + 1].length > 3) {
+                            svg_data.m_svg.select("#m_rect" + post_data.sort_process[idx][k + 1][post_data.sort_process[idx][k + 1].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 3)
+                                .attr("fill", svg_data.rect_fill);
+                            svg_data.m_svg.select("#rect_text" + post_data.sort_process[idx][k + 1][post_data.sort_process[idx][k + 1].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 3)
+                                .attr("fill", svg_data.num_fill);
+                        }
+
+                        drawCode(post_data, animation_data, 5, 4);
+
+                        svg_data.m_svg.select(".i")
+                            .transition()
+                            .duration(animation_data.duration / 3)
+                            .attr("x", svg_data.rect_x[temp_i]);
+
+                        svg_data.m_svg.selectAll(".m_rect" + base_num_pos1)
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.base_num_fill)
+                            .attr("x", svg_data.rect_x[temp_i]);
+
+                        svg_data.m_svg.selectAll(".m_rect" + temp_i)
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.rect_choose_fill)
+                            .attr("x", svg_data.rect_x[base_num_pos1]);
+
+                        svg_data.m_svg.selectAll(".m_rect" + base_num_pos1).attr("class", "tmp_class");
+                        svg_data.m_svg.select("#m_rect" + base_num_pos1).attr("id", "tmp_rect");
+                        svg_data.m_svg.select("#rect_text" + base_num_pos1).attr("id", "tmp_text");
+
+                        svg_data.m_svg.selectAll(".m_rect" + temp_i).attr("class", "m_rect" + base_num_pos1);
+                        svg_data.m_svg.select("#m_rect" + temp_i).attr("id", "m_rect" + base_num_pos1);
+                        svg_data.m_svg.select("#rect_text" + temp_i).attr("id", "rect_text" + base_num_pos1);
+
+                        svg_data.m_svg.selectAll(".tmp_class").attr("class", "m_rect" + temp_i);
+                        svg_data.m_svg.select("#tmp_rect").attr("id", "m_rect" + temp_i);
+                        svg_data.m_svg.select("#tmp_text").attr("id", "rect_text" + temp_i);
+                    };
+                    animation_data.sortframe.push(temp_frame);
+                }
+                else {
+                    temp_frame = function () {
+
+                        drawCode(post_data, animation_data, 6, 4);
+
+                        svg_data.m_svg.selectAll(".m_rect" + temp_i)
+                            .transition()
+                            .duration(animation_data.duration / 2)
+                            .attr("fill", svg_data.rect_done_fill);
+
+                        svg_data.m_svg.select(".i")
+                            .transition()
+                            .duration(animation_data.duration / 3)
+                            .attr("x", svg_data.rect_x[temp_i]);
+
+                        if (post_data.sort_process[idx][k + 1].length > 3) {
+                            svg_data.m_svg.select("#m_rect" + post_data.sort_process[idx][k + 1][post_data.sort_process[idx][k + 1].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 2)
+                                .attr("fill", svg_data.rect_fill);
+                            svg_data.m_svg.select("#rect_text" + post_data.sort_process[idx][k + 1][post_data.sort_process[idx][k + 1].length - 3])
+                                .transition()
+                                .duration(animation_data.duration / 2)
+                                .attr("fill", svg_data.num_fill);
+                        }
+                    };
+                    animation_data.sortframe.push(temp_frame);
+
+                }
+            }
+        }
+    }
 }
 
 
@@ -268,7 +598,8 @@ function sortAnimation(svg_data, post_data, animation_data) {
 function drawCode(post_data, animation_data, word_id, now_step) {
     let code_text = [];
     if (post_data.operate_type === 1)
-        code_text = ["for i = 0 to a.length - 1/min = i/for j = (i + 1) to a.length", "if(a[j] < a[min])/min = j","Exchange(a[i], a[min])"];
+        code_text = ["QuickSort(a, start, end)", "while( i<j && a[j] > base)/j - -", "Exchange(a[j], a[base])",
+            "while(i<j && a[i]<base)/i++", "Exchange(a[i], a[base])", "QuickSort(a, start, i -1)", "QuickSort(a, i + 1, end)"];
     else
         code_text = [""];
 
@@ -310,9 +641,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
                 .attr('x', () => {
                     if (index === 0)
                         return width / 10;
-                    else if (index === 1)
-                        return width / 4;
-                    else if(index === 2)
+                    else
                         return width / 5;
                 })
                 .attr('y', index * rect_height);
@@ -326,12 +655,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
                     else
                         return text.attr("x");
                 })
-                .attr("dy", ()=>{
-                    if(temp.length === 3)
-                        return rect_height / 3.5;
-                    else
-                        return rect_height / 2.5;
-                })
+                .attr("dy", rect_height / 2.5)
                 .text(function (d) {
                     return d
                 })
@@ -343,9 +667,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
                 .attr('x', () => {
                     if (index === 0)
                         return width / 10;
-                    else if (index === 1)
-                        return width / 4;
-                    else if(index === 2)
+                    else
                         return width / 5;
                 })
                 .attr('y', index * rect_height)
@@ -381,7 +703,7 @@ function runAnimation(post_data, animation_data) {
         else {                                              //自动执行
             if (animation_data.now_step > animation_data.sortframe.length - 1) {
                 animation_data.is_pause = true;
-                // drawCode(post_data, animation_data, 4, 0);
+                drawCode(post_data, animation_data, 9, 0);
                 $("#play_bt").attr("class", "play");         //切换播放图标
                 // alert("查找失败");
                 return;
@@ -418,4 +740,22 @@ function postData(p_data) {
         }
     });
     return temp.responseJSON;
+}
+
+/**
+ * @description 算法介绍窗口
+ */
+function drawIntrouce() {
+    d3.select("#intro_svg").remove();
+    let screen = $("#intro_window");
+    let width = screen.width();
+    let height = screen.height();
+    let svg = d3.select("#intro_window")
+        .append("svg")
+        .attr("id", "intro_svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    let intro_text = [""];
+
 }
