@@ -251,9 +251,9 @@ class BinaryTree(DataStructure):
 
         return dep
 
-    # 先序遍历
+    # 先序遍历,operate: -1 轨迹数据, 1 遍历序列
     # result格式：[[序号,值]...],按照访问次序排列
-    def preorder(self):
+    def preorder(self, operate=-1):
         result = []
         temp = []
         top = -1
@@ -276,12 +276,19 @@ class BinaryTree(DataStructure):
                     if self.__data[left] != -1:
                         top = top + 1
                         temp.append([left, self.__data[left]])
+        if operate == 1:
+            out_list = [-1] * len(self.__data)
+            index = 0
+            for each in result:
+                out_list[each[0]] = index
+                index += 1
+            return out_list
+        else:
+            track_result = self.get_preorder_data(result)
+            return track_result
 
-        track_result = self.get_preorder_data(result)
-        return track_result
-
-    # 中序遍历
-    def inorder(self):
+    # 中序遍历,operate: -1 轨迹数据, 1 遍历序列
+    def inorder(self, operate=-1):
         result = []
         temp = []
         top = -1
@@ -300,12 +307,19 @@ class BinaryTree(DataStructure):
                     top = top - 1
                     temp.pop()
                     i = (i + 1) * 2
+        if operate == 1:
+            out_list = [-1] * len(self.__data)
+            index = 0
+            for each in result:
+                out_list[each[0]] = index
+                index += 1
+            return out_list
+        else:
+            track_result = self.get_inorder_data(result)
+            return track_result
 
-        track_result = self.get_inorder_data(result)
-        return track_result
-
-    # 后序遍历
-    def postorder(self):
+    # 后序遍历,operate: -1 轨迹数据, 1 遍历序列
+    def postorder(self, operate=-1):
         result = []
         temp = []
         top = -1
@@ -332,9 +346,16 @@ class BinaryTree(DataStructure):
                         left_visit = False
                 if top == -1:
                     break
-
-        track_result = self.get_postorder_data(result)
-        return track_result
+        if operate == 1:
+            out_list = [-1] * len(self.__data)
+            index = 0
+            for each in result:
+                out_list[each[0]] = index
+                index += 1
+            return out_list
+        else:
+            track_result = self.get_postorder_data(result)
+            return track_result
 
     # 先序遍历轨迹数据
     def get_preorder_data(self, data):

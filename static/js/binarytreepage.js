@@ -21,7 +21,7 @@ function inputWindow() {
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));   //更新数据包
             resetSvgData(svg_data);
-            console.log("data", post_data);
+            // console.log("data", post_data);
             drawTree(post_data, svg_data);
             drawProgress(animation_data, 0);
             drawCode(post_data, animation_data, 0, 0);
@@ -57,7 +57,7 @@ function inputWindow() {
             drawProgress(animation_data, 0);               //重置进度条
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("pre", post_data);
+            // console.log("pre", post_data);
             drawCode(post_data, animation_data, 1, 0);
             searchAnimation(svg_data, post_data, animation_data);
         }
@@ -79,7 +79,7 @@ function inputWindow() {
             drawProgress(animation_data, 0);               //重置进度条
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("in", post_data);
+            // console.log("in", post_data);
             drawCode(post_data, animation_data, 1, 0);
             searchAnimation(svg_data, post_data, animation_data);
         }
@@ -101,7 +101,7 @@ function inputWindow() {
             drawProgress(animation_data, 0);               //重置进度条
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("post", post_data);
+            // console.log("post", post_data);
             drawCode(post_data, animation_data, 1, 0);
             searchAnimation(svg_data, post_data, animation_data);
         }
@@ -175,7 +175,8 @@ function resetSvgData(svg_data) {
     svg_data.line_search_stroke = "red";
     svg_data.search_stroke = "orange";
     svg_data.done_stroke = "#3a7563";
-    svg_data.mark_fill = "red";
+    svg_data.mark_fill = "#f03861";
+    svg_data.sample_text_fill = "#8c7676";
 }
 
 /**
@@ -186,14 +187,16 @@ function resetSvgData(svg_data) {
  * @param {number} operate_type  进行的操作类型，0：无，1：先序，2：中序，3：后序
  * @param {number} tree_depth 二叉树深度
  * @param {object} search_process    遍历过程数据(后台)
+ * @param search_result 遍历序列
  */
 function resetPostData(post_data, input_tpye = 0, array_data = null, operate_type = 0,
-                       tree_depth = 0, search_process = null) {
+                       tree_depth = 0, search_process = null, search_result = null) {
     post_data.input_tpye = input_tpye;
     post_data.array_data = array_data;
     post_data.operate_type = operate_type;
     post_data.tree_depth = tree_depth;
     post_data.search_process = search_process;
+    post_data.search_result = search_result;
 }
 
 
@@ -298,7 +301,52 @@ function drawTree(post_data, svg_data) {
         .attr("fill", "black")
         .text("root");
 
+    svg.append("g").attr("class", "g_visited");
+
     svg_data.m_svg = svg;
+    drawSample(svg_data);
+}
+
+/**
+ * @description 主视图图例绘制
+ * @param svg_data
+ */
+function drawSample(svg_data) {
+    svg_data.m_svg.append("g")
+        .attr("class", "g_sample");
+    let sample_rect = [svg_data.circle_stroke, svg_data.circle_search_fill, svg_data.done_stroke];
+    let sample_text = ["未处理元素", "查找中的元素", "已访问过的元素"];
+    for (let idx = 0; idx < 3; idx++) {
+        if (idx === 0) {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", "white")
+                .attr("stroke-width", 3)
+                .attr("stroke", sample_rect[idx]);
+        }
+        else {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", sample_rect[idx]);
+        }
+
+        svg_data.m_svg.select(".g_sample")
+            .append("text")
+            .attr("x", svg_data.width / 30 + 30)
+            .attr("y", svg_data.height / 25 + idx * 30)
+            .attr("dy", 13)
+            .attr("font-size", 15)
+            .text(sample_text[idx])
+            .attr("fill", svg_data.sample_text_fill);
+    }
 }
 
 /**
@@ -390,6 +438,16 @@ function searchAnimation(svg_data, post_data, animation_data) {
         .attr("d", arrow_path)
         .attr("fill", "black");
 
+    svg_data.m_svg.select(".g_visited")
+        .append("text")
+        .attr('x', svg_data.width / 7 - 130)
+        .attr('y', 5 * svg_data.height / 6)
+        .attr("dx", -svg_data.circle_radius / 2.5)
+        .attr("dy", svg_data.circle_radius / 4)
+        .attr("font-size", svg_data.font_size)
+        .attr("fill", svg_data.mark_fill)
+        .text("遍历序列:");
+
     let done_id = [];
 
     if (post_data.operate_type === 1) {       //先序
@@ -427,8 +485,31 @@ function searchAnimation(svg_data, post_data, animation_data) {
                         .attr('x', svg_data.circlepos_x[post_data.search_process[idx][k]])
                         .attr('y', svg_data.circlepos_y[post_data.search_process[idx][k]]);
 
-                    if (k === 0)
+                    if (k === 0) {
                         drawCode(post_data, animation_data, 2, 2, post_data.array_data[post_data.search_process[idx][k]]);
+                        let pos = post_data.search_result[post_data.search_process[idx][k]];
+                        svg_data.m_svg.select(".g_visited")
+                            .append('g')
+                            .attr('class', "g_out" + pos)
+                            .append("circle")
+                            .attr("cx", svg_data.width / 7 + pos * 80)
+                            .attr("cy", 5 * svg_data.height / 6)
+                            .attr("r", svg_data.circle_radius)
+                            .attr("fill", svg_data.done_stroke)
+                            .attr("stroke", svg_data.done_stroke)
+                            .attr("stroke-width", 3);
+
+                        svg_data.m_svg.select(".g_out" + pos)
+                            .append("text")
+                            .attr('x', svg_data.width / 7 + pos * 80)
+                            .attr('y', 5 * svg_data.height / 6)
+                            .attr("dx", -svg_data.circle_radius / 2.5)
+                            .attr("dy", svg_data.circle_radius / 4)
+                            .attr("font-size", svg_data.font_size)
+                            .attr("fill", "white")
+                            .text(post_data.array_data[post_data.search_process[idx][k]]);
+                    }
+
 
                     if (k > 0) {
                         svg_data.m_svg.select(".temp_line").remove();
@@ -446,6 +527,27 @@ function searchAnimation(svg_data, post_data, animation_data) {
                                     drawCode(post_data, animation_data, 3, 3);                           //左子树
                                     let temp_timer = setTimeout(() => {
                                         drawCode(post_data, animation_data, 2, 2, post_data.array_data[post_data.search_process[idx][k]]);
+                                        let pos = post_data.search_result[post_data.search_process[idx][k]];
+                                        svg_data.m_svg.select(".g_visited")
+                                            .append('g')
+                                            .attr('class', "g_out" + pos)
+                                            .append("circle")
+                                            .attr("cx", svg_data.width / 7 + pos * 80)
+                                            .attr("cy", 5 * svg_data.height / 6)
+                                            .attr("r", svg_data.circle_radius)
+                                            .attr("fill", svg_data.done_stroke)
+                                            .attr("stroke", svg_data.done_stroke)
+                                            .attr("stroke-width", 3);
+
+                                        svg_data.m_svg.select(".g_out" + pos)
+                                            .append("text")
+                                            .attr('x', svg_data.width / 7 + pos * 80)
+                                            .attr('y', 5 * svg_data.height / 6)
+                                            .attr("dx", -svg_data.circle_radius / 2.5)
+                                            .attr("dy", svg_data.circle_radius / 4)
+                                            .attr("font-size", svg_data.font_size)
+                                            .attr("fill", "white")
+                                            .text(post_data.array_data[post_data.search_process[idx][k]]);
                                     }, animation_data.duration / 2);
                                     animation_data.all_timer.push(temp_timer);              // 计时器缓存
                                 }
@@ -455,12 +557,33 @@ function searchAnimation(svg_data, post_data, animation_data) {
                                     drawCode(post_data, animation_data, 4, 4);                         //右子树
                                     let temp_timer = setTimeout(() => {
                                         drawCode(post_data, animation_data, 2, 2, post_data.array_data[post_data.search_process[idx][k]]);
+                                        let pos = post_data.search_result[post_data.search_process[idx][k]];
+                                        svg_data.m_svg.select(".g_visited")
+                                            .append('g')
+                                            .attr('class', "g_out" + pos)
+                                            .append("circle")
+                                            .attr("cx", svg_data.width / 7 + pos * 80)
+                                            .attr("cy", 5 * svg_data.height / 6)
+                                            .attr("r", svg_data.circle_radius)
+                                            .attr("fill", svg_data.done_stroke)
+                                            .attr("stroke", svg_data.done_stroke)
+                                            .attr("stroke-width", 3);
+
+                                        svg_data.m_svg.select(".g_out" + pos)
+                                            .append("text")
+                                            .attr('x', svg_data.width / 7 + pos * 80)
+                                            .attr('y', 5 * svg_data.height / 6)
+                                            .attr("dx", -svg_data.circle_radius / 2.5)
+                                            .attr("dy", svg_data.circle_radius / 4)
+                                            .attr("font-size", svg_data.font_size)
+                                            .attr("fill", "white")
+                                            .text(post_data.array_data[post_data.search_process[idx][k]]);
                                     }, animation_data.duration / 2);
                                     animation_data.all_timer.push(temp_timer);              // 计时器缓存
                                 }
                             }
                         }
-                        else{
+                        else {
                             line_id = post_data.search_process[idx][k - 1];
                             drawCode(post_data, animation_data, 6, 0);
                         }
@@ -510,8 +633,30 @@ function searchAnimation(svg_data, post_data, animation_data) {
                             .text("now");
                     }
 
-                    if(post_data.search_process.length === 1)
+                    if (post_data.search_process.length === 1) {
                         drawCode(post_data, animation_data, 2, 3, post_data.array_data[post_data.search_process[idx][k]]);
+                        let pos = post_data.search_result[post_data.search_process[idx][k]];
+                        svg_data.m_svg.select(".g_visited")
+                            .append('g')
+                            .attr('class', "g_out" + pos)
+                            .append("circle")
+                            .attr("cx", svg_data.width / 7 + pos * 80)
+                            .attr("cy", 5 * svg_data.height / 6)
+                            .attr("r", svg_data.circle_radius)
+                            .attr("fill", svg_data.done_stroke)
+                            .attr("stroke", svg_data.done_stroke)
+                            .attr("stroke-width", 3);
+
+                        svg_data.m_svg.select(".g_out" + pos)
+                            .append("text")
+                            .attr('x', svg_data.width / 7 + pos * 80)
+                            .attr('y', 5 * svg_data.height / 6)
+                            .attr("dx", -svg_data.circle_radius / 2.5)
+                            .attr("dy", svg_data.circle_radius / 4)
+                            .attr("font-size", svg_data.font_size)
+                            .attr("fill", "white")
+                            .text(post_data.array_data[post_data.search_process[idx][k]]);
+                    }
 
                     svg_data.m_svg.select("#m_circle" + post_data.search_process[idx][k])
                         .transition()
@@ -529,6 +674,27 @@ function searchAnimation(svg_data, post_data, animation_data) {
                         done_id.push(post_data.search_process[idx][k]);
                         let temp_timer = setTimeout(() => {
                             drawCode(post_data, animation_data, 2, 3, post_data.array_data[post_data.search_process[idx][k]]);
+                            let pos = post_data.search_result[post_data.search_process[idx][k]];
+                            svg_data.m_svg.select(".g_visited")
+                                .append('g')
+                                .attr('class', "g_out" + pos)
+                                .append("circle")
+                                .attr("cx", svg_data.width / 7 + pos * 80)
+                                .attr("cy", 5 * svg_data.height / 6)
+                                .attr("r", svg_data.circle_radius)
+                                .attr("fill", svg_data.done_stroke)
+                                .attr("stroke", svg_data.done_stroke)
+                                .attr("stroke-width", 3);
+
+                            svg_data.m_svg.select(".g_out" + pos)
+                                .append("text")
+                                .attr('x', svg_data.width / 7 + pos * 80)
+                                .attr('y', 5 * svg_data.height / 6)
+                                .attr("dx", -svg_data.circle_radius / 2.5)
+                                .attr("dy", svg_data.circle_radius / 4)
+                                .attr("font-size", svg_data.font_size)
+                                .attr("fill", "white")
+                                .text(post_data.array_data[post_data.search_process[idx][k]]);
                         }, animation_data.duration / 2);
                         animation_data.all_timer.push(temp_timer);              // 计时器缓存
                     }
@@ -551,7 +717,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                         }
 
                         let line_id;
-                        if (post_data.search_process[idx][k] > post_data.search_process[idx][k - 1]){
+                        if (post_data.search_process[idx][k] > post_data.search_process[idx][k - 1]) {
                             line_id = post_data.search_process[idx][k];
                             if ((post_data.search_process[idx][k] + 1) === (post_data.search_process[idx][k - 1] + 1) * 2) {
                                 drawCode(post_data, animation_data, 3, 2);                           //左子树
@@ -560,7 +726,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                                 drawCode(post_data, animation_data, 4, 4);                         //右子树
                             }
                         }
-                        else{
+                        else {
                             line_id = post_data.search_process[idx][k - 1];
                             drawCode(post_data, animation_data, 6, 0);
                         }
@@ -622,10 +788,31 @@ function searchAnimation(svg_data, post_data, animation_data) {
                         .attr('x', svg_data.circlepos_x[post_data.search_process[idx][k]])
                         .attr('y', svg_data.circlepos_y[post_data.search_process[idx][k]]);
 
-                    if (k === post_data.search_process[idx].length - 1){
+                    if (k === post_data.search_process[idx].length - 1) {
                         done_id.push(post_data.search_process[idx][k]);
-                         let temp_timer = setTimeout(() => {
+                        let temp_timer = setTimeout(() => {
                             drawCode(post_data, animation_data, 2, 4, post_data.array_data[post_data.search_process[idx][k]]);
+                            let pos = post_data.search_result[post_data.search_process[idx][k]];
+                            svg_data.m_svg.select(".g_visited")
+                                .append('g')
+                                .attr('class', "g_out" + pos)
+                                .append("circle")
+                                .attr("cx", svg_data.width / 7 + pos * 80)
+                                .attr("cy", 5 * svg_data.height / 6)
+                                .attr("r", svg_data.circle_radius)
+                                .attr("fill", svg_data.done_stroke)
+                                .attr("stroke", svg_data.done_stroke)
+                                .attr("stroke-width", 3);
+
+                            svg_data.m_svg.select(".g_out" + pos)
+                                .append("text")
+                                .attr('x', svg_data.width / 7 + pos * 80)
+                                .attr('y', 5 * svg_data.height / 6)
+                                .attr("dx", -svg_data.circle_radius / 2.5)
+                                .attr("dy", svg_data.circle_radius / 4)
+                                .attr("font-size", svg_data.font_size)
+                                .attr("fill", "white")
+                                .text(post_data.array_data[post_data.search_process[idx][k]]);
                         }, animation_data.duration / 2);
                         animation_data.all_timer.push(temp_timer);              // 计时器缓存
                     }
@@ -649,7 +836,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                         }
 
                         let line_id;
-                        if (post_data.search_process[idx][k] > post_data.search_process[idx][k - 1]){
+                        if (post_data.search_process[idx][k] > post_data.search_process[idx][k - 1]) {
                             line_id = post_data.search_process[idx][k];
                             if ((post_data.search_process[idx][k] + 1) === (post_data.search_process[idx][k - 1] + 1) * 2) {
                                 drawCode(post_data, animation_data, 3, 2);                           //左子树
@@ -658,7 +845,7 @@ function searchAnimation(svg_data, post_data, animation_data) {
                                 drawCode(post_data, animation_data, 4, 3);                         //右子树
                             }
                         }
-                        else{
+                        else {
                             line_id = post_data.search_process[idx][k - 1];
                             drawCode(post_data, animation_data, 6, 0);
                         }
@@ -705,7 +892,7 @@ function drawCode(post_data, animation_data, word_id, now_step, out_num = -1) {
     else if (post_data.operate_type === 3)
         code_text = ["void PostOrder(tree *node)", "if(node != null)", "PostOrder(node->left)", "PostOrder(node->right)", "access(node->data)"];
     else if (post_data.operate_type === 0)
-        code_text = [""];
+        code_text = ["请执行遍历操作"];
 
     d3.select("#code_svg").remove();
     let screen = $("#code_window");

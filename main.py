@@ -200,12 +200,15 @@ def binary_tree_method():
     if data["operate_type"] == 1:  # 先序
         bin_tree = data_structure.BinaryTree(data["array_data"])
         data["search_process"] = bin_tree.preorder()
+        data["search_result"] = bin_tree.preorder(1)
     elif data["operate_type"] == 2:  # 中序
         bin_tree = data_structure.BinaryTree(data["array_data"])
         data["search_process"] = bin_tree.inorder()
+        data["search_result"] = bin_tree.inorder(1)
     elif data["operate_type"] == 3:  # 后序
         bin_tree = data_structure.BinaryTree(data["array_data"])
         data["search_process"] = bin_tree.postorder()
+        data["search_result"] = bin_tree.postorder(1)
 
     return jsonify(data)
 

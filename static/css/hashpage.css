@@ -87,7 +87,7 @@ html body {
     top: 1%;
     right: 0;
     width: 25%;
-    height: 15%;
+    height: 10%;
 }
 
 /*输入窗口*/
@@ -120,7 +120,7 @@ html body {
 #hide_bt1 {
     position: absolute;
     width: 40%;
-    height: 20%;
+    height: 25%;
     top: 40%;
     left: 30%;
     background-size:100%;
@@ -134,10 +134,10 @@ html body {
 }
 #hide_bt1:hover {
     position: absolute;
-    width: 60%;
-    height: 30%;
+    width: 50%;
+    height: 40%;
     top: 35%;
-    left: 20%;
+    left: 25%;
 }
 
 /*输入文本框*/
@@ -158,6 +158,53 @@ html body {
     font-size: 5px;
 }
 
+/*介绍窗口*/
+#intro_page{
+    position: absolute;
+    top: 20%;
+    right: 0;
+    width: 17%;
+    height: 30%;
+}
+
+#intro_window{
+    position: absolute;
+    background: #596e79;
+    font-weight: bold;
+    font-family: "KaiTi", serif;
+    font-size: 15px;
+    left: 0;
+    top: 0;
+    width: 85%;
+    height: 100%;
+}
+
+#intro_hide {
+    position: absolute;
+    background-color: #404d54;
+    right: 0;
+    top: 0;
+    width: 15%;
+    height: 100%;
+}
+
+#hide_bt4 {
+    position: absolute;
+    width: 50%;
+    height: 15%;
+    top: 45%;
+    left: 25%;
+    background-size:100%;
+    background-repeat: no-repeat;
+}
+
+#hide_bt4:hover {
+    position: absolute;
+    width: 70%;
+    height: 20%;
+    top: 41%;
+    left: 15%;
+}
 /*提示窗口*/
 #hint_page {
     position: absolute;

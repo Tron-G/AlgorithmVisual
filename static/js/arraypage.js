@@ -65,7 +65,7 @@ function inputWindow() {
                 animation_data.is_pause = false;
                 animation_data.duration = 1500;
                 $("#play_bt").attr("class", "pause");
-                runAnimation(post_data, animation_data);
+                runAnimation(svg_data, post_data, animation_data);
             }
         }
         else
@@ -80,12 +80,12 @@ function inputWindow() {
                 animation_data.is_next = true;
                 animation_data.duration = 600;
                 clearAllTimer(animation_data, true);
-                runAnimation(post_data, animation_data);
+                runAnimation(svg_data, post_data, animation_data);
             } else {                                            // 步进播放
                 animation_data.is_next = true;
                 animation_data.duration = 600;
                 clearAllTimer(animation_data, true);
-                runAnimation(post_data, animation_data);
+                runAnimation(svg_data, post_data, animation_data);
             }
         }
         else
@@ -195,6 +195,8 @@ function resetSvgData(svg_data) {
     svg_data.text_change_fill = "#FF0033";
     svg_data.search_fail_fill = "red";
     svg_data.search_succ_fill = "#a1de93";
+    svg_data.sample_text_fill = "#8c7676";
+    svg_data.mark_fill = "#f03861";
     svg_data.rect_len = 70;        //矩形长度
 }
 
@@ -266,7 +268,107 @@ function drawArray(array_data, svg_data) {
             return "a[" + i + "]";
         });
     svg_data.m_svg = svg;
+    drawSample(svg_data);
 }
+
+/**
+ * @description 主视图图例绘制
+ * @param svg_data
+ */
+ function drawSample(svg_data) {
+    svg_data.m_svg.append("g")
+        .attr("class", "g_sample");
+    let sample_rect = [svg_data.rect_stroke, svg_data.rect_search_fill, svg_data.rect_change_fill, svg_data.search_succ_fill,svg_data.search_fail_fill];
+    let sample_text = ["未处理元素", "已查找元素", "修改元素", "查找成功元素", "查找失败/目标不存在"];
+    for (let idx = 0; idx < 5; idx++) {
+        if (idx === 0) {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill","white")
+                .attr("stroke-width",3)
+                .attr("stroke", sample_rect[idx]);
+        }
+        else {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", sample_rect[idx]);
+        }
+
+        svg_data.m_svg.select(".g_sample")
+            .append("text")
+            .attr("x", svg_data.width / 30 + 30)
+            .attr("y", svg_data.height / 25 + idx * 30)
+            .attr("dy", 13)
+            .attr("font-size", 15)
+            .text(sample_text[idx])
+            .attr("fill", svg_data.sample_text_fill);
+    }
+}
+
+
+/**
+ * @description 结论绘制
+ * @param {object} svg_data 数组数据
+ * @param {object} post_data 数据包animation_data
+ */
+function drawConclusion(svg_data, post_data) {
+    let sum = post_data.search_process.length - 1;
+
+    svg_data.m_svg.append("g")
+        .attr("class", "g_conclusion")
+        .append("text")
+        .attr("x", svg_data.width / 3)
+        .attr("y", 17 * svg_data.height / 20)
+        .attr("font-size", svg_data.font_size * 1.3)
+        .attr("fill", svg_data.mark_fill)
+        .text("本次查找总共比较的次数为：" + sum);
+}
+
+/**
+ * @description 算法介绍窗口
+ */
+ function drawIntrouce() {
+    d3.select("#intro_svg").remove();
+    let screen = $("#intro_window");
+    let width = screen.width();
+    let height = screen.height();
+    let svg = d3.select("#intro_window")
+        .append("svg")
+        .attr("id", "intro_svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    let intro_text = "冒泡排序: 重复地走访过要排序的元素列，/依次比较两个相邻的元素，如果他们的顺序/错误就把他们交换过来，直到排序完成";
+
+    let temp = intro_text.split("/");
+
+    let text = svg.append("g")
+        .append("text")
+        .attr("fill", "white")
+        .attr('x', width / 15)
+        .attr('y', height / 10);
+
+    text.selectAll("tspan")
+        .data(temp)
+        .enter()
+        .append("tspan")
+        .attr("x", width / 15)
+        .attr("dy", height / 5)
+        .text(function (d) {
+            return d
+        })
+}
+
+
+
 
 /**
  * @description 查找过程的动画生成函数
@@ -326,10 +428,11 @@ function createAnimation(svg_data, post_data, animation_data) {
 
 /**
  * @description 查找过程的动画运行函数
+ * @param svg_data
  * @param {object} post_data
  * @param {object} animation_data 动画数据包
  */
-function runAnimation(post_data, animation_data) {
+function runAnimation(svg_data, post_data, animation_data) {
     let timer = setTimeout(() => {
         if (animation_data.is_next && animation_data.now_step < animation_data.frame.length
             && !animation_data.is_find) {                   //步进执行
@@ -339,18 +442,20 @@ function runAnimation(post_data, animation_data) {
             // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
-            runAnimation(post_data, animation_data);
+            runAnimation(svg_data, post_data, animation_data);
         }
         else {                                              //自动执行
             if (post_data.array_data[animation_data.now_step - 1] === post_data.search_num) {
                 animation_data.is_find = true;
                 animation_data.is_pause = true;
+                drawConclusion(svg_data, post_data);
                 $("#play_bt").attr("class", "play");         //切换播放图标
                 // alert("查找成功" + (animation_data.now_step - 1));
                 return;
             }
             else if (animation_data.now_step > animation_data.frame.length - 1) {
                 animation_data.is_pause = true;
+                drawConclusion(svg_data, post_data);
                 $("#play_bt").attr("class", "play");         //切换播放图标
                 // alert("查找失败");
                 return;
@@ -363,7 +468,7 @@ function runAnimation(post_data, animation_data) {
             showCode(post_data, animation_data);
             // console.log("正在播放第:" + animation_data.now_step + "帧", post_data.search_process.length);
             animation_data.now_step++;
-            runAnimation(post_data, animation_data);
+            runAnimation(svg_data, post_data, animation_data);
         }
     }, animation_data.duration);
     animation_data.all_timer.push(timer);                   // 计时器缓存

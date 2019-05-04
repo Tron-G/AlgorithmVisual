@@ -85,7 +85,7 @@ function inputWindow() {
                     animation_data.is_pause = false;
                     $("#play_bt").attr("class", "pause");
                     animation_data.duration = 2000;
-                    runAnimation(post_data, animation_data);
+                    runAnimation(svg_data, post_data, animation_data);
                 }
                 else if (animation_data.now_step === 0 && animation_data.is_search) {
                     drawCode(post_data, animation_data, 14, 0);
@@ -96,13 +96,13 @@ function inputWindow() {
                     animation_data.is_pause = false;
                     $("#play_bt").attr("class", "pause");
                     animation_data.duration = 2000;
-                    runAnimation(post_data, animation_data);
+                    runAnimation(svg_data, post_data, animation_data);
                 }
                 else {
                     animation_data.is_pause = false;
                     $("#play_bt").attr("class", "pause");
                     animation_data.duration = 2000;
-                    runAnimation(post_data, animation_data);
+                    runAnimation(svg_data, post_data, animation_data);
                 }
             }
         }
@@ -118,7 +118,7 @@ function inputWindow() {
                     animation_data.is_next = true;
                     animation_data.duration = 1500;
                     clearAllTimer(animation_data, true);
-                    runAnimation(post_data, animation_data);
+                    runAnimation(svg_data, post_data, animation_data);
                 }
                 else {                                            // 步进播放
                     if (animation_data.now_step === 0 && animation_data.is_create) {
@@ -127,7 +127,7 @@ function inputWindow() {
                             drawCode(post_data, animation_data, 3, 1);
                             animation_data.is_next = true;
                             animation_data.duration = 1500;
-                            runAnimation(post_data, animation_data);
+                            runAnimation(svg_data, post_data, animation_data);
                         }, animation_data.duration / 2);
                         animation_data.local_timer.push(temp_timer);       // 计时器缓存
                     }
@@ -137,14 +137,14 @@ function inputWindow() {
                             drawCode(post_data, animation_data, 9, 1, post_data.search_process[0]);
                             animation_data.is_next = true;
                             animation_data.duration = 1500;
-                            runAnimation(post_data, animation_data);
+                            runAnimation(svg_data, post_data, animation_data);
                         }, animation_data.duration / 2);
                         animation_data.local_timer.push(temp_timer);       // 计时器缓存、
                     }
                     else {
                         animation_data.is_next = true;
                         animation_data.duration = 1500;
-                        runAnimation(post_data, animation_data);
+                        runAnimation(svg_data, post_data, animation_data);
                     }
                 }
             }
@@ -153,6 +153,7 @@ function inputWindow() {
         }
     );
     hideAnimation();
+    drawIntrouce();
 }
 
 inputWindow();
@@ -177,10 +178,10 @@ function resetSvgData(svg_data) {
     svg_data.search_fill = "#fab57a";
     svg_data.confict_fill = "#e23e57";  //  冲突
     svg_data.success_fill = "#a1de93";  //查找成功
-    svg_data.change_fill = "#ba52ed";  //填入数值
     svg_data.insert_fill = "#2eb872";
-    svg_data.mark_fill = "red";
+    svg_data.mark_fill = "#f03861";
     svg_data.done_fill = "#1e2022";
+    svg_data.sample_text_fill = "#8c7676";
 }
 
 /**
@@ -336,10 +337,105 @@ function drawArray(array_data, svg_data) {
         .attr("fill", svg_data.mark_fill)
         .text("哈希表:");
 
-
     svg_data.m_svg = svg;
+    drawSample(svg_data);
 }
 
+/**
+ * @description 主视图图例绘制
+ * @param svg_data
+ */
+ function drawSample(svg_data) {
+    svg_data.m_svg.append("g")
+        .attr("class", "g_sample");
+    let sample_rect = [svg_data.rect_stroke, svg_data.insert_fill, svg_data.search_fill, svg_data.confict_fill, svg_data.success_fill];
+    let sample_text = ["未处理元素", "已归位元素", "已查找元素", "哈希地址冲突元素/查找失败", "查找成功元素"];
+    for (let idx = 0; idx < 5; idx++) {
+        if (idx === 0) {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill","white")
+                .attr("stroke-width",3)
+                .attr("stroke", sample_rect[idx]);
+        }
+        else {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", sample_rect[idx]);
+        }
+
+        svg_data.m_svg.select(".g_sample")
+            .append("text")
+            .attr("x", svg_data.width / 30 + 30)
+            .attr("y", svg_data.height / 25 + idx * 30)
+            .attr("dy", 13)
+            .attr("font-size", 15)
+            .text(sample_text[idx])
+            .attr("fill", svg_data.sample_text_fill);
+    }
+}
+
+
+/**
+ * @description 结论绘制
+ * @param {object} svg_data 数组数据
+ * @param {object} post_data 数据包animation_data
+ */
+function drawConclusion(svg_data, post_data) {
+    let sum = post_data.search_process.length - 1;
+
+    svg_data.m_svg.append("g")
+        .attr("class", "g_conclusion")
+        .append("text")
+        .attr("x", svg_data.width / 3)
+        .attr("y", 17 * svg_data.height / 20)
+        .attr("font-size", svg_data.font_size * 1.3)
+        .attr("fill", svg_data.mark_fill)
+        .text("本次查找总共比较的次数为：" + sum);
+}
+
+/**
+ * @description 算法介绍窗口
+ */
+ function drawIntrouce() {
+    d3.select("#intro_svg").remove();
+    let screen = $("#intro_window");
+    let width = screen.width();
+    let height = screen.height();
+    let svg = d3.select("#intro_window")
+        .append("svg")
+        .attr("id", "intro_svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    let intro_text = "哈希表: 通过散列函数计算数组/中的每个元素的映射地址并存储/在表中以便查找，这个表就称为/哈希表；本例中的散列函数采用/除数留余法,除数为7，处理冲突/的方法采用开放定址法";
+
+    let temp = intro_text.split("/");
+
+    let text = svg.append("g")
+        .append("text")
+        .attr("fill", "white")
+        .attr('x', width / 15)
+        .attr('y', height / 20);
+
+    text.selectAll("tspan")
+        .data(temp)
+        .enter()
+        .append("tspan")
+        .attr("x", width / 15)
+        .attr("dy", height / 7.5)
+        .text(function (d) {
+            return d
+        })
+}
 
 /**
  * @description 查找过程的动画生成函数
@@ -463,7 +559,7 @@ function createAnimation(svg_data, post_data, animation_data) {
         .text("原数组:");
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-
+    drawSample(svg_data);
     let temp_frame;
     for (let index = 0; index < (post_data.create_process.length - 1); index++) {
         if (post_data.create_process[index].length === 2) {                 //直接插入
@@ -791,10 +887,11 @@ function hintAnimationDraw(post_data, animation_data, word_id, pos = -1) {
 
 /**
  * @description 查找过程的动画运行函数
+ * @param svg_data
  * @param {object} post_data
  * @param {object} animation_data 动画数据包
  */
-function runAnimation(post_data, animation_data) {
+function runAnimation(svg_data, post_data, animation_data) {
     if (animation_data.is_create) {
         let timer = setTimeout(() => {
             if (animation_data.is_next && animation_data.now_step < animation_data.createframe.length) {   //步进执行
@@ -803,7 +900,7 @@ function runAnimation(post_data, animation_data) {
                 // console.log("正在播放第:" + animation_data.now_step + "帧");
                 animation_data.now_step++;
                 animation_data.is_next = false;
-                runAnimation(post_data, animation_data);
+                runAnimation(svg_data, post_data, animation_data);
             }
             else {                                              //自动执行
                 if (animation_data.now_step > animation_data.createframe.length - 1) {
@@ -821,7 +918,7 @@ function runAnimation(post_data, animation_data) {
                 animation_data.createframe[animation_data.now_step]();
                 // console.log("正在播放第:" + animation_data.now_step + "帧");
                 animation_data.now_step++;
-                runAnimation(post_data, animation_data);
+                runAnimation(svg_data, post_data, animation_data);
             }
         }, animation_data.duration);
         animation_data.all_timer.push(timer);                   // 计时器缓存
@@ -834,11 +931,12 @@ function runAnimation(post_data, animation_data) {
                 // console.log("正在播放第:" + animation_data.now_step + "帧");
                 animation_data.now_step++;
                 animation_data.is_next = false;
-                runAnimation(post_data, animation_data);
+                runAnimation(svg_data, post_data, animation_data);
             }
             else {                                              //自动执行
                 if (animation_data.now_step > animation_data.searchframe.length - 1) {
                     animation_data.is_pause = true;
+                    drawConclusion(svg_data, post_data);
                     // drawCode(post_data, animation_data, 5, 3);
                     $("#play_bt").attr("class", "play");         //切换播放图标
                     // alert("查找失败");
@@ -851,7 +949,7 @@ function runAnimation(post_data, animation_data) {
                 animation_data.searchframe[animation_data.now_step]();
                 // console.log("正在播放第:" + animation_data.now_step + "帧");
                 animation_data.now_step++;
-                runAnimation(post_data, animation_data);
+                runAnimation(svg_data, post_data, animation_data);
             }
         }, animation_data.duration);
         animation_data.all_timer.push(timer);                   // 计时器缓存

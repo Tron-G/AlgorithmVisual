@@ -161,10 +161,10 @@ html body {
 /*介绍窗口*/
 #intro_page{
     position: absolute;
-    top: 20%;
+    top: 15%;
     right: 0;
     width: 23%;
-    height: 20%;
+    height: 30%;
 
 }
 

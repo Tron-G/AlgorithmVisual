@@ -103,6 +103,7 @@ function inputWindow() {
             errorWarning(50);
     });
     hideAnimation();
+    drawIntrouce();
 }
 
 inputWindow();
@@ -125,7 +126,8 @@ function resetSvgData(svg_data) {
     svg_data.num_fill = "#537791";
     svg_data.subscript_fill = "#A3A380";
     svg_data.rect_insert_fill = "#2eb872";
-    svg_data.mark_fill = "red";
+    svg_data.mark_fill = "#f03861";
+    svg_data.sample_text_fill = "#8c7676";
 }
 
 /**
@@ -171,11 +173,10 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.code_rect_fill = "#4f5d76";
         animation_data.choose_rect_fill = "#89a4c7";
         animation_data.hint_text_fill = "#5c2626";
-        animation_data.explain_words = ["数组创建完成","请点击开始按钮运行算法","排序后数组为空,直接插入当前元素",
-            "计算插入位置", "排序后数组中插入位置之后的元素后移一位","插入当前元素"];
+        animation_data.explain_words = ["数组创建完成", "请点击开始按钮运行算法", "排序后数组为空,直接插入当前元素",
+            "计算插入位置", "排序后数组中插入位置之后的元素后移一位", "插入当前元素", "排序完成"];
     }
 }
-
 
 /**
  * @description 主视图原数组绘制（排序前）
@@ -255,6 +256,83 @@ function drawArray(array_data, svg_data) {
         .text("原数组:");
 
     svg_data.m_svg = svg;
+    drawSample(svg_data);
+}
+
+/**
+ * @description 主视图图例绘制
+ * @param svg_data
+ */
+function drawSample(svg_data) {
+    svg_data.m_svg.append("g")
+        .attr("class", "g_sample");
+    let sample_rect = [svg_data.rect_stroke, svg_data.rect_insert_fill];
+    let sample_text = ["未排序元素", "已归位元素"];
+    for (let idx = 0; idx < 2; idx++) {
+        if (idx === 0) {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill","white")
+                .attr("stroke-width",3)
+                .attr("stroke", sample_rect[idx]);
+        }
+        else {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", sample_rect[idx]);
+        }
+        svg_data.m_svg.select(".g_sample")
+            .append("text")
+            .attr("x", svg_data.width / 30 + 30)
+            .attr("y", svg_data.height / 25 + idx * 30)
+            .attr("dy", 13)
+            .attr("font-size", 15)
+            .text(sample_text[idx])
+            .attr("fill", svg_data.sample_text_fill);
+    }
+}
+
+/**
+ * @description 算法介绍窗口
+ */
+function drawIntrouce() {
+    d3.select("#intro_svg").remove();
+    let screen = $("#intro_window");
+    let width = screen.width();
+    let height = screen.height();
+    let svg = d3.select("#intro_window")
+        .append("svg")
+        .attr("id", "intro_svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    let intro_text = "插入排序: 每步将一个待排序的/记录，按其关键码值的大小插入/已经排序的数组中适当位置上，/直到全部插入完为止，是一种简/单直观且稳定的排序算法。";
+
+    let temp = intro_text.split("/");
+
+    let text = svg.append("g")
+        .append("text")
+        .attr("fill", "white")
+        .attr('x', width / 15)
+        .attr('y', height / 30);
+
+    text.selectAll("tspan")
+        .data(temp)
+        .enter()
+        .append("tspan")
+        .attr("x", width / 15)
+        .attr("dy", height / 7)
+        .text(function (d) {
+            return d
+        })
 }
 
 
@@ -410,7 +488,7 @@ function drawCode(post_data, animation_data, word_id, now_step) {
     if (post_data.operate_type === 1)
         code_text = ["for i = 0 to a.length", "pos = searchPos(a[i])", "Move(a, pos)", "a[pos] = a[i]"];
     else
-        code_text = [""];
+        code_text = ["请执行排序操作"];
 
     d3.select("#code_svg").remove();
     let screen = $("#code_window");
@@ -467,7 +545,6 @@ function drawCode(post_data, animation_data, word_id, now_step) {
 }
 
 
-
 /**
  * @description 排序过程的动画运行函数
  * @param {object} post_data
@@ -487,7 +564,7 @@ function runAnimation(post_data, animation_data) {
         else {                                              //自动执行
             if (animation_data.now_step > animation_data.sortframe.length - 1) {
                 animation_data.is_pause = true;
-                // drawCode(post_data, animation_data, 5, 3);
+                drawCode(post_data, animation_data, 6, 0);
                 $("#play_bt").attr("class", "play");         //切换播放图标
                 // alert("查找失败");
                 return;
