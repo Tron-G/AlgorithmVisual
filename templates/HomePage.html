@@ -18,7 +18,7 @@
                 <li class="s-firstItem first">
                     <a href="/">
                         <i class="fa fa-home"></i>
-                        <span>AlgorithmVisual</span>
+                        <span>AlgorithmVis</span>
                     </a>
                 </li>
 
@@ -116,25 +116,119 @@
                             <i class="fa fa-minus-square-o"></i>
                             <a href="/quick_sort_page">快速排序</a>
                         </li>
-                        <li class="s-secondItem">
-                            <i class="fa fa-minus-square-o"></i>
-                            <a href="#">堆排序</a>
-                        </li>
+{#                        <li class="s-secondItem">#}
+{#                            <i class="fa fa-minus-square-o"></i>#}
+{#                            <a href="#">堆排序</a>#}
+{#                        </li>#}
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
     {#  <div id="bottom_toolbar"></div>#}
-    <div id="top_toolbar"></div>
+    <div id="top_toolbar">
+        <p class="head_text">欢迎使用数据结构可视化系统</p>
+        <p class="sec_text">请先选择数据结构或算法:</p>
+    </div>
     <div id="screen">
-        <div id="introduce"></div>
-        <img id="imgs" src="../static/img/intro.png">
+        <div id="selection">
+            <table>
+                <tbody>
+                <tr valign="top">
+                    <td>
+                        <a href="/array_page">
+                            <img class="m_img" src="../static/img/array.png">
+                        </a>
+                        <br>
+                        数组
+                    </td>
+                    <td>
+                        <a href="/link_page">
+                            <img class="m_img" src="../static/img/links.png">
+                        </a>
+                        <br>
+                        链表
+                    </td>
+                    <td>
+                        <a href="/stack_page">
+                            <img class="m_img" src="../static/img/stack.png">
+                        </a>
+                        <br>
+                        栈
+                    </td>
+                    <td >
+                        <a href="/queue_page">
+                            <img class="m_img" src="../static/img/queue.png">
+                        </a>
+                        <br>
+                        队列
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <td>
+                        <a href="/binary_tree_page">
+                            <img class="m_img" src="../static/img/biTree.png">
+                        </a>
+                        <br>
+                        二叉树
+                    </td>
+                    <td>
+                        <a href="/bisearch_page">
+                            <img class="m_img" src="../static/img/biTree.png">
+                        </a>
+                        <br>
+                        折半查找
+                    </td>
+                    <td>
+                        <a href="/hash_page">
+                            <img class="m_img" src="../static/img/biTree.png">
+                        </a>
+                        <br>
+                        哈希表
+                    </td>
+                    <td>
+                        <a href="/insert_sort_page">
+                            <img class="m_img" src="../static/img/insert.gif">
+                        </a>
+                        <br>
+                        插入排序
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <td>
+                        <a href="/bubble_sort_page">
+                            <img class="m_img" src="../static/img/bubble.gif">
+                        </a>
+                        <br>
+                        冒泡排序
+                    </td>
+                    <td>
+                        <a href="/selection_sort_page">
+                            <img class="m_img" src="../static/img/selection.gif">
+                        </a>
+                        <br>
+                        直接选择排序
+                    </td>
+                    <td>
+                        <a href="/quick_sort_page">
+                            <img class="m_img" src="../static/img/quick.gif">
+                        </a>
+                        <br>
+                        快速排序
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="introduce">
+            <p id="intro_text">什么是数据结构:</p>
+            <p id="detail">数据结构是由数据元素依据某种逻辑联系组织起来的。对数据元素间逻辑关系的描述称为数据的逻辑结构；数据必须在计算机内存储，数据的存储结构是数据结构的实现形式，是其在计算机内的表示；此外讨论一个数据结构必须同时讨论在该类数据上执行的运算才有意义。一个逻辑数据结构可以有多种存储结构，且各种存储结构影响数据处理的效率.....</p>
+            <img id="imgs" src="../static/img/intro.png">
+        </div>
     </div>
 </div>
 
 <script type="text/javascript" src="../static/lib/d3/d3.js"></script>
 <script type="text/javascript" src="../static/lib/jquery/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="../static/js/homepage.js"></script>
 <script type="text/javascript" src="../static/js/navigation.js"></script>
 </html>

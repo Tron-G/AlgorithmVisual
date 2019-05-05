@@ -303,3 +303,40 @@ function errorWarning(error_type) {
             break;
     }
 }
+
+function search() {
+    $('#search_input').bind('keydown', function (event) {
+        if (event.keyCode === 13) {
+            let search_name = $('#search_input').val();
+            // console.log(search_name === "数组");
+            let arrays = "数组", links = "链表", stacks = "栈", queue = "队列";
+            let bitree = "二叉树", half = "折半", hash = "哈希";
+            let insert = "插入", bubble = "冒泡", selection = "选择", quick = "快速";
+            if (search_name.search(arrays) !== -1)
+                location.href = "/array_page";
+            else if (search_name.search(links) !== -1)
+                location.href = "/link_page";
+            else if (search_name.search(stacks) !== -1)
+                location.href = "/stack_page";
+            else if (search_name.search(queue) !== -1)
+                location.href = "/queue_page";
+            else if (search_name.search(bitree) !== -1)
+                location.href = "/binary_tree_page";
+            else if (search_name.search(half) !== -1)
+                location.href = "/bisearch_page";
+            else if (search_name.search(hash) !== -1)
+                location.href = "/hash_page";
+            else if (search_name.search(insert) !== -1)
+                location.href = "/insert_sort_page";
+            else if (search_name.search(bubble) !== -1)
+                location.href = "/bubble_sort_page";
+            else if (search_name.search(selection) !== -1)
+                location.href = "/selection_sort_page";
+            else if (search_name.search(quick) !== -1)
+                location.href = "/quick_sort_page";
+            else
+                alert("无匹配结果，请重新输入");
+        }
+    });
+}
+

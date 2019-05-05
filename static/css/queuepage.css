@@ -1,11 +1,11 @@
 html body {
     margin: 0;
     color: #FFFFFF;
-    background-color: pink;
+    background-color: white;
 }
 
 #main {
-    background-color: pink;
+    background-color: white;
     position: fixed;
     top: 0;
     bottom: 0;

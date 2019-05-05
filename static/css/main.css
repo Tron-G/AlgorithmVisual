@@ -3,11 +3,9 @@ html body {
     font-size: 16px;
     font-family: "微软雅黑", serif;
     color: #FFFFFF;
-    background-color: pink;
 }
 
 #main {
-    background-color: hotpink;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -21,31 +19,99 @@ html body {
     top: 0;
     left: 15%;
     width: 85%;
-    height: 10%;
+    height: 20%;
+}
+.head_text{
+    position: absolute;
+    left: 3%;
+    top: 5%;
+    color: #f08a5d;
+    text-shadow: 0 0 15px #aa7070;
+    font-style:italic;
+    font-size: 80px;
+    font-weight: bold;
+    font-family: "STKaiti", serif;
+}
+.sec_text{
+    position: absolute;
+    left: 3%;
+    bottom: 10%;
+    font-style:italic;
+    color: gray;
+    text-shadow: black;
+    font-size: 20px;
+
 }
 
 #screen {
     position: absolute;
-    background: #1BA8FE;
-    top: 10%;
+    /*background: #1BA8FE;*/
+    top: 20%;
     left: 15%;
     width: 85%;
     height: 90%;
 }
 
-#introduce {
+#selection {
     position: absolute;
-    background: #fce38a;
+    background: whitesmoke;
+    /*background: #fce38a;*/
     left: 0;
     width: 60%;
     height: 100%;
 }
 
-#imgs {
+#introduce {
     position: absolute;
-    /*background: #c7c0ef;*/
+    background: whitesmoke;
     right: 0;
-    top:25%;
     width: 40%;
-    height: 50%;
+    height: 100%;
+}
+#intro_text{
+    position: absolute;
+    left: 3%;
+    top: 0;
+    color: #6cbbb3;
+    font-weight: bold;
+    font-size: 50px;
+}
+#detail{
+    position: absolute;
+    left: 3%;
+    top: 10%;
+    color: #857671;
+    font-size: 23px;
+    font-family: "KaiTi", serif;
+}
+#imgs{
+    position: absolute;
+    bottom:20%;
+    width: 80%;
+    height: 40%;
+    left: 10%;
+}
+
+table{
+    position: absolute;
+    border: 1px solid #dfe2e5;
+    padding: 6px 13px;
+    box-sizing: border-box;
+    display: table-cell;
+    vertical-align: inherit;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 16px;
+    color:black;
+    line-height: 1.5;
+    text-align:center
+}
+.m_img{
+    width: 90%;
+    border: 1px solid #dfe2e5;
+    background-size:100%;
+    background-repeat: no-repeat;
+}
+.m_img:hover{
+    width: 100%;
 }

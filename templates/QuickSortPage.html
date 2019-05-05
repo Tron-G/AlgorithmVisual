@@ -5,6 +5,7 @@
     <title>快速排序</title>
     <link rel="stylesheet" href="../static/css/quicksortpage.css">
     <link rel="stylesheet" href="../static/css/navigation.css">
+    <link rel="stylesheet" href="../static/css/searchtool.css">
     <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
 </head>
 
@@ -114,10 +115,10 @@
                             <i class="fa fa-minus-square-o"></i>
                             <a href="/quick_sort_page">快速排序</a>
                         </li>
-                        <li class="s-secondItem">
-                            <i class="fa fa-minus-square-o"></i>
-                            <a href="#">堆排序</a>
-                        </li>
+{#                        <li class="s-secondItem">#}
+{#                            <i class="fa fa-minus-square-o"></i>#}
+{#                            <a href="#">堆排序</a>#}
+{#                        </li>#}
                     </ul>
                 </li>
             </ul>
@@ -131,6 +132,10 @@
     </div>
     <div id="top_toolbar">
         <!--顶部功能栏-->
+        <div class="container">
+            <input type="text" placeholder="搜索..." class="search_input" id="search_input" value="">
+            <div class="search"></div>
+        </div>
     </div>
     <div id="screen">
         <div id="input_window">

@@ -116,6 +116,7 @@ function inputWindow() {
     });
 
     hideAnimation();
+    search();
 }
 
 inputWindow();
@@ -279,7 +280,7 @@ function drawArray(array_data, svg_data) {
     svg_data.m_svg.append("g")
         .attr("class", "g_sample");
     let sample_rect = [svg_data.rect_stroke, svg_data.rect_search_fill, svg_data.rect_change_fill, svg_data.search_succ_fill,svg_data.search_fail_fill];
-    let sample_text = ["未处理元素", "已查找元素", "修改元素", "查找成功元素", "查找失败/目标不存在"];
+    let sample_text = ["原数组元素", "已查找元素", "修改元素", "查找成功元素", "查找失败/目标不存在"];
     for (let idx = 0; idx < 5; idx++) {
         if (idx === 0) {
             svg_data.m_svg.select(".g_sample")
@@ -331,44 +332,6 @@ function drawConclusion(svg_data, post_data) {
         .attr("fill", svg_data.mark_fill)
         .text("本次查找总共比较的次数为：" + sum);
 }
-
-/**
- * @description 算法介绍窗口
- */
- function drawIntrouce() {
-    d3.select("#intro_svg").remove();
-    let screen = $("#intro_window");
-    let width = screen.width();
-    let height = screen.height();
-    let svg = d3.select("#intro_window")
-        .append("svg")
-        .attr("id", "intro_svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    let intro_text = "冒泡排序: 重复地走访过要排序的元素列，/依次比较两个相邻的元素，如果他们的顺序/错误就把他们交换过来，直到排序完成";
-
-    let temp = intro_text.split("/");
-
-    let text = svg.append("g")
-        .append("text")
-        .attr("fill", "white")
-        .attr('x', width / 15)
-        .attr('y', height / 10);
-
-    text.selectAll("tspan")
-        .data(temp)
-        .enter()
-        .append("tspan")
-        .attr("x", width / 15)
-        .attr("dy", height / 5)
-        .text(function (d) {
-            return d
-        })
-}
-
-
-
 
 /**
  * @description 查找过程的动画生成函数

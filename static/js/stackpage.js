@@ -171,9 +171,8 @@ function inputWindow() {
         else
             errorWarning(30);
     });
-
-
     hideAnimation();
+    search();
 }
 
 inputWindow();
@@ -196,6 +195,7 @@ function resetSvgData(svg_data) {
     svg_data.rect_num_fill = "#663300";
     svg_data.push_rect_fill = "#FFCC33";
     svg_data.pop_rect_fill = "#393e46";
+    svg_data.sample_text_fill = "#8c7676";
 }
 
 /**
@@ -320,8 +320,50 @@ function drawStack(array_data, svg_data) {
         .text("top->");
 
     svg_data.m_svg = svg;
+    drawSample(svg_data);
 }
 
+/**
+ * @description 主视图图例绘制
+ * @param svg_data
+ */
+ function drawSample(svg_data) {
+    svg_data.m_svg.append("g")
+        .attr("class", "g_sample");
+    let sample_rect = [svg_data.rect_stoke, svg_data.push_rect_fill, svg_data.pop_rect_fill];
+    let sample_text = ["原栈中元素", "进栈元素", "出栈元素"];
+    for (let idx = 0; idx < 3; idx++) {
+        if (idx === 0) {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", "white")
+                .attr("stroke-width", 3)
+                .attr("stroke", sample_rect[idx]);
+        }
+        else {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", sample_rect[idx]);
+        }
+
+        svg_data.m_svg.select(".g_sample")
+            .append("text")
+            .attr("x", svg_data.width / 30 + 30)
+            .attr("y", svg_data.height / 25 + idx * 30)
+            .attr("dy", 13)
+            .attr("font-size", 15)
+            .text(sample_text[idx])
+            .attr("fill", svg_data.sample_text_fill);
+    }
+}
 
 /**
  * @description 入栈过程的动画生成函数

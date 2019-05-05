@@ -154,6 +154,7 @@ function inputWindow() {
     );
     hideAnimation();
     drawIntrouce();
+    search();
 }
 
 inputWindow();

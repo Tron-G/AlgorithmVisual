@@ -147,6 +147,7 @@ function inputWindow() {
             errorWarning(61);
     });
     hideAnimation();
+    search();
 }
 
 inputWindow();
@@ -315,7 +316,7 @@ function drawSample(svg_data) {
     svg_data.m_svg.append("g")
         .attr("class", "g_sample");
     let sample_rect = [svg_data.circle_stroke, svg_data.circle_search_fill, svg_data.done_stroke];
-    let sample_text = ["未处理元素", "查找中的元素", "已访问过的元素"];
+    let sample_text = ["二叉树节点", "查找中的节点", "已访问过的节点"];
     for (let idx = 0; idx < 3; idx++) {
         if (idx === 0) {
             svg_data.m_svg.select(".g_sample")

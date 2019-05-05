@@ -170,6 +170,7 @@ function inputWindow() {
             errorWarning(40);
     });
     hideAnimation();
+    search();
 }
 
 inputWindow();
@@ -192,6 +193,7 @@ function resetSvgData(svg_data) {
     svg_data.rect_num_fill = "#333333";
     svg_data.enqueue_rect_fill = "#3ec1d3";
     svg_data.dequeue_rect_fill = "#393e46";
+    svg_data.sample_text_fill = "#8c7676";
 }
 
 /**
@@ -382,8 +384,50 @@ function drawQueue(array_data, svg_data) {
             .text("front");
     }
     svg_data.m_svg = svg;
+    drawSample(svg_data);
 }
 
+/**
+ * @description 主视图图例绘制
+ * @param svg_data
+ */
+ function drawSample(svg_data) {
+    svg_data.m_svg.append("g")
+        .attr("class", "g_sample");
+    let sample_rect = [svg_data.rect_stoke, svg_data.enqueue_rect_fill, svg_data.dequeue_rect_fill];
+    let sample_text = ["原队列元素", "入队元素", "出队元素"];
+    for (let idx = 0; idx < 3; idx++) {
+        if (idx === 0) {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", "white")
+                .attr("stroke-width", 3)
+                .attr("stroke", sample_rect[idx]);
+        }
+        else {
+            svg_data.m_svg.select(".g_sample")
+                .append("rect")
+                .attr("x", svg_data.width / 30)
+                .attr("y", svg_data.height / 25 + idx * 30)
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", sample_rect[idx]);
+        }
+
+        svg_data.m_svg.select(".g_sample")
+            .append("text")
+            .attr("x", svg_data.width / 30 + 30)
+            .attr("y", svg_data.height / 25 + idx * 30)
+            .attr("dy", 13)
+            .attr("font-size", 15)
+            .text(sample_text[idx])
+            .attr("fill", svg_data.sample_text_fill);
+    }
+}
 
 /**
  * @description 入队过程的动画生成函数
