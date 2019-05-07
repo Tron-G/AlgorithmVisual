@@ -87,7 +87,7 @@ html body {
     top: 1%;
     right: 0;
     width: 25%;
-    height: 15%;
+    height: 18%;
 }
 
 /*输入窗口*/
@@ -104,7 +104,7 @@ html body {
 /*输入控件*/
 #custom_tool {
     position: absolute;
-    top: 8%;
+    top: 3%;
     left: 10%;
 }
 

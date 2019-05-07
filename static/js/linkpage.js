@@ -5,10 +5,24 @@ function inputWindow() {
     let post_data = {};                     //向后台传输的数据包
     let svg_data = {};                       //主屏幕svg对象
     let animation_data = {};                //动画数据缓存
+    let is_first = true;                   //是否首次进入
 
     resetSvgData(svg_data);
     resetPostData(post_data);                //post_data初始化
     clearAllTimer(animation_data, false);   //animation_data初始化
+
+    if(is_first){
+        clearAllTimer(animation_data, true);            //清除动画定时器
+        clearAllTimer(animation_data, false);           //animation_data初始化
+        resetPostData(post_data, 1);
+        let temp = postData(post_data);
+        post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
+        resetSvgData(svg_data);
+        drawLinkedList(post_data.array_data, svg_data);
+        drawProgress(animation_data, 0);                //重置进度条
+        drawCodeOne(post_data, animation_data, 0, 0);
+        is_first = false;
+    }
 
     ///////////////////////////////--------手动输入创建--------///////////////////////////////////////
     $('#submit_bt').click(function () {
@@ -61,7 +75,7 @@ function inputWindow() {
 
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("search", post_data);
+            // console.log("search", post_data);
 
             resetSvgData(svg_data);
             drawLinkedList(post_data.array_data, svg_data);            //重绘
@@ -97,7 +111,7 @@ function inputWindow() {
 
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("insert", post_data);
+            // console.log("insert", post_data);
 
             drawInsertCode(post_data, animation_data, 1, 0);
             insertAnimation(svg_data, post_data, animation_data);
@@ -138,7 +152,7 @@ function inputWindow() {
 
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("delete", post_data);
+            // console.log("delete", post_data);
 
             drawDeleteCode(post_data, animation_data, 1, 0);
             deleteAnimation(svg_data, post_data, animation_data);
@@ -150,7 +164,7 @@ function inputWindow() {
         if (animation_data.is_search) {                         //查找动画
             if (!animation_data.is_pause) {                     //暂停
                 animation_data.is_pause = true;
-                console.log("pause", animation_data.now_step);
+                // console.log("pause", animation_data.now_step);
                 $("#play_bt").attr("class", "play");            //图标切换
                 clearAllTimer(animation_data, true);           // 清除所有定时器
             }
@@ -164,7 +178,7 @@ function inputWindow() {
         else if (animation_data.is_insert) {                         //插入动画
             if (!animation_data.is_pause) {
                 animation_data.is_pause = true;
-                console.log("pause", animation_data.now_step);
+                // console.log("pause", animation_data.now_step);
                 $("#play_bt").attr("class", "play");
                 clearAllTimer(animation_data, true);
             }
@@ -179,7 +193,7 @@ function inputWindow() {
         else if (animation_data.is_delete) {                         //移除动画
             if (!animation_data.is_pause) {                     //暂停
                 animation_data.is_pause = true;
-                console.log("pause", animation_data.now_step);
+                // console.log("pause", animation_data.now_step);
                 $("#play_bt").attr("class", "play");            //图标切换
                 clearAllTimer(animation_data, true);           // 清除所有定时器
             }
@@ -271,7 +285,7 @@ function resetSvgData(svg_data) {
     svg_data.delete_circle_fill = "#393e46";
     svg_data.delete_arrow_stroke = "red";
     svg_data.sample_text_fill = "#8c7676";
-
+    svg_data.title_fill = "#3f72af";
 }
 
 /**
@@ -468,6 +482,15 @@ function drawLinkedList(array_data, svg_data) {
             .attr("font-size", svg_data.font_size)
             .text("tail");
     }
+    svg.append("g")
+        .attr("class", "g_title")
+        .append("text")
+        .attr('x', svg_data.width / 2.2)
+        .attr('y', svg_data.height / 10)
+        .attr("font-size", svg_data.font_size * 2)
+        .attr("fill", svg_data.title_fill)
+        .text("链表");
+
     svg_data.m_svg = svg;
     drawSample(svg_data);
 }
@@ -1599,14 +1622,14 @@ function runDeleteAnimation(post_data, animation_data) {
             drawProgress(animation_data, animation_data.deleteframe.length);
             animation_data.deleteframe[animation_data.now_step]();        //执行主视图动画
             showDeleteCode(post_data, animation_data);                     //伪代码及提示展示
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
             runDeleteAnimation(post_data, animation_data);
         }
         else {                                              //自动执行
             if (animation_data.now_step > animation_data.deleteframe.length - 1) {
-                console.log("end", animation_data.now_step);
+                // console.log("end", animation_data.now_step);
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");         //切换播放图标
                 // alert("结束");
@@ -1619,7 +1642,7 @@ function runDeleteAnimation(post_data, animation_data) {
             showDeleteCode(post_data, animation_data);
             animation_data.deleteframe[animation_data.now_step]();
             animation_data.now_step++;
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             runDeleteAnimation(post_data, animation_data);
         }
     }, animation_data.duration);
@@ -1691,14 +1714,14 @@ function runInsertAnimation(post_data, animation_data) {
             drawProgress(animation_data, animation_data.insertframe.length);
             animation_data.insertframe[animation_data.now_step]();        //执行主视图动画
             showInsertCode(post_data, animation_data);
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
             runInsertAnimation(post_data, animation_data);
         }
         else {                                              //自动执行
             if (animation_data.now_step > animation_data.insertframe.length - 1) {
-                console.log("end", animation_data.now_step);
+                // console.log("end", animation_data.now_step);
                 animation_data.is_pause = true;
                 $("#play_bt").attr("class", "play");         //切换播放图标
                 // alert("结束");
@@ -1710,7 +1733,7 @@ function runInsertAnimation(post_data, animation_data) {
             drawProgress(animation_data, animation_data.insertframe.length);
             showInsertCode(post_data, animation_data);
             animation_data.insertframe[animation_data.now_step]();
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             runInsertAnimation(post_data, animation_data);
         }
@@ -1801,7 +1824,7 @@ function runSearchAnimation(post_data, animation_data) {
                     drawCodeOne(post_data, animation_data, 3, 2);  //下一个
             }, animation_data.duration / 2);
             animation_data.all_timer.push(temp_timer);       // 计时器缓存
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             animation_data.is_next = false;
             runSearchAnimation(post_data, animation_data);
@@ -1815,7 +1838,7 @@ function runSearchAnimation(post_data, animation_data) {
                 return;
             }
             if (animation_data.now_step > animation_data.searchframe.length - 1) {
-                console.log("end", animation_data.now_step);
+                // console.log("end", animation_data.now_step);
                 animation_data.is_pause = true;
                 drawCodeOne(post_data, animation_data, 4, 3);
                 $("#play_bt").attr("class", "play");         //切换播放图标
@@ -1834,7 +1857,7 @@ function runSearchAnimation(post_data, animation_data) {
             }, animation_data.duration / 2);
             animation_data.all_timer.push(temp_timer);      // 计时器缓存
             animation_data.searchframe[animation_data.now_step]();
-            console.log("正在播放第:" + animation_data.now_step + "帧");
+            // console.log("正在播放第:" + animation_data.now_step + "帧");
             animation_data.now_step++;
             runSearchAnimation(post_data, animation_data);
         }

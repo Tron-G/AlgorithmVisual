@@ -57,7 +57,7 @@ ul {
     min-width: 200px;
     position: absolute;
     font-family: "KaiTi", serif;
-    font-size: 1.1em;
+    font-size: 1.5em;
     font-weight: bold;
     top: 0;
     left: 0;
@@ -75,7 +75,7 @@ ul {
 .s-side .s-firstItem span {
     display: inline-block;
     margin-left: 10px;
-    font-size: 25px;
+    font-size: 30px;
     font-family: Georgia, serif;
     text-shadow: 0 0 5px white;
     font-style: italic;
@@ -129,4 +129,16 @@ ul {
 .s-firstDrop,
 .s-secondDrop {
     display: none;
+}
+.creator{
+    position: absolute;
+    left: 1%;
+    bottom: 2%;
+    color: gray;
+    font-size: 15px;
+}
+.links{
+    text-decoration:underline;
+    color: gray;
+    font-size: 10px;
 }

@@ -10,6 +10,20 @@ function inputWindow() {
     resetPostData(post_data);                //post_data初始化
     clearAllTimer(animation_data, false);   //animation_data初始化
 
+    let is_first = true;                   //是否首次进入
+    if(is_first){
+        clearAllTimer(animation_data, true);            //清除动画定时器
+        clearAllTimer(animation_data, false);           //animation_data初始化
+        resetPostData(post_data, 1);
+        let temp = postData(post_data);
+        post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
+        resetSvgData(svg_data);
+        drawHistogram(post_data.array_data, svg_data);
+        drawProgress(animation_data, 0);                //重置进度条
+        drawCode(post_data, animation_data, 0, 0);
+        is_first = false;
+    }
+
     ///////////////////////////////--------手动输入创建--------///////////////////////////////////////
     $('#submit_bt').click(function () {
         let user_data = $('#user_data').val();
@@ -75,7 +89,7 @@ function inputWindow() {
             else {
                 animation_data.is_pause = false;
                 $("#play_bt").attr("class", "pause");
-                animation_data.duration = 2000;
+                animation_data.duration = 1600;
                 runAnimation(post_data, animation_data, svg_data);
             }
         }
@@ -131,6 +145,7 @@ function resetSvgData(svg_data) {
     svg_data.base_num_fill = "#606470";
     svg_data.mark_fill = "#f03861";
     svg_data.sample_text_fill = "#8c7676";
+    svg_data.title_fill = "#3f72af";
 }
 
 /**
@@ -170,7 +185,7 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.is_pause = true;     //暂停标记，默认暂停
         animation_data.is_next = false;     //执行步进标记
         animation_data.sortframe = [];     //排序动画函数缓存器
-        animation_data.duration = 2000;       //动画时间基数
+        animation_data.duration = 1600;       //动画时间基数
         animation_data.is_sort = false;   //是否执行排序标记
         animation_data.code_rect_fill = "#4f5d76";
         animation_data.choose_rect_fill = "#89a4c7";
@@ -279,6 +294,15 @@ function drawHistogram(array_data, svg_data) {
             .attr("fill", svg_data.mark_fill)
             .text("j");
     }
+     svg.append("g")
+        .attr("class", "g_title")
+        .append("text")
+        .attr('x', svg_data.width / 2.2)
+        .attr('y', svg_data.height / 10)
+        .attr("font-size", svg_data.font_size * 2)
+        .attr("fill", svg_data.title_fill)
+        .text("快速排序");
+
     svg_data.m_svg = svg;
 
     drawSample(svg_data);

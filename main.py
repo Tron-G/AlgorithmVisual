@@ -66,6 +66,11 @@ def selection_sort_page():
 @app.route('/quick_sort_page')
 def quick_sort_page():
     return render_template('QuickSortPage.html')
+
+
+@app.route('/about')
+def about():
+    return render_template('About.html')
 # ====================页面跳转=========================
 
 
@@ -333,4 +338,4 @@ def quick_sort_method():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=80, threaded=True)

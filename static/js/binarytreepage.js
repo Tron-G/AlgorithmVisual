@@ -10,6 +10,20 @@ function inputWindow() {
     resetPostData(post_data);                //post_data初始化
     clearAllTimer(animation_data, false);   //animation_data初始化
 
+    let is_first = true;                   //是否首次进入
+    if(is_first){
+        clearAllTimer(animation_data, true);            //清除动画定时器
+        clearAllTimer(animation_data, false);           //animation_data初始化
+        resetPostData(post_data, 1);
+        let temp = postData(post_data);
+        post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
+        resetSvgData(svg_data);
+        drawTree(post_data, svg_data);
+        drawProgress(animation_data, 0);                //重置进度条
+        drawCode(post_data, animation_data, 0, 0);
+        is_first = false;
+    }
+
     ///////////////////////////////--------手动输入创建--------///////////////////////////////////////
     $('#submit_bt').click(function () {
         let user_data = $('#user_data').val();
@@ -37,7 +51,7 @@ function inputWindow() {
         resetSvgData(svg_data);
         drawTree(post_data, svg_data);
         drawProgress(animation_data, 0);                //重置进度条
-        console.log(post_data);
+        // console.log(post_data);
         drawCode(post_data, animation_data, 0, 0);
     });
     ///////////////////////////////--------先序遍历功能--------///////////////////////////////////////
@@ -178,6 +192,7 @@ function resetSvgData(svg_data) {
     svg_data.done_stroke = "#3a7563";
     svg_data.mark_fill = "#f03861";
     svg_data.sample_text_fill = "#8c7676";
+    svg_data.title_fill = "#3f72af";
 }
 
 /**
@@ -303,6 +318,14 @@ function drawTree(post_data, svg_data) {
         .text("root");
 
     svg.append("g").attr("class", "g_visited");
+    svg.append("g")
+        .attr("class", "g_title")
+        .append("text")
+        .attr('x', svg_data.width / 2.3)
+        .attr('y', svg_data.height / 10)
+        .attr("font-size", svg_data.font_size * 2)
+        .attr("fill", svg_data.title_fill)
+        .text("二叉树");
 
     svg_data.m_svg = svg;
     drawSample(svg_data);
