@@ -442,7 +442,7 @@ function drawConclusion(svg_data, post_data) {
         .attr("width", width)
         .attr("height", height);
 
-    let intro_text = "哈希表: 通过散列函数计算数组/中的每个元素的映射地址并存储/在表中以便查找，这个表就称为/哈希表；本例中的散列函数采用/除数留余法,除数为7，处理冲突/的方法采用开放定址法";
+    let intro_text = "算法介绍：/哈希表: 通过散列函数计算数组/中的每个元素的映射地址并存储/在表中以便查找，这个表就称为/哈希表；本例中的散列函数采用/除数留余法,除数为7，处理冲突/的方法采用开放定址法。";
 
     let temp = intro_text.split("/");
 
@@ -456,8 +456,25 @@ function drawConclusion(svg_data, post_data) {
         .data(temp)
         .enter()
         .append("tspan")
-        .attr("x", width / 15)
-        .attr("dy", height / 7.5)
+        .attr("x", (d, i)=>{
+            if(i===0)
+                return 10;
+            else
+                return width / 15;
+
+        })
+        .attr("dy",(d, i)=>{
+            if(i===0)
+                return height / 10;
+            else
+                return height / 7.5;
+        })
+        .attr("font-size",(d, i)=>{
+            if(i===0)
+                return 20;
+            else
+                return 15;
+        })
         .text(function (d) {
             return d
         })

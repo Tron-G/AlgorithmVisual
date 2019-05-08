@@ -339,7 +339,7 @@ function drawIntrouce() {
         .attr("width", width)
         .attr("height", height);
 
-    let intro_text = "插入排序: 每步将一个待排序的/记录，按其关键码值的大小插入/已经排序的数组中适当位置上，/直到全部插入完为止，是一种简/单直观且稳定的排序算法。";
+    let intro_text = "算法介绍：/插入排序: 每步将一个待排序的/记录，按其关键码值的大小插入/已经排序的数组中适当位置上，/直到全部插入完为止，是一种简/单直观且稳定的排序算法。";
 
     let temp = intro_text.split("/");
 
@@ -353,8 +353,25 @@ function drawIntrouce() {
         .data(temp)
         .enter()
         .append("tspan")
-        .attr("x", width / 15)
-        .attr("dy", height / 7)
+        .attr("x", (d, i)=>{
+            if(i===0)
+                return 10;
+            else
+                return width / 15;
+
+        })
+        .attr("dy",(d, i)=>{
+            if(i===0)
+                return height / 10;
+            else
+                return height / 7;
+        })
+        .attr("font-size",(d, i)=>{
+            if(i===0)
+                return 20;
+            else
+                return 15;
+        })
         .text(function (d) {
             return d
         })

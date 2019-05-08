@@ -838,7 +838,7 @@ function drawIntrouce() {
         .attr("width", width)
         .attr("height", height);
 
-    let intro_text = "快速排序: 通过一趟排序将要排序的数据以/基准元素为中心分割成独立的两部分，其中/一部分的所有数据都比另外一部分的所有数/据都要小，" +
+    let intro_text = "算法介绍：/快速排序: 通过一趟排序将要排序的数据以/基准元素为中心分割成独立的两部分，其中/一部分的所有数据都比另外一部分的所有数/据都要小，" +
         "然后再按此方法对这两部分数据/分别进行快速排序，整个排序过程可以递归/进行，以此达到整个数据变成有序序列，本/示例选取的基准元素为未排序部分的首元素";
 
     let temp = intro_text.split("/");
@@ -853,8 +853,25 @@ function drawIntrouce() {
         .data(temp)
         .enter()
         .append("tspan")
-        .attr("x", width / 15)
-        .attr("dy", height / 9)
+        .attr("x", (d, i)=>{
+            if(i===0)
+                return 10;
+            else
+                return width / 15;
+
+        })
+        .attr("dy",(d, i)=>{
+            if(i===0)
+                return height / 20;
+            else
+                return height / 9;
+        })
+        .attr("font-size",(d, i)=>{
+            if(i===0)
+                return 20;
+            else
+                return 15;
+        })
         .text(function (d) {
             return d
         })

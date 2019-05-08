@@ -403,7 +403,7 @@ function drawIntrouce() {
         .attr("width", width)
         .attr("height", height);
 
-    let intro_text = "折半查找: 将数组分成大致相等的两部分,/取中间元素与目标做比较,如果相等,则查找/成功,算法中止；" +
+    let intro_text = "算法介绍：/折半查找: 将数组分成大致相等的两部分,/取中间元素与目标做比较,如果相等,则查找/成功,算法中止；" +
         "如果小于,则只要在数组a/的左半部分继续搜索,如果大于,则只要在数/组a的右半部搜索，直到查找完毕";
 
     let temp = intro_text.split("/");
@@ -418,8 +418,25 @@ function drawIntrouce() {
         .data(temp)
         .enter()
         .append("tspan")
-        .attr("x", width / 15)
-        .attr("dy", height / 6)
+        .attr("x", (d, i)=>{
+            if(i===0)
+                return 10;
+            else
+                return width / 15;
+
+        })
+        .attr("dy",(d, i)=>{
+            if(i===0)
+                return height / 10;
+            else
+                return height / 6;
+        })
+        .attr("font-size",(d, i)=>{
+            if(i===0)
+                return 20;
+            else
+                return 15;
+        })
         .text(function (d) {
             return d
         })

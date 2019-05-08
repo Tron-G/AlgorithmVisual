@@ -672,7 +672,7 @@ function drawIntrouce() {
         .attr("width", width)
         .attr("height", height);
 
-    let intro_text = "选择排序: 每一次从待排序的数据元素中选/出最小的一个元素，存放在序列的起始位置，/以此类推，直到全部待排序的数据元素排完。/选择排序是不稳定的排序方法。";
+    let intro_text = "算法介绍：/选择排序: 每一次从待排序的数据元素中选/出最小的一个元素，存放在序列的起始位置，/以此类推，直到全部待排序的数据元素排完。/选择排序是不稳定的排序方法。";
 
     let temp = intro_text.split("/");
 
@@ -686,8 +686,25 @@ function drawIntrouce() {
         .data(temp)
         .enter()
         .append("tspan")
-        .attr("x", width / 15)
-        .attr("dy", height / 6)
+        .attr("x", (d, i)=>{
+            if(i===0)
+                return 10;
+            else
+                return width / 15;
+
+        })
+        .attr("dy",(d, i)=>{
+            if(i===0)
+                return height / 10;
+            else
+                return height / 6;
+        })
+        .attr("font-size",(d, i)=>{
+            if(i===0)
+                return 20;
+            else
+                return 15;
+        })
         .text(function (d) {
             return d
         })
