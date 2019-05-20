@@ -106,8 +106,6 @@ class LinkedList(DataStructure):
                 temp_data.append(self.__data[i])
         self.__data = temp_data
 
-    pass
-
 
 class Stack(DataStructure):
     """栈类"""
@@ -494,7 +492,8 @@ class BinaryTree(DataStructure):
 # print(bt.calc_depth())
 # re = bt.inorder()
 # print(re)
-
-
+# bt = BinaryTree([1,2,3,4,5,6])
+# print(bt.preorder(1))
+# print(bt.preorder())
 # bb = BinaryTree()
 # print(bb.inorder())

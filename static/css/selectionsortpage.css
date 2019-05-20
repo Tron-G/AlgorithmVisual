@@ -209,7 +209,7 @@ html body {
 /*提示窗口*/
 #hint_page {
     position: absolute;
-    bottom: 32%;
+    bottom: 35%;
     right: 0;
     width: 23%;
     height: 8%;

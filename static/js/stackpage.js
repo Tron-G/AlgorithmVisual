@@ -342,6 +342,28 @@ function drawStack(array_data, svg_data) {
         .attr("fill", svg_data.title_fill)
         .text("栈");
 
+    let intro_wid = $("#hint_page").width();
+    let intro_hei = $("#hint_page").height();
+    let code_wid = $("#code_page").width();
+    let code_hei = $("#code_page").height();
+
+    svg.append("g")
+        .attr("class", "g_intro")
+        .append("text")
+        .attr('x', svg_data.width - intro_wid)
+        .attr('y', svg_data.height - intro_hei - code_hei - 50)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("解释窗口：");
+
+    svg.append("g")
+        .attr("class", "g_icode")
+        .append("text")
+        .attr('x', svg_data.width - code_wid)
+        .attr('y', svg_data.height - code_hei - 15)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("伪代码窗口：");
 
     svg_data.m_svg = svg;
     drawSample(svg_data);

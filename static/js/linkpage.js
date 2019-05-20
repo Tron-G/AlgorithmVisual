@@ -185,7 +185,7 @@ function inputWindow() {
             else {
                 animation_data.is_pause = false;
                 $("#play_bt").attr("class", "pause");
-                animation_data.duration = 2000;
+                animation_data.duration = 1500;
                 runInsertAnimation(post_data, animation_data);
             }
 
@@ -200,7 +200,7 @@ function inputWindow() {
             else {
                 animation_data.is_pause = false;
                 $("#play_bt").attr("class", "pause");
-                animation_data.duration = 2000;
+                animation_data.duration = 1500;
                 runDeleteAnimation(post_data, animation_data);
             }
         }
@@ -334,7 +334,7 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.searchframe = [];     //查找动画函数缓存器
         animation_data.insertframe = [];     //插入动画函数缓存器
         animation_data.deleteframe = [];     //移除动画函数缓存器
-        animation_data.duration = 1500;     //动画时间基数
+        animation_data.duration = 1200;     //动画时间基数
         animation_data.is_search = false;   //是否执行查找标记
         animation_data.is_insert = false;   //是否执行插入标记
         animation_data.is_delete = false;   //是否执行移除标记
@@ -490,6 +490,29 @@ function drawLinkedList(array_data, svg_data) {
         .attr("font-size", svg_data.font_size * 2)
         .attr("fill", svg_data.title_fill)
         .text("链表");
+
+     let intro_wid = $("#hint_page").width();
+    let intro_hei = $("#hint_page").height();
+    let code_wid = $("#code_page").width();
+    let code_hei = $("#code_page").height();
+
+    svg.append("g")
+        .attr("class", "g_intro")
+        .append("text")
+        .attr('x', svg_data.width - intro_wid)
+        .attr('y', svg_data.height - intro_hei - code_hei - 50)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("解释窗口：");
+
+    svg.append("g")
+        .attr("class", "g_icode")
+        .append("text")
+        .attr('x', svg_data.width - code_wid)
+        .attr('y', svg_data.height - code_hei - 15)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("伪代码窗口：");
 
     svg_data.m_svg = svg;
     drawSample(svg_data);

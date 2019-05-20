@@ -48,6 +48,7 @@ function inputWindow() {
         drawArray(post_data.array_data, svg_data);
         drawCode(post_data, animation_data, 0, 0);
         drawProgress(animation_data, 0);                       // 进度条重置
+        // console.log(post_data)
     });
     ///////////////////////////////--------查找功能--------///////////////////////////////////////
     $('#search_bt').click(function () {
@@ -58,12 +59,12 @@ function inputWindow() {
             clearAllTimer(animation_data, false);               //初始化动画数据包
             animation_data.is_search = true;                    //执行查找标志
             resetPostData(post_data, post_data.input_tpye, post_data.array_data, 1, result);
-            let temp = postData(post_data);
+            let temp = postData(post_data);                     //前后台数据交互
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
             drawArray(post_data.array_data, svg_data);            //重绘
             drawProgress(animation_data, 0);                       // 进度条重置
-            drawCode(post_data, animation_data, 2, 0);
-            createAnimation(svg_data, post_data, animation_data); // 查找动画生成
+            drawCode(post_data, animation_data, 2, 0);             //操作提示
+            createAnimation(svg_data, post_data, animation_data); // 动画生成
         }
     });
     ///////////////////////////////--------播放暂停功能--------////////////////////////////////////
@@ -292,6 +293,29 @@ function drawArray(array_data, svg_data) {
         .attr("fill", svg_data.title_fill)
         .text("数组");
 
+    let intro_wid = $("#hint_page").width();
+    let intro_hei = $("#hint_page").height();
+    let code_wid = $("#code_page").width();
+    let code_hei = $("#code_page").height();
+
+    svg.append("g")
+        .attr("class", "g_intro")
+        .append("text")
+        .attr('x', svg_data.width - intro_wid)
+        .attr('y', svg_data.height - intro_hei - code_hei - 50)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("解释窗口：");
+
+    svg.append("g")
+        .attr("class", "g_icode")
+        .append("text")
+        .attr('x', svg_data.width - code_wid)
+        .attr('y', svg_data.height - code_hei - 15)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("伪代码窗口：");
+
     svg_data.m_svg = svg;
     drawSample(svg_data);
 }
@@ -364,7 +388,6 @@ function drawConclusion(svg_data, post_data) {
  * @param {object} animation_data 动画数据包
  */
 function createAnimation(svg_data, post_data, animation_data) {
-
     let temp_frame;
     for (let idx = 0; idx < (post_data.search_process.length - 1); idx++) {
         temp_frame = function () {
@@ -399,10 +422,6 @@ function createAnimation(svg_data, post_data, animation_data) {
                     .attr("fill", svg_data.text_change_fill);
             }
             if (idx >= 1) {
-                // svg_data.m_svg.selectAll(".m_rect" + post_data.search_process[idx - 1])
-                //     .transition()
-                //     .duration(animation_data.duration / 4)
-                //     .attr("fill", "white");
                 svg_data.m_svg.selectAll(".rect_num" + post_data.search_process[idx - 1])
                     .transition()
                     .duration(animation_data.duration / 4)
@@ -467,7 +486,7 @@ function runAnimation(svg_data, post_data, animation_data) {
  * @param {object} animation_data
  */
 function showCode(post_data, animation_data) {
-    drawCode(post_data, animation_data, 3, 1);      //提示窗口判断相等动画
+    drawCode(post_data, animation_data, 3, 1);      //判断相等
     let temp_timer = setTimeout(() => {
         if (animation_data.now_step === post_data.search_process.length - 1
             && post_data.search_process[post_data.search_process.length - 1] === 1)

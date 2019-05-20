@@ -100,7 +100,7 @@ function inputWindow() {
                     animation_data.local_timer.push(temp_timer);       // 计时器缓存
                     animation_data.is_pause = false;
                     $("#play_bt").attr("class", "pause");
-                    animation_data.duration = 2000;
+                    animation_data.duration = 1700;
                     runAnimation(svg_data, post_data, animation_data);
                 }
                 else if (animation_data.now_step === 0 && animation_data.is_search) {
@@ -111,13 +111,13 @@ function inputWindow() {
                     animation_data.local_timer.push(temp_timer);       // 计时器缓存
                     animation_data.is_pause = false;
                     $("#play_bt").attr("class", "pause");
-                    animation_data.duration = 2000;
+                    animation_data.duration = 1700;
                     runAnimation(svg_data, post_data, animation_data);
                 }
                 else {
                     animation_data.is_pause = false;
                     $("#play_bt").attr("class", "pause");
-                    animation_data.duration = 2000;
+                    animation_data.duration = 1700;
                     runAnimation(svg_data, post_data, animation_data);
                 }
             }
@@ -132,7 +132,7 @@ function inputWindow() {
                     animation_data.is_pause = true;
                     $("#play_bt").attr("class", "play");
                     animation_data.is_next = true;
-                    animation_data.duration = 1500;
+                    animation_data.duration = 1000;
                     clearAllTimer(animation_data, true);
                     runAnimation(svg_data, post_data, animation_data);
                 }
@@ -142,7 +142,7 @@ function inputWindow() {
                         let temp_timer = setTimeout(() => {
                             drawCode(post_data, animation_data, 3, 1);
                             animation_data.is_next = true;
-                            animation_data.duration = 1500;
+                            animation_data.duration = 1000;
                             runAnimation(svg_data, post_data, animation_data);
                         }, animation_data.duration / 2);
                         animation_data.local_timer.push(temp_timer);       // 计时器缓存
@@ -152,14 +152,14 @@ function inputWindow() {
                         let temp_timer = setTimeout(() => {
                             drawCode(post_data, animation_data, 9, 1, post_data.search_process[0]);
                             animation_data.is_next = true;
-                            animation_data.duration = 1500;
+                            animation_data.duration = 1000;
                             runAnimation(svg_data, post_data, animation_data);
                         }, animation_data.duration / 2);
                         animation_data.local_timer.push(temp_timer);       // 计时器缓存、
                     }
                     else {
                         animation_data.is_next = true;
-                        animation_data.duration = 1500;
+                        animation_data.duration = 1000;
                         runAnimation(svg_data, post_data, animation_data);
                     }
                 }
@@ -245,7 +245,7 @@ function clearAllTimer(animation_data, do_clear) {
         animation_data.is_next = false;     //执行步进标记
         animation_data.searchframe = [];     //查找动画函数缓存器
         animation_data.createframe = [];
-        animation_data.duration = 2000;       //动画时间基数
+        animation_data.duration = 1500;       //动画时间基数
         animation_data.is_create = false;   //是否执行创建标记
         animation_data.is_search = false;   //是否执行查找标记
         animation_data.code_rect_fill = "#4f5d76";
@@ -407,6 +407,29 @@ function drawArray(array_data, svg_data) {
             .text(sample_text[idx])
             .attr("fill", svg_data.sample_text_fill);
     }
+
+     let intro_wid = $("#hint_page").width();
+    let intro_hei = $("#hint_page").height();
+    let code_wid = $("#code_page").width();
+    let code_hei = $("#code_page").height();
+
+    svg_data.m_svg.append("g")
+        .attr("class", "g_intro")
+        .append("text")
+        .attr('x', svg_data.width - intro_wid)
+        .attr('y', svg_data.height - intro_hei - code_hei - 50)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("解释窗口：");
+
+    svg_data.m_svg.append("g")
+        .attr("class", "g_icode")
+        .append("text")
+        .attr('x', svg_data.width - code_wid)
+        .attr('y', svg_data.height - code_hei - 15)
+        .attr("font-size", svg_data.font_size * 1.1)
+        .attr("fill", svg_data.sample_text_fill)
+        .text("伪代码窗口：");
 }
 
 
