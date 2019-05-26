@@ -286,6 +286,8 @@ function resetSvgData(svg_data) {
     svg_data.delete_arrow_stroke = "red";
     svg_data.sample_text_fill = "#8c7676";
     svg_data.title_fill = "#3f72af";
+    svg_data.search_fail_fill = "#f03861";
+    svg_data.search_succ_fill = "#00bd56";
 }
 
 /**
@@ -295,19 +297,19 @@ function resetSvgData(svg_data) {
  * @param {object} array_data 保存链表值
  * @param {number} operate_type 进行的操作类型，0：无，1：查找，2：插入，3：移除
  * @param {number} search_num 要查找的数值
- * @param {number} search_pos 查找的数值的下标（后台修改生成，默认-1表示未找到）
+ * @param {object} search_process 查找数值过程数据（后台修改生成，详见数组查找）
  * @param {number} insert_pos 要插入的数值下标
  * @param {number} insert_num 要插入的数值
  * @param {number} delete_pos 要移除的数值下标
  */
 function resetPostData(post_data, input_tpye = 0, array_data = null, operate_type = 0,
-                       search_num = -1, search_pos = -1, insert_pos = -1, insert_num = -1,
+                       search_num = -1, search_process = null, insert_pos = -1, insert_num = -1,
                        delete_pos = -1) {
     post_data.input_tpye = input_tpye;
     post_data.array_data = array_data;
     post_data.operate_type = operate_type;
     post_data.search_num = search_num;
-    post_data.search_pos = search_pos;
+    post_data.search_process = search_process;
     post_data.insert_pos = insert_pos;
     post_data.insert_num = insert_num;
     post_data.delete_pos = delete_pos;
@@ -525,9 +527,10 @@ function drawLinkedList(array_data, svg_data) {
  function drawSample(svg_data) {
     svg_data.m_svg.append("g")
         .attr("class", "g_sample");
-    let sample_rect = [svg_data.circle_stroke, svg_data.circle_search_fill, svg_data.insert_circle_fill, svg_data.choose_circle_fill,svg_data.delete_circle_fill];
-    let sample_text = ["原链表元素", "查找中的元素", "插入元素", "插入/移除元素的后继节点","删除元素"];
-    for (let idx = 0; idx < 5; idx++) {
+    let sample_rect = [svg_data.circle_stroke, svg_data.circle_search_fill, svg_data.insert_circle_fill,
+        svg_data.choose_circle_fill,svg_data.delete_circle_fill,svg_data.search_succ_fill,svg_data.search_fail_fill];
+    let sample_text = ["原链表元素", "查找中的元素", "插入元素", "插入/移除元素的后继节点","删除元素","查找成功元素","查找失败/目标不存在"];
+    for (let idx = 0; idx < 7; idx++) {
         if (idx === 0) {
             svg_data.m_svg.select(".g_sample")
                 .append("rect")
@@ -568,52 +571,135 @@ function drawLinkedList(array_data, svg_data) {
  * @param {object} animation_data 动画数据包
  */
 function searchAnimation(svg_data, post_data, animation_data) {
-    animation_data.searchframe = post_data.array_data.map(function (d, i) {
-        return function () {
-            svg_data.m_svg.selectAll("#m_circle" + i)
-                .transition()
-                .duration(animation_data.duration / 2)
-                .attr("fill", svg_data.circle_search_fill)
-                .attr("stroke", svg_data.search_stroke);
+    let temp_frame;
+    for (let idx = 0; idx < (post_data.search_process.length - 1); idx++) {
+        temp_frame = function () {
+            if (idx === (post_data.search_process.length - 2) && post_data.search_process[post_data.search_process.length - 1] === -1) {
+                svg_data.m_svg.selectAll("#m_circle" + post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.search_fail_fill);
 
-            svg_data.m_svg.select(".g_circle" + i)
-                .append("text")
-                .attr("class", "temp_text")
-                .attr("x", svg_data.circlepos[i])
-                .attr("y", svg_data.height / 2)
-                .attr("dx", -svg_data.circle_radius)
-                .attr("dy", 2 * svg_data.circle_radius)
-                .attr("fill", "red")
-                .attr("font-size", svg_data.font_size)
-                .text("temp");
+                svg_data.m_svg.select(".g_circle" + idx)
+                    .append("text")
+                    .attr("class", "temp_text")
+                    .attr("x", svg_data.circlepos[idx])
+                    .attr("y", svg_data.height / 2)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .attr("font-size", svg_data.font_size)
+                    .text("temp");
+            }
+            else if (idx === (post_data.search_process.length - 2) && post_data.search_process[post_data.search_process.length - 1] === 1) {
+                svg_data.m_svg.selectAll("#m_circle" + post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.search_succ_fill);
 
-            drawProgress(animation_data, animation_data.searchframe.length);       // 进度条
-            if (i >= 1) {
+                svg_data.m_svg.select(".g_circle" + idx)
+                    .append("text")
+                    .attr("class", "temp_text")
+                    .attr("x", svg_data.circlepos[idx])
+                    .attr("y", svg_data.height / 2)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .attr("font-size", svg_data.font_size)
+                    .text("temp");
+            }
+            else {
+                svg_data.m_svg.selectAll("#m_circle" +  post_data.search_process[idx])
+                    .transition()
+                    .duration(animation_data.duration / 2)
+                    .attr("fill", svg_data.circle_search_fill);
+
+                svg_data.m_svg.select(".g_circle" + idx)
+                    .append("text")
+                    .attr("class", "temp_text")
+                    .attr("x", svg_data.circlepos[idx])
+                    .attr("y", svg_data.height / 2)
+                    .attr("dx", -svg_data.circle_radius)
+                    .attr("dy", 2 * svg_data.circle_radius)
+                    .attr("fill", "red")
+                    .attr("font-size", svg_data.font_size)
+                    .text("temp");
+
+            }
+            if (idx >= 1) {
                 svg_data.m_svg.select(".temp_text").remove();
-                svg_data.m_svg.select("#m_circle" + (i - 1))
+                svg_data.m_svg.select("#m_circle" + (idx - 1))
                     .transition()
                     .duration(animation_data.duration / 2)
                     .attr("fill", "white");
 
-                svg_data.m_svg.select(".g_arrow" + (i - 1))
+                svg_data.m_svg.select(".g_arrow" + (idx - 1))
                     .append("line")
-                    .attr("x1", svg_data.circlepos[i - 1] + svg_data.circle_radius)
+                    .attr("x1", svg_data.circlepos[idx - 1] + svg_data.circle_radius)
                     .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
-                    .attr("x2", svg_data.circlepos[i - 1] + svg_data.circle_radius)
+                    .attr("x2", svg_data.circlepos[idx - 1] + svg_data.circle_radius)
                     .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
                     .attr("stroke", svg_data.search_stroke)
                     .attr("stroke-width", 2)
                     .attr("marker-end", "url(#arrow)")
                     .transition()
                     .duration(animation_data.duration / 2)
-                    .attr("x1", svg_data.circlepos[i - 1] + svg_data.circle_radius)
+                    .attr("x1", svg_data.circlepos[idx - 1] + svg_data.circle_radius)
                     .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
-                    .attr("x2", svg_data.circlepos[i - 1] + svg_data.circle_radius + svg_data.arrow_len - 6)
+                    .attr("x2", svg_data.circlepos[idx - 1] + svg_data.circle_radius + svg_data.arrow_len - 6)
                     .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
-
             }
-        }
-    });
+        };
+        animation_data.searchframe.push(temp_frame);
+    }
+
+    // animation_data.searchframe = post_data.array_data.map(function (d, i) {
+    //     return function () {
+    //         svg_data.m_svg.selectAll("#m_circle" + i)
+    //             .transition()
+    //             .duration(animation_data.duration / 2)
+    //             .attr("fill", svg_data.circle_search_fill)
+    //             .attr("stroke", svg_data.search_stroke);
+    //
+    //         svg_data.m_svg.select(".g_circle" + i)
+    //             .append("text")
+    //             .attr("class", "temp_text")
+    //             .attr("x", svg_data.circlepos[i])
+    //             .attr("y", svg_data.height / 2)
+    //             .attr("dx", -svg_data.circle_radius)
+    //             .attr("dy", 2 * svg_data.circle_radius)
+    //             .attr("fill", "red")
+    //             .attr("font-size", svg_data.font_size)
+    //             .text("temp");
+    //
+    //
+    //         if (i >= 1) {
+    //             svg_data.m_svg.select(".temp_text").remove();
+    //             svg_data.m_svg.select("#m_circle" + (i - 1))
+    //                 .transition()
+    //                 .duration(animation_data.duration / 2)
+    //                 .attr("fill", "white");
+    //
+    //             svg_data.m_svg.select(".g_arrow" + (i - 1))
+    //                 .append("line")
+    //                 .attr("x1", svg_data.circlepos[i - 1] + svg_data.circle_radius)
+    //                 .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+    //                 .attr("x2", svg_data.circlepos[i - 1] + svg_data.circle_radius)
+    //                 .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+    //                 .attr("stroke", svg_data.search_stroke)
+    //                 .attr("stroke-width", 2)
+    //                 .attr("marker-end", "url(#arrow)")
+    //                 .transition()
+    //                 .duration(animation_data.duration / 2)
+    //                 .attr("x1", svg_data.circlepos[i - 1] + svg_data.circle_radius)
+    //                 .attr("y1", svg_data.height / 2 - svg_data.circle_radius)
+    //                 .attr("x2", svg_data.circlepos[i - 1] + svg_data.circle_radius + svg_data.arrow_len - 6)
+    //                 .attr("y2", svg_data.height / 2 - svg_data.circle_radius)
+    //
+    //         }
+    //     }
+    // });
+
 }
 
 /**
@@ -1839,6 +1925,7 @@ function runSearchAnimation(post_data, animation_data) {
         if (animation_data.is_next && animation_data.now_step < animation_data.searchframe.length
             && !animation_data.is_find) {                   //步进执行
             animation_data.searchframe[animation_data.now_step]();//执行主视图动画
+            drawProgress(animation_data, animation_data.searchframe.length);       // 进度条
             drawCodeOne(post_data, animation_data, 2, 1);      //提示窗口判断相等动画
             let temp_timer = setTimeout(() => {
                 if (post_data.array_data[animation_data.now_step - 1] === post_data.search_num)
@@ -1871,6 +1958,7 @@ function runSearchAnimation(post_data, animation_data) {
             else if (animation_data.is_pause) {
                 return;
             }
+            drawProgress(animation_data, animation_data.searchframe.length);       // 进度条
             drawCodeOne(post_data, animation_data, 2, 1);      //判断相等
             let temp_timer = setTimeout(() => {
                 if (post_data.array_data[animation_data.now_step - 1] === post_data.search_num)

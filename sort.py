@@ -61,6 +61,7 @@ class Sort(Algorithm):
                     tep[j], tep[j + 1] = tep[j + 1], tep[j]
                     temp1.append(temp)
             result.append(temp1)
+        # print(result)
         return result
 
     # 选择排序

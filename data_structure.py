@@ -49,7 +49,6 @@ class Array(DataStructure):
             result.append(1)
         else:
             result.append(-1)
-
         return result
 
     # 修改下标为Index处的值
@@ -75,12 +74,18 @@ class LinkedList(DataStructure):
     def get_data(self):
         return self.__data
 
-    # 返回值为target的序号
-    def search(self, target):
-        if target in self.__data:
-            return self.__data.index(target)
+    def search(self, num):
+        result = []
+        for i in range(0, len(self.__data)):
+            result.append(i)
+            if self.__data[i] == num:
+                break
+
+        if num in self.__data:
+            result.append(1)
         else:
-            return -1
+            result.append(-1)
+        return result
 
     # 在序号为index处插入num
     def insert_num(self, index, num):

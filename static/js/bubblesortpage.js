@@ -71,9 +71,10 @@ function inputWindow() {
             drawProgress(animation_data, 0);               //重置进度条
             let temp = postData(post_data);
             post_data = JSON.parse(JSON.stringify(temp));       //更新数据包
-            console.log("sort", post_data);
+            // console.log("sort", post_data);
             drawCode(post_data, animation_data, 1, 0);
             sortAnimation(svg_data, post_data, animation_data);
+            // console.log(animation_data.sortframe);
         }
     });
 

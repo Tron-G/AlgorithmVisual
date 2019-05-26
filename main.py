@@ -118,7 +118,7 @@ def link_method():
     if data["operate_type"] == 1:  # 查找
         m_link = data_structure.LinkedList(data["array_data"])
         data["search_num"] = int(data["search_num"])
-        data["search_pos"] = m_link.search(data["search_num"])
+        data["search_process"] = m_link.search(data["search_num"])
         # print("ss", data)
 
     elif data["operate_type"] == 2:  # 插入
